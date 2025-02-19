@@ -1,0 +1,186 @@
+@font-face {
+  font-family: "CabinetGrotesk";
+  src: url("fonts/CabinetGrotesk-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Switzer";
+  src: url("fonts/Switzer-Variable.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Switzer";
+  src: url("fonts/Switzer-VariableItalic.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+}
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+  vertical-align: baseline;
+  transition: all ease-out 150ms;
+}
+*::selection {
+  border-radius: 0.5rem;
+  background-color: #1034e9;
+  color: #ffe4d2;
+}
+
+:root {
+  --light-1: #ffe4d2;
+  --light-2: #c5b0a2;
+  --light-3: #8a7c72;
+  --dark-3: #403c3b;
+  --dark-2: #2a2827;
+  --dark-1: #151312;
+  --orange: #ff752a;
+  --orange-darker: rgb(102.2, 71.4, 55.6);
+  --orange-lighter: rgb(255, 205.8, 176.4);
+  --blue: #1034e9;
+  --blue-darker: rgb(54.4, 58.4, 93.8);
+  --blue-lighter: rgb(207.2, 192.8, 214.6);
+  --red: #ff3a3a;
+  --red-darker: rgb(102.2, 59.6, 58.8);
+  --red-lighter: rgb(255, 194, 179.6);
+  --yellow: #ffd224;
+  --yellow-darker: rgb(102.2, 90, 54.4);
+  --yellow-lighter: rgb(255, 224.4, 175.2);
+  --purple: #d946e6;
+  --purple-darker: rgb(94.6, 62, 93.2);
+  --purple-lighter: rgb(247.4, 196.4, 214);
+  --green: #10e951;
+  --green-darker: rgb(54.4, 94.6, 63.4);
+  --green-lighter: rgb(207.2, 229, 184.2);
+  --max-width: 60rem; /* 85.75rem */
+  --min-height: 1120px; /* 70rem */
+  font-size: 16px;
+  background: var(--dark-1);
+  color: var(--light-2);
+  font-family: "Switzer", sans-serif;
+  letter-spacing: 0.4px;
+  line-height: 150%;
+  font-weight: 500;
+  width: 100vw;
+  min-width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--light-1);
+  font-family: "CabinetGrotesk", serif;
+  line-height: 130%;
+}
+
+h1 {
+  font-size: 4rem;
+}
+
+h2 {
+  font-size: 3rem;
+}
+
+h3 {
+  font-size: 2.5rem;
+}
+
+h4 {
+  font-size: 2rem;
+}
+
+h5 {
+  font-size: 1.5rem;
+}
+
+.large-font-size {
+  font-size: 1.25rem;
+}
+
+.small-font-size {
+  font-size: 0.75rem;
+}
+
+a {
+  color: var(--orange);
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: auto;
+  text-decoration-thickness: 8%; /* 1.28px */
+  text-underline-offset: 12.5%; /* 2px */
+  text-underline-position: from-font;
+}
+a.non-accent {
+  color: var(--light-1);
+}
+a:hover {
+  color: var(--orange-lighter);
+}
+
+.tag {
+  font-size: 0.75rem;
+  line-height: 100%;
+}
+
+.max-width {
+  flex: 1;
+  width: 100%;
+  max-width: var(--max-width);
+}
+
+.max-width-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+button {
+  position: relative;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  color: var(--dark-1);
+  cursor: pointer;
+  font-size: 1rem;
+  background-color: #ff752a;
+}
+button:hover {
+  background-color: rgb(255, 166.5633802817, 118.5);
+}
+button.disabled {
+  cursor: none;
+  pointer-events: none;
+  opacity: 50%;
+}
+button.secondary {
+  background-color: var(--dark-3);
+  color: var(--light-1);
+}
+button.secondary:hover {
+  background-color: rgb(103.8048780488, 97.3170731707, 95.6951219512);
+}
+button.ghost {
+  background-color: none;
+  color: var(--light-1);
+}
+button.ghost:hover {
+  background-color: rgb(81.6666666667, 77.7777777778, 75.8333333333);
+}
+
+/*# sourceMappingURL=styles.css.map */

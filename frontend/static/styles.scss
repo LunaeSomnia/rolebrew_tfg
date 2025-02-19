@@ -1,0 +1,198 @@
+@use "sass:color";
+
+@use "./fonts";
+
+$light-1: #ffe4d2;
+$light-2: #c5b0a2;
+$light-3: #8a7c72;
+$dark-3: #403c3b;
+$dark-2: #2a2827;
+$dark-1: #151312;
+
+$orange: #ff752a;
+$blue: #1034e9;
+$red: #ff3a3a;
+$yellow: #ffd224;
+$purple: #d946e6;
+$green: #10e951;
+
+@mixin create-darker-lighter-colors($color-name, $color-value) {
+    $weight: 20%;
+
+    --#{$color-name}: #{$color-value};
+    --#{$color-name}-darker: #{color.mix($color-value, $dark-3, $weight)};
+    --#{$color-name}-lighter: #{color.mix($color-value, $light-1, $weight)};
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    box-sizing: border-box;
+    vertical-align: baseline;
+    transition: all ease-out 150ms;
+
+    &::selection {
+        border-radius: 0.5rem;
+        background-color: $blue;
+        color: $light-1;
+    }
+}
+
+:root {
+    --light-1: #{$light-1};
+    --light-2: #{$light-2};
+    --light-3: #{$light-3};
+    --dark-3: #{$dark-3};
+    --dark-2: #{$dark-2};
+    --dark-1: #{$dark-1};
+
+    @include create-darker-lighter-colors("orange", $orange);
+    @include create-darker-lighter-colors("blue", $blue);
+    @include create-darker-lighter-colors("red", $red);
+    @include create-darker-lighter-colors("yellow", $yellow);
+    @include create-darker-lighter-colors("purple", $purple);
+    @include create-darker-lighter-colors("green", $green);
+
+    --max-width: 60rem; /* 85.75rem */
+    // --max-width: 1372px; /* 85.75rem */
+    --min-height: 1120px; /* 70rem */
+
+    font-size: 16px;
+    background: var(--dark-1);
+    color: var(--light-2);
+    font-family: "Switzer", sans-serif;
+    letter-spacing: 0.4px;
+    line-height: 150%;
+    font-weight: 500;
+
+    width: 100vw;
+    min-width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--light-1);
+    font-family: "CabinetGrotesk", serif;
+    line-height: 130%;
+}
+
+h1 {
+    font-size: 4rem;
+}
+
+h2 {
+    font-size: 3rem;
+}
+
+h3 {
+    font-size: 2.5rem;
+}
+
+h4 {
+    font-size: 2rem;
+}
+
+h5 {
+    font-size: 1.5rem;
+}
+
+.large-font-size {
+    font-size: 1.25rem;
+}
+
+.small-font-size {
+    font-size: 0.75rem;
+}
+
+a {
+    color: var(--orange);
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-skip-ink: auto;
+    text-decoration-thickness: 8%; /* 1.28px */
+    text-underline-offset: 12.5%; /* 2px */
+    text-underline-position: from-font;
+
+    &.non-accent {
+        color: var(--light-1);
+    }
+
+    &:hover {
+        color: var(--orange-lighter);
+    }
+}
+
+.tag {
+    font-size: 0.75rem;
+    line-height: 100%;
+}
+
+.max-width {
+    flex: 1;
+    width: 100%;
+    max-width: var(--max-width);
+}
+
+.max-width-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+button {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: bold;
+    color: var(--dark-1);
+    cursor: pointer;
+    font-size: 1rem;
+
+    $bg-color: $orange;
+    background-color: $bg-color;
+
+    &:hover {
+        background-color: lighten($bg-color, 15%);
+    }
+
+    &.disabled {
+        cursor: none;
+        pointer-events: none;
+        opacity: 50%;
+    }
+
+    &.secondary {
+        $bg-color: $dark-3;
+        background-color: var(--dark-3);
+        color: var(--light-1);
+
+        &:hover {
+            background-color: lighten($bg-color, 15%);
+        }
+    }
+
+    &.ghost {
+        $bg-color: $dark-2;
+        background-color: none;
+        color: var(--light-1);
+
+        &:hover {
+            background-color: lighten($bg-color, 15%);
+        }
+    }
+}
