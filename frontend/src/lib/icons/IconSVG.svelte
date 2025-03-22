@@ -21,21 +21,35 @@
         size = DEFAULT_ICON_SIZE,
         fill = DEFAULT_ICON_FILL,
     }: Props = $props();
+
+    const iconDefinition = ICON_VALUES.get(icon);
 </script>
 
 <svg
-    width={size}
-    height={size}
-    viewBox={`0 0 ${DEFAULT_ICON_VIEWPORT_WIDTH} ${DEFAULT_ICON_VIEWPORT_HEIGHT}`}
+    width={size ?? DEFAULT_ICON_SIZE}
+    height={size ?? DEFAULT_ICON_SIZE}
+    viewBox={`0 0 ${
+        iconDefinition?.iconViewportSize ?? DEFAULT_ICON_VIEWPORT_WIDTH
+    } ${iconDefinition?.iconViewportSize ?? DEFAULT_ICON_VIEWPORT_HEIGHT}`}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
 >
-    {#each ICON_VALUES.get(icon)?.d ?? [] as iconDef}
-        <path
-            fill-rule={DEFAULT_ICON_FILL_RULE}
-            clip-rule={DEFAULT_ICON_CLIP_RULE}
-            d={iconDef}
-            {fill}
-        />
+    {#each iconDefinition?.d ?? [] as iconDef}
+        {#if iconDefinition?.isStroke}
+            <path
+                fill-rule={DEFAULT_ICON_FILL_RULE}
+                clip-rule={DEFAULT_ICON_CLIP_RULE}
+                d={iconDef}
+                stroke={fill}
+                stroke-width="0.125rem"
+            />
+        {:else}
+            <path
+                fill-rule={DEFAULT_ICON_FILL_RULE}
+                clip-rule={DEFAULT_ICON_CLIP_RULE}
+                d={iconDef}
+                {fill}
+            />
+        {/if}
     {/each}
 </svg>

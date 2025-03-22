@@ -9,6 +9,7 @@ $dark-3: #403c3b;
 $dark-2: #2a2827;
 $dark-1: #151312;
 
+$neutral: #ffe4d2;
 $orange: #ff752a;
 $blue: #1034e9;
 $red: #ff3a3a;
@@ -17,7 +18,7 @@ $purple: #d946e6;
 $green: #10e951;
 
 @mixin create-darker-lighter-colors($color-name, $color-value) {
-    $weight: 20%;
+    $weight: 33%;
 
     --#{$color-name}: #{$color-value};
     --#{$color-name}-darker: #{color.mix($color-value, $dark-3, $weight)};
@@ -28,15 +29,37 @@ $green: #10e951;
     padding: 0;
     margin: 0;
     border: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
     box-sizing: border-box;
     vertical-align: baseline;
     transition: all ease-out 150ms;
+    align-items: baseline;
+    scroll-behavior: smooth;
+    gap: 1rem;
 
     &::selection {
         border-radius: 0.5rem;
         background-color: $blue;
         color: $light-1;
     }
+}
+
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
 }
 
 :root {
@@ -47,6 +70,7 @@ $green: #10e951;
     --dark-2: #{$dark-2};
     --dark-1: #{$dark-1};
 
+    @include create-darker-lighter-colors("neutral", $neutral);
     @include create-darker-lighter-colors("orange", $orange);
     @include create-darker-lighter-colors("blue", $blue);
     @include create-darker-lighter-colors("red", $red);
@@ -54,28 +78,26 @@ $green: #10e951;
     @include create-darker-lighter-colors("purple", $purple);
     @include create-darker-lighter-colors("green", $green);
 
-    --max-width: 60rem; /* 85.75rem */
-    // --max-width: 1372px; /* 85.75rem */
+    // --max-width: 60rem; /* 85.75rem */
+    --max-width: 1372px; /* 85.75rem */
     --min-height: 1120px; /* 70rem */
+    --col-width: 5.3125rem;
+    --col-spacing: 2rem;
 
     font-size: 16px;
     background: var(--dark-1);
     color: var(--light-2);
-    font-family: "Switzer", sans-serif;
+    font-family: "Switzer", "Inter", sans-serif;
     letter-spacing: 0.4px;
     line-height: 150%;
-    font-weight: 500;
-
-    width: 100vw;
-    min-width: 100vw;
-    height: 100vh;
-    min-height: 100vh;
-    overflow: hidden;
+    font-weight: 400;
 }
 
 body {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
+    transition: none;
+    overflow-y: auto;
 }
 
 h1,
@@ -83,10 +105,22 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+.fake-h {
+    scroll-margin-top: 8rem;
     color: var(--light-1);
     font-family: "CabinetGrotesk", serif;
     line-height: 130%;
+    width: 100%;
+    font-weight: 700;
+
+    .permalink {
+        opacity: 0;
+    }
+
+    &:hover .permalink {
+        opacity: 1;
+    }
 }
 
 h1 {
@@ -109,12 +143,31 @@ h5 {
     font-size: 1.5rem;
 }
 
-.large-font-size {
+h6 {
+    font-size: 1.2rem;
+}
+
+.fake-h {
+    font-size: 1.5rem;
+}
+
+.large {
     font-size: 1.25rem;
 }
 
-.small-font-size {
+.small {
     font-size: 0.75rem;
+}
+
+.tag {
+    text-transform: uppercase;
+    line-height: 0.75rem;
+    font-weight: bold;
+    color: var(--light-3);
+}
+
+.fancy {
+    font-style: italic;
 }
 
 a {
@@ -126,8 +179,12 @@ a {
     text-underline-offset: 12.5%; /* 2px */
     text-underline-position: from-font;
 
-    &.non-accent {
+    &.no-accent {
         color: var(--light-1);
+    }
+
+    &.no-decoration {
+        text-decoration: none;
     }
 
     &:hover {
@@ -135,9 +192,18 @@ a {
     }
 }
 
-.tag {
-    font-size: 0.75rem;
-    line-height: 100%;
+p {
+    &.lead {
+        font-weight: 600;
+    }
+
+    &.large {
+        font-size: 1.25rem;
+    }
+
+    &.small {
+        font-size: 0.75rem;
+    }
 }
 
 .max-width {
@@ -154,7 +220,40 @@ a {
     padding: 2rem;
 }
 
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.row,
+.column {
+    &.compact {
+        border-radius: 0.5rem;
+        gap: 0.125rem;
+
+        & > * {
+            border-radius: 0 !important;
+        }
+    }
+}
+
+.spaced-between {
+    justify-content: space-between;
+}
+
+.label {
+    color: var(--orange);
+}
+
 button {
+    height: fit-content;
     position: relative;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -167,7 +266,7 @@ button {
     background-color: $bg-color;
 
     &:hover {
-        background-color: lighten($bg-color, 15%);
+        background-color: color.adjust($bg-color, $lightness: 15%);
     }
 
     &.disabled {
@@ -182,17 +281,59 @@ button {
         color: var(--light-1);
 
         &:hover {
-            background-color: lighten($bg-color, 15%);
+            background-color: color.adjust($bg-color, $lightness: 15%);
         }
     }
 
     &.ghost {
         $bg-color: $dark-2;
-        background-color: none;
+        background-color: initial;
         color: var(--light-1);
+        padding: 0;
 
         &:hover {
-            background-color: lighten($bg-color, 15%);
+            background-color: color.adjust($bg-color, $lightness: 15%);
         }
     }
+}
+
+.table {
+    border-radius: 0.5rem;
+}
+
+.thead {
+    background-color: var(--dark-3);
+}
+
+ul,
+ol {
+    list-style-position: inside;
+}
+
+ul li p,
+ol li p {
+    display: inline;
+}
+
+.roleplaying {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-top: 2rem;
+    }
+}
+
+.card {
+    width: auto;
+    height: auto;
+    padding: 2rem;
+    background-color: var(--dark-2);
+    border-radius: 0.5rem;
+}
+
+.compendium-table * {
+    transition: none !important;
 }

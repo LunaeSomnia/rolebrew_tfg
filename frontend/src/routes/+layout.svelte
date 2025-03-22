@@ -1,9 +1,11 @@
 <script lang="ts">
-    import Navbar from "$lib/Navbar.svelte";
     import type { LayoutProps } from "./$types";
 
-    let { data, children }: LayoutProps = $props();
+    let { children }: LayoutProps = $props();
 </script>
 
-<Navbar />
+<svelte:head>
+    <title>Rolebrew</title>
+</svelte:head>
+
 {@render children()}
