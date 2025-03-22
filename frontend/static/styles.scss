@@ -1,28 +1,14 @@
 @use "sass:color";
 
+@use "./colors.scss";
 @use "./fonts";
-
-$light-1: #ffe4d2;
-$light-2: #c5b0a2;
-$light-3: #8a7c72;
-$dark-3: #403c3b;
-$dark-2: #2a2827;
-$dark-1: #151312;
-
-$neutral: #ffe4d2;
-$orange: #ff752a;
-$blue: #1034e9;
-$red: #ff3a3a;
-$yellow: #ffd224;
-$purple: #d946e6;
-$green: #10e951;
 
 @mixin create-darker-lighter-colors($color-name, $color-value) {
     $weight: 33%;
 
     --#{$color-name}: #{$color-value};
-    --#{$color-name}-darker: #{color.mix($color-value, $dark-3, $weight)};
-    --#{$color-name}-lighter: #{color.mix($color-value, $light-1, $weight)};
+    --#{$color-name}-darker: #{color.mix($color-value, colors.$dark-3, $weight)};
+    --#{$color-name}-lighter: #{color.mix($color-value, colors.$light-1, $weight)};
 }
 
 * {
@@ -40,8 +26,8 @@ $green: #10e951;
 
     &::selection {
         border-radius: 0.5rem;
-        background-color: $blue;
-        color: $light-1;
+        background-color: colors.$blue;
+        color: colors.$light-1;
     }
 }
 
@@ -63,20 +49,20 @@ td {
 }
 
 :root {
-    --light-1: #{$light-1};
-    --light-2: #{$light-2};
-    --light-3: #{$light-3};
-    --dark-3: #{$dark-3};
-    --dark-2: #{$dark-2};
-    --dark-1: #{$dark-1};
+    --light-1: #{colors.$light-1};
+    --light-2: #{colors.$light-2};
+    --light-3: #{colors.$light-3};
+    --dark-3: #{colors.$dark-3};
+    --dark-2: #{colors.$dark-2};
+    --dark-1: #{colors.$dark-1};
 
-    @include create-darker-lighter-colors("neutral", $neutral);
-    @include create-darker-lighter-colors("orange", $orange);
-    @include create-darker-lighter-colors("blue", $blue);
-    @include create-darker-lighter-colors("red", $red);
-    @include create-darker-lighter-colors("yellow", $yellow);
-    @include create-darker-lighter-colors("purple", $purple);
-    @include create-darker-lighter-colors("green", $green);
+    @include create-darker-lighter-colors("neutral", colors.$neutral);
+    @include create-darker-lighter-colors("orange", colors.$orange);
+    @include create-darker-lighter-colors("blue", colors.$blue);
+    @include create-darker-lighter-colors("red", colors.$red);
+    @include create-darker-lighter-colors("yellow", colors.$yellow);
+    @include create-darker-lighter-colors("purple", colors.$purple);
+    @include create-darker-lighter-colors("green", colors.$green);
 
     // --max-width: 60rem; /* 85.75rem */
     --max-width: 1372px; /* 85.75rem */
@@ -145,6 +131,26 @@ h5 {
 
 h6 {
     font-size: 1.2rem;
+}
+
+.m-1 {
+    margin-bottom: 0.125rem;
+}
+
+.m-2 {
+    margin-bottom: 0.25rem;
+}
+
+.m-3 {
+    margin-bottom: 0.5rem;
+}
+
+.m-4 {
+    margin-bottom: 1rem;
+}
+
+.m-5 {
+    margin-bottom: 2rem;
 }
 
 .fake-h {
@@ -252,51 +258,6 @@ p {
     color: var(--orange);
 }
 
-button {
-    height: fit-content;
-    position: relative;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    font-weight: bold;
-    color: var(--dark-1);
-    cursor: pointer;
-    font-size: 1rem;
-
-    $bg-color: $orange;
-    background-color: $bg-color;
-
-    &:hover {
-        background-color: color.adjust($bg-color, $lightness: 15%);
-    }
-
-    &.disabled {
-        cursor: none;
-        pointer-events: none;
-        opacity: 50%;
-    }
-
-    &.secondary {
-        $bg-color: $dark-3;
-        background-color: var(--dark-3);
-        color: var(--light-1);
-
-        &:hover {
-            background-color: color.adjust($bg-color, $lightness: 15%);
-        }
-    }
-
-    &.ghost {
-        $bg-color: $dark-2;
-        background-color: initial;
-        color: var(--light-1);
-        padding: 0;
-
-        &:hover {
-            background-color: color.adjust($bg-color, $lightness: 15%);
-        }
-    }
-}
-
 .table {
     border-radius: 0.5rem;
 }
@@ -337,3 +298,5 @@ ol li p {
 .compendium-table * {
     transition: none !important;
 }
+
+//

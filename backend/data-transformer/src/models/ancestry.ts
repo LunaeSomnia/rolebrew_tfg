@@ -183,11 +183,18 @@ export class Ancestry {
     @Expose()
     publication!: Publication;
 
-    @Transform(({ obj }) =>
-        Array.from(HERITAGES.values()).filter(
+    @Transform(({ obj }) => {
+        const heritages = Array.from(HERITAGES.values()).filter(
             (v) => v.ancestrySlug === obj.system.slug,
-        ),
-    )
+        );
+
+        console.log(
+            obj.system.slug,
+            heritages.map((v) => v.slug),
+        );
+
+        return heritages;
+    })
     @Expose()
     heritage!: any[];
 

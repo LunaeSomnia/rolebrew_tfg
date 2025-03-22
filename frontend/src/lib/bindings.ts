@@ -6,7 +6,7 @@ export type AncestryDescription = { summary: string; roleplaying: string }
 
 export type AncestryFeature = { _id: string; id: string; img: string; name: string; type: string; effects?: string[]; description: string; actionType: string; publication: Publication; rules?: Rule[]; rarity: string; traits?: string[]; selectedTraits?: JsonValue; slug: string }
 
-export type AncestryHeritage = { _id: string; fvttId: string; actionType: string; slug: string; rarity: string; traits?: string[]; rules?: Rule[]; publication: Publication; selectedTraits?: string[]; description: string[]; ancestrySlug: string }
+export type AncestryHeritage = { fvttId: string; name: string; slug: string; description: string; ancestrySlug: string; publication: Publication; rules?: Rule[]; rarity: string; traits?: string[] }
 
 export type Attribute = "Strength" | "Dexterity" | "Constitution" | "Intelligence" | "Wisdom" | "Charisma"
 

@@ -1,6 +1,6 @@
 import { plainToInstance, type ClassConstructor } from "class-transformer";
 import { Ancestry, AncestryFeature } from "./ancestry";
-import { FvttHeritage } from "./heritage";
+import { Heritage } from "./heritage";
 import { nameToSlug } from "../utils/testTransform";
 import { Journal, type JournalPage } from "./journals";
 
@@ -13,7 +13,7 @@ export const ANCESTRY_JOURNALS_LOCATION = "./data/journals.json";
 export const ANCESTRIES: Map<string, Ancestry> = new Map();
 export const ANCESTRIES_LOCATION = "./data/ancestries.json";
 
-export const HERITAGES: Map<string, FvttHeritage> = new Map();
+export const HERITAGES: Map<string, Heritage> = new Map();
 export const HERITAGES_LOCATION = "./data/heritages.json";
 
 async function transformToMap<T>(
@@ -47,11 +47,6 @@ for (const ancestry of jsonData) {
     }
 }
 
-await transformToMap(ANCESTRIES, Ancestry, (v) => v.slug, ANCESTRIES_LOCATION);
+await transformToMap(HERITAGES, Heritage, (v) => v.slug, HERITAGES_LOCATION);
 
-await transformToMap(
-    HERITAGES,
-    FvttHeritage,
-    (v) => v.slug,
-    HERITAGES_LOCATION,
-);
+await transformToMap(ANCESTRIES, Ancestry, (v) => v.slug, ANCESTRIES_LOCATION);

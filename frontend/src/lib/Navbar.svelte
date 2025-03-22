@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import Button from "./components/Button.svelte";
     import { Icon } from "./icons/icons";
     import IconSVG from "./icons/IconSVG.svelte";
     import { userState } from "./store.svelte";
@@ -47,8 +48,8 @@
             {#if userState.username}
                 <p>{userState.username}</p>
             {:else}
-                <button class="secondary" onclick={onLogin}>Log in</button>
-                <button onclick={onSignup}>Sign up</button>
+                <Button class="secondary" onclick={onLogin}>Log in</Button>
+                <Button onclick={onSignup}>Sign up</Button>
             {/if}
         </div>
     </div>

@@ -2,14 +2,17 @@ import { Exclude, Expose, Transform } from "class-transformer";
 import type { Publication } from "./secondary/publication";
 import { mapToRule, type RuleType } from "./secondary/rule";
 
-export class FvttHeritage {
+export class Heritage {
     @Expose({ name: "_id" }) fvttId!: string;
-
     name!: string;
 
     @Transform(({ obj }) => obj.system.slug)
     @Expose()
     slug!: string;
+
+    @Transform(({ obj }) => obj.system.description.value)
+    @Expose()
+    description!: string;
 
     @Transform(({ obj }) =>
         obj.system.ancestry ? obj.system.ancestry.slug : "",
@@ -33,7 +36,7 @@ export class FvttHeritage {
     @Expose()
     traits!: string[];
 
-    @Exclude() description!: null;
+    @Exclude() effects!: null;
     @Exclude() folder!: null;
     @Exclude() _stats!: null;
     @Exclude() type!: null;

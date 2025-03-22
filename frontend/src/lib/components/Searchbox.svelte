@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Icon } from "$lib/icons/icons";
     import IconSvg from "$lib/icons/IconSVG.svelte";
+    import Button from "./Button.svelte";
 
     let {
         value = $bindable(""),
@@ -14,9 +15,9 @@
         <IconSvg icon={Icon.Search} fill={"var(--light-3)"} />
     </div>
     <div class="right-overlay">
-        <button class="row ghost" onclick={() => (value = "")}
-            ><IconSvg icon={Icon.Close} fill="var(--light-2)" /></button
-        >
+        <Button class="row ghost" onclick={() => (value = "")}
+            ><IconSvg icon={Icon.Close} fill="var(--light-2)" />
+        </Button>
     </div>
 </div>
 

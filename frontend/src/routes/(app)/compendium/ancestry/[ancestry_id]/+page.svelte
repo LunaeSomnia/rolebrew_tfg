@@ -1,15 +1,16 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import type { PageProps } from "./$types";
     import Tag from "$lib/components/Tag.svelte";
     import { getColorByCategory } from "$lib/color_category";
     import TableOfContents from "$lib/components/tableOfContents/TableOfContents.svelte";
     import AncestryStat from "./AncestryStat.svelte";
-    import TabItem from "$lib/components/tab/TabItem.svelte";
     import AncestryFeature from "./AncestryFeature.svelte.svelte";
-    import { Button } from "bits-ui";
     import { afterNavigate } from "$app/navigation";
     import { transformDescription } from "$lib/textProcessing";
+    import IconSvg from "$lib/icons/IconSVG.svelte";
+    import { Icon } from "$lib/icons/icons";
+    import Tooltip from "$lib/components/Tooltip.svelte";
+    import Button from "$lib/components/Button.svelte";
 
     let { data }: PageProps = $props();
 
@@ -33,41 +34,63 @@
             alt=""
         /> -->
         <div class="column stats compact">
-            <AncestryStat
-                label="Hit Points"
-                value={data.ancestryData.hp.toString()}
-            />
-            <AncestryStat
-                label="Speed"
-                value={data.ancestryData.speed.walk + " feet"}
-            />
-            <AncestryStat label="Size" value={data.ancestryData.size} />
-            <AncestryStat
-                label="Boosts"
-                values={(data.ancestryData.boosts ?? []).flatMap((v: any) => {
-                    switch (v.type) {
-                        case "grant":
-                            return v.att;
-                        case "choose":
-                            return v.atts;
-                        case "free":
-                            return "Free";
-                    }
-                })}
-            />
-            <AncestryStat label="Senses" value={data.ancestryData.vision} />
-            <AncestryStat
-                label="Languages"
-                values={data.ancestryData.languages.value}
-            />
-            <AncestryStat
-                label="Additional Languages"
-                value={"Additional languages equal to your Intelligence modifier (if positive)" +
-                    (data.ancestryData.additionalLanguages.count == 0
-                        ? ""
-                        : ` + ${data.ancestryData.additionalLanguages.value.toString()}`)}
-                values={data.ancestryData.additionalLanguages.value}
-            />
+            <AncestryStat label="Hit Points" layout="row" spacing="0.5rem">
+                <Tooltip tooltipText="Health">
+                    <IconSvg icon={Icon.Health} fill="var(--red)" />
+                </Tooltip>
+                <p>{data.ancestryData.hp.toString()}</p>
+            </AncestryStat>
+            <AncestryStat label="Speed" layout="row" spacing="0.5rem">
+                <Tooltip tooltipText="Speed">
+                    <IconSvg icon={Icon.Speed} fill="var(--green)" />
+                </Tooltip>
+                <p>{data.ancestryData.speed.walk + " feet"}</p>
+            </AncestryStat>
+            <AncestryStat label="Size" layout="row" spacing="0.5rem">
+                <Tooltip tooltipText="Size">
+                    <IconSvg icon={Icon.Size} fill="var(--orange)" />
+                </Tooltip>
+                {data.ancestryData.size}
+            </AncestryStat>
+            <AncestryStat label="Boosts">
+                <ul>
+                    {#each (data.ancestryData.boosts ?? []).flatMap( (v: any) => {
+                            switch (v.type) {
+                                case "grant":
+                                    return v.att;
+                                case "choose":
+                                    return v.atts;
+                                case "free":
+                                    return "Free";
+                            }
+                        }, ) as element}
+                        <li>{element}</li>
+                    {/each}
+                </ul>
+            </AncestryStat>
+            <AncestryStat label="Senses"
+                ><p style="text-transform: capitalize;">
+                    {data.ancestryData.vision}
+                </p></AncestryStat
+            >
+            <AncestryStat label="Languages">
+                <ul class="m-4">
+                    {#each data.ancestryData.languages.value as element}
+                        <li style="text-transform: capitalize;">{element}</li>
+                    {/each}
+                </ul>
+                <p class="m-3">
+                    {"Additional languages equal to your Intelligence modifier (if positive)" +
+                        (data.ancestryData.additionalLanguages.count == 0
+                            ? ""
+                            : ` + ${data.ancestryData.additionalLanguages.value.toString()}`)}
+                </p>
+                <ul>
+                    {#each data.ancestryData.additionalLanguages.value as element}
+                        <li style="text-transform: capitalize;">{element}</li>
+                    {/each}
+                </ul>
+            </AncestryStat>
         </div>
     </aside>
     <div id="toc-target" class="main-content column">
@@ -118,23 +141,24 @@
         <section class="column heritages">
             <h2 id="heritages">Heritages</h2>
             <div class="row heritages-header">
+                {console.log(data.ancestryData.heritage)}
                 {#each data.ancestryData.heritage ?? [] as heritage, i}
-                    <Button.Root
+                    <Button
                         type="button"
                         class={i === heritageTab ? "primary" : "secondary"}
                         onclick={() => selectHeritageTab(i)}
                     >
-                        {heritage.slug
-                            // .replace(data.ancestryData.name, "")
+                        {heritage.name
+                            .replace(data.ancestryData.name, "")
                             .trim()}
-                    </Button.Root>
+                    </Button>
                 {/each}
             </div>
             <div class="column heritages-content">
                 {#each data.ancestryData.heritage ?? [] as heritage, i}
                     {#if i === heritageTab}
                         <div class="column heritage">
-                            <span class="fake-h">{heritage.slug}</span>
+                            <span class="fake-h">{heritage.name}</span>
                             {#if heritage.traits?.length !== 0}
                                 <div class="traits row">
                                     {#each heritage.traits ?? [] as trait}
@@ -144,9 +168,7 @@
                                     {/each}
                                 </div>
                             {/if}
-                            {#each heritage.description as desc}
-                                {@html transformDescription(desc)}
-                            {/each}
+                            {@html transformDescription(heritage.description)}
                         </div>
                     {/if}
                 {/each}
@@ -211,12 +233,14 @@
     }
 
     .heritages-content {
+        width: 100%;
         border-radius: 0.5rem;
         gap: 0.125rem;
         overflow: hidden;
     }
 
     .heritage {
+        width: 100%;
         padding: 1rem;
         background-color: var(--dark-3);
     }

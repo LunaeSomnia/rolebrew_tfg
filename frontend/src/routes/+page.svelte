@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import Button from "$lib/components/Button.svelte";
     import HeroTitle from "$lib/icons/HeroTitle.svelte";
     import Navbar from "$lib/Navbar.svelte";
     import type { LayoutProps } from "./$types";
@@ -23,7 +24,7 @@
                 Compendium, character sheet creator & simulator. All in one
                 place.
             </p>
-            <button class="secondary" onclick={onSignup}>Start now</button>
+            <Button class="secondary" onclick={onSignup}>Start now</Button>
         </div>
     </div>
 </section>

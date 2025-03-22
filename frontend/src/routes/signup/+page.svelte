@@ -1,5 +1,6 @@
 <script>
     import { PUBLIC_BACKEND_URL } from "$env/static/public";
+    import Button from "$lib/components/Button.svelte";
     import InputField from "$lib/components/InputField.svelte";
 
     let email = $state("user@mail.com");
@@ -45,7 +46,7 @@
                 />
             </div>
             <a href="/forgot-password">I forgot my password</a>
-            <button onclick={sendSignupRequest}>Sign up</button>
+            <Button onclick={sendSignupRequest}>Sign up</Button>
             <p>Already have an account? Log in <a href="/login">Here</a></p>
         </div>
     </div>
@@ -76,9 +77,5 @@
         width: calc(var(--col-width) * 4 + var(--col-spacing) * 3);
         gap: 2rem;
         align-items: center;
-    }
-
-    button {
-        width: 100%;
     }
 </style>
