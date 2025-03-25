@@ -18,6 +18,5 @@
         position: sticky;
         top: 0;
         overflow: hidden;
-        border-bottom: 0.25rem solid var(--dark-1);
     }
 </style>

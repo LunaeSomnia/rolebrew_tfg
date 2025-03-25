@@ -305,10 +305,10 @@
             height: auto;
         }
 
-        img {
-            background-color: var(--dark-2);
-            padding: 1rem;
-        }
+        // img {
+        //     background-color: var(--dark-2);
+        //     padding: 1rem;
+        // }
     }
 
     .speed-row {
