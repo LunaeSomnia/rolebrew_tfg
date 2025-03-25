@@ -3,6 +3,10 @@ import { Ancestry, AncestryFeature } from "./ancestry";
 import { Heritage } from "./heritage";
 import { nameToSlug } from "../utils/testTransform";
 import { Journal, type JournalPage } from "./journals";
+import { Feat } from "./feat";
+
+export const FEATS: Map<string, Feat> = new Map();
+export const FEATS_LOCATION = "./data/feats.json";
 
 export const ANCESTRY_FEATURES: Map<string, AncestryFeature> = new Map();
 export const ANCESTRY_FEATURES_LOCATION = "./data/ancestryfeatures.json";
@@ -28,6 +32,9 @@ async function transformToMap<T>(
         map.set(nameToSlug(keyFn(transformed)), transformed);
     }
 }
+
+// Feats
+await transformToMap(FEATS, Feat, (v) => v.slug, FEATS_LOCATION);
 
 // Read ancestries and parse
 

@@ -75,6 +75,9 @@ export function mapToRule(obj: any): RuleType {
         case AURA_NAME:
             return plainToInstance(AuraRule, obj);
 
+        case CRAFTING_ENTRY_NAME:
+            return plainToInstance(CraftingEntryRule, obj);
+
         default:
             console.error(obj);
             throw new Error("Unknown rule key: " + obj.key);
@@ -105,7 +108,8 @@ export type RuleType =
     | ActorTraitsRule
     | AdjustModifierRule
     | TokenLightRule
-    | AuraRule;
+    | AuraRule
+    | CraftingEntryRule;
 
 export class Rule {
     key!: string;
@@ -140,7 +144,8 @@ export class RollOptionRule extends Rule {
     option!: string;
     predicate!: any;
     suboptions!: Map<string, RuleChoice>;
-    @Exclude() priority!: number;
+    @Exclude() priority!: any;
+    @Exclude() placement!: any;
 }
 
 const BASE_SPEED_NAME = "BaseSpeed";
@@ -294,4 +299,13 @@ export class AuraRule extends Rule {
     effects!: any;
     radius!: number;
     traits!: string[];
+}
+
+const CRAFTING_ENTRY_NAME = "CraftingEntry";
+export class CraftingEntryRule extends Rule {
+    craftableItems!: string[];
+    isDailyPrep!: boolean;
+    isPrepared!: boolean;
+    name!: string;
+    selector!: string;
 }

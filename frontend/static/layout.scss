@@ -1,0 +1,27 @@
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.row,
+.column {
+    &.compact {
+        border-radius: 0.5rem;
+        gap: 0.125rem;
+
+        & > * {
+            border-radius: 0 !important;
+        }
+    }
+}
+
+.spaced-between {
+    justify-content: space-between;
+}

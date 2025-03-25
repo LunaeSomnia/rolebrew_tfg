@@ -1,5 +1,6 @@
 @use "sass:color";
 
+@use "./layout.scss";
 @use "./colors.scss";
 @use "./fonts";
 
@@ -19,7 +20,6 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     vertical-align: baseline;
-    transition: all ease-out 150ms;
     align-items: baseline;
     scroll-behavior: smooth;
     gap: 1rem;
@@ -52,6 +52,7 @@ td {
     --light-1: #{colors.$light-1};
     --light-2: #{colors.$light-2};
     --light-3: #{colors.$light-3};
+    --dark-4: #{colors.$dark-4};
     --dark-3: #{colors.$dark-3};
     --dark-2: #{colors.$dark-2};
     --dark-1: #{colors.$dark-1};
@@ -226,34 +227,6 @@ p {
     padding: 2rem;
 }
 
-.row {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-}
-
-.column {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.row,
-.column {
-    &.compact {
-        border-radius: 0.5rem;
-        gap: 0.125rem;
-
-        & > * {
-            border-radius: 0 !important;
-        }
-    }
-}
-
-.spaced-between {
-    justify-content: space-between;
-}
-
 .label {
     color: var(--orange);
 }
@@ -276,17 +249,6 @@ ol li p {
     display: inline;
 }
 
-.roleplaying {
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        margin-top: 2rem;
-    }
-}
-
 .card {
     width: auto;
     height: auto;
@@ -299,4 +261,6 @@ ol li p {
     transition: none !important;
 }
 
-//
+tr .link-preview {
+    width: 100%;
+}

@@ -6,9 +6,10 @@ export const load: LayoutLoad = async ({ parent, fetch }) => {
     const parentData = await parent();
 
     let tableData: Summary[] = []
+    console.log(parentData.compendiumSection)
     switch (parentData.compendiumSection) {
-        case "ancestry":
-            tableData = await (await fetch(PUBLIC_BACKEND_URL + '/api/ancestry/summary')).json()
+        case "feat":
+            tableData = await (await fetch(PUBLIC_BACKEND_URL + '/api/feat/summary')).json()
             break;
     }
 

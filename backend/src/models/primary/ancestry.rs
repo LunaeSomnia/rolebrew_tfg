@@ -60,28 +60,19 @@ pub struct AncestryDescription {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct AncestryFeature {
     // CompendiumFile
-    #[serde(rename = "_id")]
-    pub mongo_id: ObjectId,
-    pub id: String,
-    pub img: String,
+    pub fvtt_id: String,
+    pub slug: String,
     pub name: String,
-    #[serde(rename = "type")]
-    pub entity_type: String,
-    #[serde(default, deserialize_with = "null_to_default")]
-    pub effects: Vec<String>,
-    pub description: String,
-
-    // System
-    pub action_type: String,
-    pub publication: Publication,
-    #[serde(default, deserialize_with = "null_to_default")]
-    pub rules: Vec<Rule>,
     pub rarity: String,
     #[serde(default, deserialize_with = "null_to_default")]
     pub traits: Vec<String>,
+    pub action_type: String,
+    pub description: String,
+    #[serde(default, deserialize_with = "null_to_default")]
+    pub rules: Vec<Rule>,
     #[serde(default, deserialize_with = "null_to_default")]
     pub selected_traits: serde_json::Value, // TODO: Check
-    pub slug: String,
+    pub publication: Publication,
 }
 
 #[derive(Serialize, Deserialize, Debug, Type)]

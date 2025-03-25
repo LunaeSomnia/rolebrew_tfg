@@ -118,5 +118,70 @@ export function assignHeaderIds(html: string) {
 }
 
 export function cleanupHTML(html: string) {
+    html = transformLinks(html);
     return html.replaceAll("<hr>", "").replaceAll(/<\/?hnan>/g, "");
+}
+
+const IGNORED_SECTIONS = [
+    "journals",
+    "heritages",
+    "adventure-specific-actions",
+    "other-effects",
+    "action-macros",
+    "spell-effects",
+    "equipment-effects",
+    "bestiary-effects",
+    "lost-omens-tian-xia-world-guide",
+];
+
+const COMPENDIUM_SECTION_MATCHER: Map<string, string> = new Map([
+    ["conditionitems", "condition"],
+    ["classfeatures", "feat"],
+    ["actionspf2e", "action"],
+    ["feats-srd", "feat"],
+    ["spells-srd", "spell"],
+    ["ancestryfeatures", "ancestry"],
+    ["feat-effects", "feat"],
+    ["familiar-abilities", "familiar-abilities"],
+    ["equipment-srd", "item"],
+    ["deities", "deities"],
+    ["bestiary-ability-glossary-srd", "bestiary"],
+    ["pathfinder-monster-core", "bestiary"],
+    ["pathfinder-bestiary-2", "bestiary"],
+    ["pathfinder-bestiary", "bestiary"],
+    ["book-of-the-dead-bestiary", "bestiary"],
+    ["backgrounds", "background"],
+]);
+
+export const LINK_REGEX = /@UUID\[(.+?)\](\{(.+?)\})?/g;
+export function transformLinks(text: string): string {
+    const matches = text.matchAll(LINK_REGEX);
+    for (const match of matches) {
+        const wholeMatch = match[0];
+        const uuid = match[1]
+            .replaceAll("Compendium.pf2e.", "")
+            .replaceAll(/\..+?\./g, ".")
+            .replaceAll(".", "/");
+        const uuidGroupId = match[2];
+        const name = match[3];
+
+        const uuidSplit = uuid.split("/");
+        const uuidSection = uuidSplit[0];
+        const uuidPageId = uuidSplit[1];
+
+        if (!uuidGroupId || IGNORED_SECTIONS.indexOf(uuidSection) !== -1) {
+            text = text.replaceAll(wholeMatch, "");
+            continue;
+        }
+
+        const compendiumSectionMatched =
+            COMPENDIUM_SECTION_MATCHER.get(uuidSection);
+        if (!compendiumSectionMatched) {
+            throw new Error("compendium section undefined: " + uuidSection);
+        }
+
+        const linkToReplace = `<a href="/compendium/${compendiumSectionMatched}/${nameToSlug(name)}">${name}</a>`;
+        text = text.replaceAll(wholeMatch, linkToReplace);
+    }
+    return text;
 }

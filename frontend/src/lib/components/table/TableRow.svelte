@@ -2,15 +2,18 @@
     import { goto } from "$app/navigation";
     import type { Snippet } from "svelte";
     import type { HTMLAttributes } from "svelte/elements";
+    import LinkPreview from "../LinkPreview.svelte";
 
     let {
         href,
         children,
         selected = false,
+        altBackground = false,
         ...props
     }: HTMLAttributes<HTMLTableRowElement> & {
         "data-state"?: unknown;
         selected?: boolean;
+        altBackground?: boolean;
     } & { href?: string; children: Snippet } = $props();
 </script>
 
@@ -20,11 +23,12 @@
         onclick={() => goto(href)}
         style="cursor: pointer;"
         class:selected
+        class:altBackground
     >
         {@render children()}
     </tr>
 {:else}
-    <tr {...props}>
+    <tr {...props} class:altBackground>
         {@render children()}
     </tr>
 {/if}
@@ -33,6 +37,10 @@
     tr {
         background-color: var(--dark-2);
         border-bottom: 0.125rem solid var(--dark-1);
+
+        &.altBackground {
+            background-color: var(--dark-3);
+        }
 
         &.selected {
             background: color-mix(
@@ -45,6 +53,10 @@
 
         &:hover {
             background-color: var(--dark-3);
+        }
+
+        &.altBackground:hover {
+            background-color: var(--dark-4);
         }
 
         &:hover.selected {

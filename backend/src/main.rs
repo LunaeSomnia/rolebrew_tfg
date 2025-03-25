@@ -3,7 +3,10 @@ use std::sync::Arc;
 use actix_cors::Cors;
 use actix_web::{App, HttpServer, http::header, middleware::Logger, web::Data};
 use dotenv::dotenv;
-use models::primary::{ancestry::Ancestry, journal::Journal};
+use models::{
+    link_preview::LinkPreview,
+    primary::{ancestry::Ancestry, feat::Feat, journal::Journal},
+};
 use tokio::sync::RwLock;
 use user::User;
 
@@ -38,6 +41,9 @@ async fn main() -> std::io::Result<()> {
         let users_collection = DatabaseCollection::<User>::new(db_ref.clone());
         let users_data = Data::new(RwLock::new(users_collection));
 
+        let feat_collection = DatabaseCollection::<Feat>::new(db_ref.clone());
+        let feat_data = Data::new(RwLock::new(feat_collection));
+
         let ancestry_collection = DatabaseCollection::<Ancestry>::new(db_ref.clone());
         let ancestry_data = Data::new(RwLock::new(ancestry_collection));
 
@@ -46,6 +52,7 @@ async fn main() -> std::io::Result<()> {
 
         App::new()
             .app_data(users_data)
+            .app_data(feat_data)
             .app_data(ancestry_data)
             .app_data(journal_data)
             // auth
@@ -55,6 +62,10 @@ async fn main() -> std::io::Result<()> {
             .service(hash)
             // users
             .service(create_user)
+            //feat
+            .service(get_feat_summaries)
+            .service(get_feat_preview)
+            .service(get_feat)
             // ancestries
             .service(get_ancestry_summaries)
             .service(get_ancestry)
@@ -91,9 +102,11 @@ async fn test_database_data() {
         .expect("error while creating mongodb connection");
     let db_ref = Arc::new(db);
 
+    let feat_collection = DatabaseCollection::<Feat>::new(db_ref.clone());
     let ancestry_collection = DatabaseCollection::<Ancestry>::new(db_ref.clone());
     let journal_collection = DatabaseCollection::<Journal>::new(db_ref.clone());
 
+    feat_collection.get_all().await.unwrap();
     ancestry_collection.get_all().await.unwrap();
     journal_collection.get_all().await.unwrap();
 }
@@ -109,10 +122,14 @@ async fn export_bindings() {
     TypeCollection::default()
         .register::<Ancestry>()
         .register::<Journal>()
+        .register::<Feat>()
+        //
         .register::<Summary>()
+        .register::<LinkPreview>()
         // forms
         .register::<LoginForm>()
         .register::<CreateUserForm>()
+        .register::<GetFeatsFilterForm>()
         .export_to(Typescript::new(), "../frontend/src/lib/bindings.ts")
         .unwrap();
 }

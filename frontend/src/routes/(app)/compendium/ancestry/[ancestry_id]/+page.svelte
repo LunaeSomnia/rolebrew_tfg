@@ -6,17 +6,22 @@
     import AncestryStat from "./AncestryStat.svelte";
     import AncestryFeature from "./AncestryFeature.svelte.svelte";
     import { afterNavigate } from "$app/navigation";
-    import { transformDescription } from "$lib/textProcessing";
+    import {
+        linkToLinkPreviewConverter,
+        transformDescription,
+    } from "$lib/textProcessing";
     import IconSvg from "$lib/icons/IconSVG.svelte";
     import { Icon } from "$lib/icons/icons";
-    import Tooltip from "$lib/components/Tooltip.svelte";
     import Button from "$lib/components/Button.svelte";
+    import LinkPreviewCe from "$lib/components/LinkPreviewCE.svelte";
+    import Tooltip from "$lib/components/Tooltip.svelte";
+    import SortedTable from "$lib/components/SortedTable.svelte";
+    import { PUBLIC_BACKEND_URL } from "$env/static/public";
+    import { CompendiumSection } from "$lib/compendiumTableDef";
 
     let { data }: PageProps = $props();
 
     let heritageTab = $state(0);
-
-    let titleElement: HTMLElement;
 
     afterNavigate(() => {
         heritageTab = 0;
@@ -24,6 +29,17 @@
 
     function selectHeritageTab(index: number) {
         heritageTab = index;
+    }
+
+    async function fetchFeats() {
+        const params = new URLSearchParams();
+        params.append("has_traits", data.ancestry_id);
+
+        return await (
+            await fetch(
+                PUBLIC_BACKEND_URL + "/api/feat/summary?" + params.toString(),
+            )
+        ).json();
     }
 </script>
 
@@ -35,19 +51,29 @@
         /> -->
         <div class="column stats compact">
             <AncestryStat label="Hit Points" layout="row" spacing="0.5rem">
-                <Tooltip tooltipText="Health">
+                <Tooltip text="Health">
                     <IconSvg icon={Icon.Health} fill="var(--red)" />
                 </Tooltip>
                 <p>{data.ancestryData.hp.toString()}</p>
             </AncestryStat>
-            <AncestryStat label="Speed" layout="row" spacing="0.5rem">
-                <Tooltip tooltipText="Speed">
-                    <IconSvg icon={Icon.Speed} fill="var(--green)" />
-                </Tooltip>
-                <p>{data.ancestryData.speed.walk + " feet"}</p>
+            <AncestryStat label="Speed" layout="column" spacing="0.5rem">
+                <div class="speed-row row">
+                    <Tooltip text="Speed">
+                        <IconSvg icon={Icon.Speed} fill="var(--green)" />
+                    </Tooltip>
+                    <p>{data.ancestryData.speed.walk + " feet"}</p>
+                </div>
+                {#if data.ancestryData.speed.swim !== null}
+                    <div class="speed-row row">
+                        <Tooltip text="Swim">
+                            <IconSvg icon={Icon.Swim} fill="var(--blue)" />
+                        </Tooltip>
+                        <p>{data.ancestryData.speed.swim + " feet"}</p>
+                    </div>
+                {/if}
             </AncestryStat>
             <AncestryStat label="Size" layout="row" spacing="0.5rem">
-                <Tooltip tooltipText="Size">
+                <Tooltip text="Size">
                     <IconSvg icon={Icon.Size} fill="var(--orange)" />
                 </Tooltip>
                 {data.ancestryData.size}
@@ -96,7 +122,7 @@
     <div id="toc-target" class="main-content column">
         <section class="column general-info">
             <div class="header row spaced-between">
-                <h2 bind:this={titleElement} id={data.ancestry_id}>
+                <h2 id={data.ancestry_id}>
                     {data.ancestryData.name}
                 </h2>
                 <div class="meta row">
@@ -138,10 +164,10 @@
                 </div>
             {/if}
         </section>
+
         <section class="column heritages">
             <h2 id="heritages">Heritages</h2>
             <div class="row heritages-header">
-                {console.log(data.ancestryData.heritage)}
                 {#each data.ancestryData.heritage ?? [] as heritage, i}
                     <Button
                         type="button"
@@ -168,11 +194,25 @@
                                     {/each}
                                 </div>
                             {/if}
-                            {@html transformDescription(heritage.description)}
+                            {@html linkToLinkPreviewConverter(
+                                transformDescription(heritage.description),
+                            )}
                         </div>
                     {/if}
                 {/each}
             </div>
+        </section>
+        <section class="column feats">
+            <h2 id="feats">Feats</h2>
+            {#await fetchFeats() then featsData}
+                <SortedTable
+                    tableData={featsData}
+                    compendiumSection={CompendiumSection.Feat}
+                    selectedRowSlug={""}
+                    includePreviews={true}
+                    altBackground={true}
+                />
+            {/await}
         </section>
         <section class="column roleplaying">
             <h2 id="roleplaying-the-{data.ancestryData.slug}">
@@ -269,5 +309,9 @@
             background-color: var(--dark-2);
             padding: 1rem;
         }
+    }
+
+    .speed-row {
+        gap: 0.5rem;
     }
 </style>

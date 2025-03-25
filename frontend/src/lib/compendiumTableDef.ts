@@ -24,56 +24,63 @@ export type TableHeaderDef = {
     data_type: { type: 'String' } | { type: 'Number' } | { type: 'Tag', category: SummaryDataTagCategory };
 };
 
-export const TABLE_HEADERS: Map<CompendiumSection, TableHeaderDef[]> = new Map([
-    [CompendiumSection.Ancestry, [
-        {
-            column: 'Name',
-            data_type: {
-                type: 'String'
-            },
-        } as TableHeaderDef,
-        {
-            column: 'Rarity',
-            data_type: {
-                type: 'Tag',
-                category: 'rarity'
-            },
-        } as TableHeaderDef,
-        {
-            column: 'Hit Points',
-            data_type: {
-                type: 'Number',
-            }
-        } as TableHeaderDef,
-        {
-            column: 'Size',
-            data_type: {
-                type: 'String',
-            }
-        } as TableHeaderDef,
-        {
-            column: 'Speed',
-            data_type: {
-                type: 'Number',
-            }
-        } as TableHeaderDef,
-        {
-            column: 'Boosts',
-            data_type: {
-                type: 'String',
-            }
-        } as TableHeaderDef,
-        {
-            column: 'Flaws',
-            data_type: {
-                type: 'String',
-            }
-        } as TableHeaderDef,
-        {
-            column: 'Source',
-            data_type: {
-                type: 'String',
-            }
-        } as TableHeaderDef,
-    ]]
+export const TABLE_HEADERS: Map<CompendiumSection, TableHeaderDef[]> = new Map([[CompendiumSection.Feat, [
+    {
+        column: 'Name',
+        data_type: {
+            type: 'String'
+        },
+    } as TableHeaderDef,
+]],
+[CompendiumSection.Ancestry, [
+    {
+        column: 'Name',
+        data_type: {
+            type: 'String'
+        },
+    } as TableHeaderDef,
+    {
+        column: 'Rarity',
+        data_type: {
+            type: 'Tag',
+            category: 'rarity'
+        },
+    } as TableHeaderDef,
+    {
+        column: 'Hit Points',
+        data_type: {
+            type: 'Number',
+        }
+    } as TableHeaderDef,
+    {
+        column: 'Size',
+        data_type: {
+            type: 'String',
+        }
+    } as TableHeaderDef,
+    {
+        column: 'Speed',
+        data_type: {
+            type: 'Number',
+        }
+    } as TableHeaderDef,
+    {
+        column: 'Boosts',
+        data_type: {
+            type: 'String',
+        }
+    } as TableHeaderDef,
+    {
+        column: 'Flaws',
+        data_type: {
+            type: 'String',
+        }
+    } as TableHeaderDef,
+    {
+        column: 'Source',
+        data_type: {
+            type: 'String',
+        }
+    } as TableHeaderDef,
+]]
 ])

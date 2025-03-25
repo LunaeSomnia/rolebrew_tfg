@@ -4,7 +4,7 @@ import "es6-shim";
 import * as mongoDB from "mongodb";
 import * as dotenv from "dotenv";
 import "./src/pf2e/ancestry.ts";
-import { ANCESTRIES } from "./src/models/index.ts";
+import { ANCESTRIES, FEATS } from "./src/models/index.ts";
 
 console.log(`Init`);
 export const mongoDBClient: mongoDB.MongoClient = new mongoDB.MongoClient(
@@ -16,10 +16,14 @@ await db.dropDatabase();
 console.log(`Successfully connected to database: ${db.databaseName}`);
 export const docMap: Map<string, any[]> = new Map();
 
+db.collection("feat").insertMany(Array.from(FEATS.values()));
+console.info("> parsed feats");
+
 db.collection("ancestry").insertMany(Array.from(ANCESTRIES.values()));
 console.info("> parsed ancestries");
 
-await db.createIndex("ancestries", "slug");
+await db.createIndex("feat", "slug");
+await db.createIndex("ancestry", "slug");
 
 console.log(`Documents inserted successfully`);
 await mongoDBClient.close();

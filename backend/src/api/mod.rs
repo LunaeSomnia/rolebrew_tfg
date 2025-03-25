@@ -4,6 +4,9 @@ pub mod user;
 pub mod auth;
 pub use auth::*;
 
+pub mod feat_api;
+pub use feat_api::*;
+
 pub mod ancestry_api;
 pub use ancestry_api::*;
 

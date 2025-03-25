@@ -1,3 +1,29 @@
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.row.compact,
+.column.compact {
+  border-radius: 0.5rem;
+  gap: 0.125rem;
+}
+.row.compact > *,
+.column.compact > * {
+  border-radius: 0 !important;
+}
+
+.spaced-between {
+  justify-content: space-between;
+}
+
 @font-face {
   font-family: "CabinetGrotesk";
   src: url("/fonts/CabinetGrotesk-Variable.ttf") format("truetype");
@@ -24,7 +50,6 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   vertical-align: baseline;
-  transition: all ease-out 150ms;
   align-items: baseline;
   scroll-behavior: smooth;
   gap: 1rem;
@@ -56,6 +81,7 @@ td {
   --light-1: #ffe4d2;
   --light-2: #c5b0a2;
   --light-3: #8a7c72;
+  --dark-4: #565251;
   --dark-3: #403c3b;
   --dark-2: #2a2827;
   --dark-1: #151312;
@@ -243,32 +269,6 @@ p.small {
   padding: 2rem;
 }
 
-.row {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-}
-
-.column {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.row.compact,
-.column.compact {
-  border-radius: 0.5rem;
-  gap: 0.125rem;
-}
-.row.compact > *,
-.column.compact > * {
-  border-radius: 0 !important;
-}
-
-.spaced-between {
-  justify-content: space-between;
-}
-
 .label {
   color: var(--orange);
 }
@@ -291,15 +291,6 @@ ol li p {
   display: inline;
 }
 
-.roleplaying h1,
-.roleplaying h2,
-.roleplaying h3,
-.roleplaying h4,
-.roleplaying h5,
-.roleplaying h6 {
-  margin-top: 2rem;
-}
-
 .card {
   width: auto;
   height: auto;
@@ -310,6 +301,10 @@ ol li p {
 
 .compendium-table * {
   transition: none !important;
+}
+
+tr .link-preview {
+  width: 100%;
 }
 
 /*# sourceMappingURL=styles.css.map */

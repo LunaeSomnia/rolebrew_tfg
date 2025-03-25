@@ -1,4 +1,4 @@
-import { Exclude, Expose, Transform } from "class-transformer";
+import { Exclude, Expose, Transform, Type } from "class-transformer";
 import type { Boost, Flaw } from "../models/secondary/boost";
 import type { Item } from "../models/secondary/item";
 import { extractLastUuid, extractTypeLinkFromText } from "./utils/uuid";
@@ -103,6 +103,52 @@ export class Ancestry {
     @Expose()
     reach!: number;
 
+    @Transform(({ obj }) => obj.system.rules.map((v: any) => mapToRule(v)))
+    @Expose()
+    rules!: any[];
+
+    @Transform(({ obj }) => obj.system.size)
+    @Expose()
+    size!: string;
+
+    @Transform(({ obj }) => obj.system.traits.rarity)
+    @Expose()
+    rarity!: string;
+
+    @Transform(({ obj }) => obj.system.traits.value)
+    @Expose()
+    traits!: string[];
+
+    @Transform(({ obj }) => obj.system.vision)
+    @Expose()
+    vision!: string;
+
+    @Transform(({ obj }) => obj.system.slug)
+    @Expose()
+    slug!: string;
+
+    @Transform(({ obj }) => {
+        let swimSpeed = null;
+        const swimRule = obj.system.rules.find(
+            (v: any) => v.key === "BaseSpeed" && v.selector === "swim",
+        );
+        if (swimRule) {
+            swimSpeed = swimRule.value;
+        }
+        return {
+            walk: obj.system.speed,
+            swim: swimSpeed,
+        };
+    })
+    @Expose()
+    speed!: any;
+
+    @Transform(({ obj }) => obj.system.languages)
+    @Expose()
+    languages!: any;
+
+    @Transform(({ obj }) => obj.system.items)
+    @Expose({ name: "items" })
     @Transform(({ obj }) => {
         type KeyValue = { key: string; value: any };
         const result: KeyValue[] = [];
@@ -140,43 +186,7 @@ export class Ancestry {
             );
         });
     })
-    @Transform(({ obj }) => obj.system.rules.map((v: any) => mapToRule(v)))
-    @Expose()
-    rules!: any[];
-
-    @Transform(({ obj }) => obj.system.size)
-    @Expose()
-    size!: string;
-
-    @Transform(({ obj }) => obj.system.traits.rarity)
-    @Expose()
-    rarity!: string;
-
-    @Transform(({ obj }) => obj.system.traits.value)
-    @Expose()
-    traits!: string[];
-
-    @Transform(({ obj }) => obj.system.vision)
-    @Expose()
-    vision!: string;
-
-    @Transform(({ obj }) => obj.system.slug)
-    @Expose()
-    slug!: string;
-
-    @Transform(({ obj }) => {
-        return {
-            walk: obj.system.speed,
-        };
-    })
-    @Expose()
-    speed!: any;
-
-    @Transform(({ obj }) => obj.system.languages)
-    @Expose()
-    languages!: any;
-
-    @Expose({ name: "items" })
+    @Type(() => AncestryFeature)
     features!: AncestryFeature[];
 
     @Transform(({ obj }) => obj.system.publication)
@@ -186,11 +196,6 @@ export class Ancestry {
     @Transform(({ obj }) => {
         const heritages = Array.from(HERITAGES.values()).filter(
             (v) => v.ancestrySlug === obj.system.slug,
-        );
-
-        console.log(
-            obj.system.slug,
-            heritages.map((v) => v.slug),
         );
 
         return heritages;
@@ -218,28 +223,19 @@ export class Ancestry {
 
         const description = journalPage.text;
 
-        // @ts-ignore
-        const document: DocumentFragment = parseFragment(description);
-
-        let summary = extractUntilHeader(description);
-
         const heritages = extractHeaderSection(description, "heritages");
         const mechanics = extractHeaderSection(description, "mechanics");
 
         let roleplaying = description
-            .replace(summary, "")
             .replace(heritages, "")
             .replace(mechanics, "");
 
-        summary = stepHeaders(summary);
-        summary = assignHeaderIds(summary);
-        summary = cleanupHTML(summary);
         roleplaying = stepHeaders(roleplaying);
         roleplaying = assignHeaderIds(roleplaying);
         roleplaying = cleanupHTML(roleplaying);
 
         return {
-            summary,
+            summary: obj.system.description.value,
             roleplaying,
         };
     })
@@ -279,6 +275,10 @@ export class AncestryFeature {
     @Expose()
     actionType!: string;
 
+    @Transform(({ obj }) => obj.system.description.value)
+    @Expose()
+    description!: string;
+
     @Transform(({ obj }) => obj.system.rules.map((v: any) => mapToRule(v)))
     @Expose()
     rules!: RuleType[];
@@ -291,8 +291,10 @@ export class AncestryFeature {
     @Expose()
     publication!: Publication;
 
-    @Exclude() description!: null;
+    @Exclude() type!: null;
     @Exclude() img!: null;
     @Exclude() system!: null;
+    @Exclude() effects!: null;
+    @Exclude() _stats!: null;
     @Exclude() _migration!: null;
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import { onMount, tick } from "svelte";
     import {
         buildTOCTree,
         treeToArrayTOC,
@@ -23,6 +23,19 @@
 
             tocTree = buildTOCTree(headers, target);
             headingOffsets = treeToArrayTOC(tocTree);
+        } else {
+            tocTree = null;
+        }
+    }
+
+    function onScroll() {
+        if (!headingOffsets) return;
+        scrollPos = window.scrollY; // Check when heading reaches the middle of the viewport
+        for (let i = headingOffsets.length - 1; i >= 0; i--) {
+            if (scrollPos >= headingOffsets[i].top) {
+                activeId = headingOffsets[i].id;
+                break;
+            }
         }
     }
 
@@ -31,19 +44,13 @@
     });
 
     onMount(() => {
-        const onScroll = () => {
-            if (!headingOffsets) return;
-            scrollPos = window.scrollY; // Check when heading reaches the middle of the viewport
-            for (let i = headingOffsets.length - 1; i >= 0; i--) {
-                if (scrollPos >= headingOffsets[i].top) {
-                    activeId = headingOffsets[i].id;
-                    break;
-                }
-            }
-        };
+        updateTOC();
+    });
 
+    $effect(() => {
         // Add scroll event listener
         window.addEventListener("scroll", onScroll);
+        tick().then(updateTOC);
     });
 </script>
 
@@ -62,7 +69,7 @@
 {/snippet}
 
 <aside class="column">
-    <p class="tag">Table of Contents</p>
+    <p class="tag">On this page</p>
     <div>
         {#if tocTree}
             {#each tocTree.children as tocNode}

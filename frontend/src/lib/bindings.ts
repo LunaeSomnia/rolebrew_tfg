@@ -4,7 +4,7 @@ export type Ancestry = { _id: string; fvttId: string; name: string; additionalLa
 
 export type AncestryDescription = { summary: string; roleplaying: string }
 
-export type AncestryFeature = { _id: string; id: string; img: string; name: string; type: string; effects?: string[]; description: string; actionType: string; publication: Publication; rules?: Rule[]; rarity: string; traits?: string[]; selectedTraits?: JsonValue; slug: string }
+export type AncestryFeature = { fvttId: string; slug: string; name: string; rarity: string; traits?: string[]; actionType: string; description: string; rules?: Rule[]; selectedTraits?: JsonValue; publication: Publication }
 
 export type AncestryHeritage = { fvttId: string; name: string; slug: string; description: string; ancestrySlug: string; publication: Publication; rules?: Rule[]; rarity: string; traits?: string[] }
 
@@ -12,13 +12,29 @@ export type Attribute = "Strength" | "Dexterity" | "Constitution" | "Intelligenc
 
 export type BoostOrFlaw = { type: "free" } | { type: "grant"; att: Attribute } | { type: "choose"; atts: Attribute[] }
 
-export type ChoiceSetAllowedDrops = { label: string; predicate: string[] }
+export type ChoiceSetAllowedDrops = { label: string | null; predicate?: MVec<RulePredicateFilter> }
 
 export type CreateUserForm = { username: string; password: string; email: string }
 
 export type Damage = { base: DamageRoll }
 
-export type DamageRoll = { damageType: string; dice: number; die: string }
+export type DamageCategory = "Persistent"
+
+export type DamageRoll = { category: DamageCategory | null; damageType: string; dice: number; die: Either<Die, number> }
+
+export type Die = "D4" | "D6" | "D8" | "D10" | "D12" | "D20" | "D100"
+
+export type Either<L, R> = 
+/**
+ * A value of type `L`.
+ */
+L | 
+/**
+ * A value of type `R`.
+ */
+R
+
+export type Feat = { _id: string; fvttId: string; name: string; actionType: string; actions: number | null; category: string; description: string; level: number; prerequisites?: string[]; publication: Publication; rules?: Rule[]; rarity: string; traits?: string[]; slug: string }
 
 export type Journal = { id: string; type: string; name: string; text: string }
 
@@ -26,19 +42,23 @@ export type JsonValue = null | boolean | number | string | JsonValue[] | { [key 
 
 export type Languages = { count: number | null; value: string[]; custom: string | null }
 
+export type LinkPreview = { slug: string; name: string; description: string; rarity: string; traits: string[] }
+
 export type LoginForm = { username: string; password: string }
 
 export type MVec<T> = null | T | T[]
 
 export type Publication = { license: string; remaster: boolean; title: string; source: string | null; page: string | null }
 
-export type Rule = { key: "ActiveEffectLike"; mode: string; path: string; value: JsonValue; predicate?: MVec<RulePredicateFilter> } | { key: "Strike"; fist: boolean | null; damage: Damage | null; category: string | null; group: string | null; img: string | null; range: JsonValue | null; slug: string | null; label: string | null; predicate?: MVec<RulePredicateFilter>; traits?: string[]; baseType: string | null } | { key: "RollOption"; alwaysActive: boolean | null; mergeable: boolean | null; toggleable: boolean | null; removeUponCreate: boolean | null; label: string | null; option: string; domain: string | null; predicate?: MVec<RulePredicateFilter>; suboptions?: RuleChoice[]; value?: JsonValue | null } | { key: "BaseSpeed"; selector: MVec<string>; value: number; predicate?: MVec<RulePredicateFilter> } | { key: "GrantItem"; reevaluateOnUpdate: boolean | null; allowDuplicate: boolean | null; nestFeat: boolean | null; uuid: string; predicate?: MVec<RulePredicateFilter>; preselectChoices?: { [key in string]: string } } | { key: "ItemAlteration"; itemId: string | null; itemType: string | null; mode: string; predicate?: MVec<RulePredicateFilter>; property: string; textRef?: string[]; value?: JsonValue | null } | { key: "ChoiceSet"; adjustName: boolean | null; actorFlag: boolean | null; allowedDrops: ChoiceSetAllowedDrops | null; choices?: MVec<RuleChoice>; rollOption: string | null; label: string | null; flag: string | null; prompt: string | null } | { key: "CreatureSize"; value: string } | { key: "FlatModifier"; hideIfDisabled: boolean | null; label: string | null; predicate?: MVec<RulePredicateFilter>; slug: string | null; selector: MVec<string>; type: string | null; value: JsonValue } | { key: "AdjustDegreeOfSuccess"; adjustment?: { [key in string]: string }; predicate?: MVec<RulePredicateFilter>; selector: MVec<string>; type: string | null; outcome?: string[] } | { key: "Weakness"; predicate?: MVec<RulePredicateFilter>; type: string; value: string } | { key: "Immunity"; type: string } | { key: "AdjustStrike"; mode: string; property: string; value: string; definition?: string[]; predicate?: MVec<RulePredicateFilter> } | { key: "Sense"; selector: MVec<string>; range: JsonValue | null; acuity: string | null; value: JsonValue | null } | { key: "Resistance"; value: string; type: string } | { key: "DamageDice"; override?: { [key in string]: JsonValue }; selector: MVec<string>; predicate?: MVec<RulePredicateFilter> } | { key: "Note"; predicate?: MVec<RulePredicateFilter>; selector: MVec<string>; text: string; title: string; outcome?: string[] } | { key: "ActorTraits"; predicate?: MVec<RulePredicateFilter>; add?: string[]; remove?: string[] } | { key: "AdjustModifier"; suppress: boolean | null; mode: string; predicate?: MVec<RulePredicateFilter>; selector: MVec<string>; slug: string } | { key: "TokenLight"; predicate?: MVec<RulePredicateFilter> } | { key: "Aura"; effects: JsonValue; radius: JsonValue; traits: JsonValue }
+export type Rule = { key: "ActiveEffectLike"; mode: string; path: string; phase: string | null; value: JsonValue; predicate?: MVec<RulePredicateFilter>; priority: number | null } | { key: "Strike"; fist: boolean | null; damage: Damage | null; category: string | null; group: string | null; img: string | null; range: JsonValue | null; slug: string | null; label: string | null; predicate?: MVec<RulePredicateFilter>; traits?: string[]; baseType: string | null; options?: string[] } | { key: "RollOption"; count: boolean | null; alwaysActive: boolean | null; mergeable: boolean | null; disabledValue: boolean | null; toggleable: Either<string, boolean> | null; removeUponCreate: boolean | null; label: string | null; option: string; phase: string | null; domain: string | null; placement: string | null; priority: number | null; disabledIf?: MVec<RulePredicateFilter>; predicate?: MVec<RulePredicateFilter>; suboptions?: RuleChoice[]; value?: JsonValue | null } | { key: "BaseSpeed"; type: string | null; selector?: MVec<string>; value: JsonValue; predicate?: MVec<RulePredicateFilter> } | { key: "GrantItem"; inMemoryOnly: boolean | null; reevaluateOnUpdate: boolean | null; allowDuplicate: boolean | null; nestFeat: boolean | null; preselectCoices: JsonValue | null; flag: string | null; uuid: string; predicate?: MVec<RulePredicateFilter>; preselectChoices?: { [key in string]: string }; onDeleteActions: JsonValue | null; alterations: JsonValue | null; priority: number | null } | { key: "ItemAlteration"; itemId: string | null; itemType: string | null; phase: string | null; mode: string; label: string | null; selector: string | null; predicate?: MVec<RulePredicateFilter>; property: string; textRef?: string[]; value?: JsonValue | null; priority: JsonValue | null } | { key: "ChoiceSet"; adjustName: boolean | null; actorFlag: boolean | null; allowedDrops: ChoiceSetAllowedDrops | null; choices?: MVec<Either<RuleChoice, string>>; rollOption: string | null; label: string | null; selection: string | null; flag: string | null; prompt: string | null; predicate?: MVec<RulePredicateFilter>; priority: number | null } | { key: "CreatureSize"; resizeEquipment: boolean | null; value: string; reach: JsonValue | null; predicate?: MVec<RulePredicateFilter> } | { key: "FlatModifier"; alternate: boolean | null; critical: boolean | null; hideIfDisabled: boolean | null; fromEquipment: boolean | null; damageCategory: string | null; damageType: string | null; ability: string | null; label: string | null; predicate?: MVec<RulePredicateFilter>; slug: string | null; selector: MVec<string>; type: string | null; value: JsonValue | null } | { key: "AdjustDegreeOfSuccess"; adjustment?: { [key in string]: string }; predicate?: MVec<RulePredicateFilter>; selector: MVec<string>; type: string | null; outcome?: string[] } | { key: "Weakness"; predicate?: MVec<RulePredicateFilter>; type?: MVec<string>; value: JsonValue } | { key: "Immunity"; type: string; predicate?: MVec<RulePredicateFilter> } | { key: "AdjustStrike"; mode: string; property: string; value: Either<string, number>; definition?: MVec<RulePredicateFilter>; predicate?: MVec<RulePredicateFilter>; selector: string | null } | { key: "Sense"; selector: MVec<string>; range: JsonValue | null; acuity: string | null; value: JsonValue | null; predicate?: MVec<RulePredicateFilter> } | { key: "Resistance"; value: JsonValue; type?: MVec<string>; label: string | null; doubleVs?: string[]; exceptions?: string[]; definition?: MVec<RulePredicateFilter>; predicate?: MVec<RulePredicateFilter> } | { key: "DamageDice"; hideIfDisabled: boolean | null; critical: boolean | null; label: string | null; category: string | null; damageType: string | null; diceNumber: Either<string, number> | null; dieSize: string | null; override?: { [key in string]: JsonValue }; selector: MVec<string>; predicate?: MVec<RulePredicateFilter>; value: JsonValue | null } | { key: "Note"; predicate?: MVec<RulePredicateFilter>; selector?: MVec<string>; text: string; title: string | null; outcome?: string[] } | { key: "ActorTraits"; predicate?: MVec<RulePredicateFilter>; add?: string[]; remove?: string[] } | { key: "AdjustModifier"; suppress: boolean | null; maxApplications: number | null; type: string | null; damageType: string | null; relabel: string | null; mode: string | null; predicate?: MVec<RulePredicateFilter>; selector?: MVec<string>; selectors?: string[] | null; slug: string | null; value: JsonValue | null; priority: number | null } | { key: "TokenLight"; predicate?: MVec<RulePredicateFilter> } | { key: "Aura"; slug: JsonValue | null; effects: JsonValue | null; radius: JsonValue | null; traits: JsonValue | null; predicate: JsonValue | null } | { key: "CraftingEntry"; isDailyPrep: boolean | null; isPrepared: boolean | null; isAlchemical: boolean | null; maxItemLevel: JsonValue | null; label: string | null; maxSlots: number | null; name: string | null; selector: string; craftableItems?: MVec<RulePredicateFilter>; batchSizes: JsonValue | null } | { key: "EphemeralEffect"; affects: string | null; uuid: string; predicate?: MVec<RulePredicateFilter>; selectors?: MVec<string> } | { key: "DamageAlteration"; mode: string; slug: string | null; predicate?: MVec<RulePredicateFilter>; property: string; selectors?: string[]; value: JsonValue | null; priority: number | null } | { key: "MartialProficiency"; label: string | null; sameAs: string | null; slug: string | null; maxRank: string | null; definition?: MVec<RulePredicateFilter>; value: JsonValue | null } | { key: "CriticalSpecialization"; alternate: boolean | null; predicate?: MVec<RulePredicateFilter>; damageDice: DamageRoll | null } | { key: "SubstituteRoll"; required: boolean | null; selector: string; effectType: string | null; label: string | null; slug: string | null; value: number; predicate?: MVec<RulePredicateFilter> } | { key: "MultipleAttackPenalty"; predicate?: MVec<RulePredicateFilter>; selector?: string; value: number } | { key: "RollTwice"; removeAfterRoll: boolean | null; keep: string; predicate?: MVec<RulePredicateFilter>; selector: string } | { key: "FastHealing"; type: string | null; predicate?: MVec<RulePredicateFilter>; value: number } | { key: "DexterityModifierCap"; predicate?: MVec<RulePredicateFilter>; value: number } | { key: "TempHP"; predicate?: MVec<RulePredicateFilter>; value: number } | { key: "SpecialStatistic"; extends: string; itemCasting: SpecialStatisticItemCasting; priority: number | null; slug: string } | { key: "TokenEffectIcon"; predicate?: MVec<RulePredicateFilter>; value: string }
 
-export type RuleChoice = { label: string | null; value: JsonValue; filter?: MVec<RulePredicateFilter> }
+export type RuleChoice = { label: string | null; item_type: string | null; value: JsonValue | null; filter?: MVec<RulePredicateFilter> }
 
-export type RulePredicateFilter = string | number | { and: MVec<RulePredicateFilter> } | { not: MVec<RulePredicateFilter> } | { nor: MVec<RulePredicateFilter> } | { lte: MVec<RulePredicateFilter> } | { or: MVec<RulePredicateFilter> }
+export type RulePredicateFilter = string | number | { not: MVec<RulePredicateFilter> } | { and: MVec<RulePredicateFilter> } | { or: MVec<RulePredicateFilter> } | { nand: MVec<RulePredicateFilter> } | { nor: MVec<RulePredicateFilter> } | { lt: MVec<RulePredicateFilter> } | { lte: MVec<RulePredicateFilter> } | { gt: MVec<RulePredicateFilter> } | { gte: MVec<RulePredicateFilter> }
 
 export type Size = "Tiny" | "Small" | "Medium" | "Large"
+
+export type SpecialStatisticItemCasting = { predicate?: MVec<RulePredicateFilter> }
 
 export type Speed = { walk: number; swim: number | null }
 

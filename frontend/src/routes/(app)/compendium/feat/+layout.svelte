@@ -12,7 +12,7 @@
     <CompendiumTable
         selectedRowSlug={data.compendiumPage}
         tableData={data.tableSummaryData}
-        compendiumSection={CompendiumSection.Ancestry}
+        compendiumSection={CompendiumSection.Feat}
     />
 </div>
 {@render children()}
