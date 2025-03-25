@@ -6,9 +6,11 @@
 </script>
 
 <div class="traits row">
-    <Tag color={getColorByCategory("rarity", rarity)}>
-        {rarity}
-    </Tag>
+    {#if rarity}
+        <Tag color={getColorByCategory("rarity", rarity)}>
+            {rarity}
+        </Tag>
+    {/if}
     {#each traits ?? [] as trait}
         <Tag>
             {trait}

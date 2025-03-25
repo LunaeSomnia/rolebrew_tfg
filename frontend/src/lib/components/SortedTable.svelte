@@ -181,13 +181,6 @@
 </Table>
 
 <style lang="scss">
-    .compendium-table {
-        flex: 1;
-        height: 100%;
-        max-height: 50rem;
-        gap: 2rem;
-    }
-
     .header {
         width: 100%;
         align-items: flex-end;
@@ -196,8 +189,5 @@
             line-height: 3rem;
             text-transform: capitalize;
         }
-    }
-
-    .table-controls {
     }
 </style>

@@ -4,6 +4,7 @@ import { Heritage } from "./heritage";
 import { nameToSlug } from "../utils/testTransform";
 import { Journal, type JournalPage } from "./journals";
 import { Feat } from "./feat";
+import { Action } from "./action";
 
 export const FEATS: Map<string, Feat> = new Map();
 export const FEATS_LOCATION = "./data/feats.json";
@@ -19,6 +20,9 @@ export const ANCESTRIES_LOCATION = "./data/ancestries.json";
 
 export const HERITAGES: Map<string, Heritage> = new Map();
 export const HERITAGES_LOCATION = "./data/heritages.json";
+
+export const ACTIONS: Map<string, Action> = new Map();
+export const ACTIONS_LOCATION = "./data/actions.json";
 
 async function transformToMap<T>(
     map: Map<string, T>,
@@ -57,3 +61,5 @@ for (const ancestry of jsonData) {
 await transformToMap(HERITAGES, Heritage, (v) => v.slug, HERITAGES_LOCATION);
 
 await transformToMap(ANCESTRIES, Ancestry, (v) => v.slug, ANCESTRIES_LOCATION);
+
+await transformToMap(ACTIONS, Action, (v) => v.slug, ACTIONS_LOCATION);

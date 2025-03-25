@@ -1,3 +1,4 @@
+use crate::generic_get_single;
 use crate::helpers::none_single_or_vec;
 use crate::{
     DatabaseCollection,
@@ -42,34 +43,17 @@ pub async fn get_feat_summaries(
 
 #[get("/api/feat/{slug}")]
 pub async fn get_feat(db: CollectionData<'_>, slug: Path<String>) -> impl Responder {
-    let db = db.read().await;
-    let found_result = db.get_secondary(&slug, "slug").await;
-    if found_result.is_err() {
-        return actix_web::HttpResponse::NotFound().finish();
-    }
-
-    let found_feat = found_result.unwrap(); // Safe unwrap
-    if found_feat.is_none() {
-        return actix_web::HttpResponse::NotFound().finish();
-    }
-
-    actix_web::HttpResponse::Ok().json(found_feat)
+    let data = generic_get_single(db, slug.to_string()).await;
+    actix_web::HttpResponse::Ok().json(data)
 }
 
 #[get("/api/feat/{slug}/preview")]
 pub async fn get_feat_preview(db: CollectionData<'_>, slug: Path<String>) -> impl Responder {
-    let db = db.read().await;
-    let found_result = db.get_secondary(&slug, "slug").await;
-    if found_result.is_err() {
-        return actix_web::HttpResponse::NotFound().finish();
+    match generic_get_single(db, slug.to_string()).await {
+        Some(data) => {
+            let preview: LinkPreview = data.into();
+            actix_web::HttpResponse::Ok().json(preview)
+        }
+        None => actix_web::HttpResponse::NotFound().finish(),
     }
-
-    let found_feat = found_result.unwrap(); // Safe unwrap
-    if found_feat.is_none() {
-        return actix_web::HttpResponse::NotFound().finish();
-    }
-
-    let preview: LinkPreview = found_feat.unwrap().into();
-
-    actix_web::HttpResponse::Ok().json(preview)
 }

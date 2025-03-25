@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 use specta::Type;
 
-use super::primary::{ancestry::Ancestry, feat::Feat};
+use super::{
+    Action,
+    primary::{ancestry::Ancestry, feat::Feat},
+};
 
 #[derive(Serialize, Deserialize, Debug, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -55,6 +58,23 @@ pub enum SummaryDataTagCategory {
 }
 
 // impls
+
+impl From<Action> for Summary {
+    fn from(value: Action) -> Self {
+        let data = vec![SummaryData::String {
+            value: value.name.clone(),
+            link: None,
+            tooltip: None,
+            abbreviation: None,
+        }];
+        Self {
+            id: value.fvtt_id,
+            name: value.name,
+            slug: value.slug,
+            data,
+        }
+    }
+}
 
 impl From<Feat> for Summary {
     fn from(value: Feat) -> Self {

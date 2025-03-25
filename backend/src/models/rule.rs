@@ -220,6 +220,7 @@ pub enum Rule {
         hide_if_disabled: Option<bool>,
         critical: Option<bool>,
 
+        slug: Option<String>,
         label: Option<String>,
         category: Option<String>,
         damage_type: Option<String>,

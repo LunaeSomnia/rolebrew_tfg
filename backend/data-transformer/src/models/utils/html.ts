@@ -119,7 +119,10 @@ export function assignHeaderIds(html: string) {
 
 export function cleanupHTML(html: string) {
     html = transformLinks(html);
-    return html.replaceAll("<hr>", "").replaceAll(/<\/?hnan>/g, "");
+    return html
+        .replaceAll("\n", "")
+        .replaceAll("<hr>", "")
+        .replaceAll(/<\/?hnan>/g, "");
 }
 
 const IGNORED_SECTIONS = [
@@ -132,6 +135,7 @@ const IGNORED_SECTIONS = [
     "equipment-effects",
     "bestiary-effects",
     "lost-omens-tian-xia-world-guide",
+    "pf2e-macros",
 ];
 
 const COMPENDIUM_SECTION_MATCHER: Map<string, string> = new Map([

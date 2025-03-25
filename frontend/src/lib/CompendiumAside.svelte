@@ -32,7 +32,7 @@
     <div class="column aside-group">
         <span class="tag">For Everyone</span>
         <div class="column aside-group-inner">
-            <a class="no-accent no-decoration" href="{HREF_BASE}archetypes/"
+            <a class="no-accent no-decoration" href="{HREF_BASE}action/"
                 >Actions</a
             >
             <a class="no-accent no-decoration" href="{HREF_BASE}archetypes/"
