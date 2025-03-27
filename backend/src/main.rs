@@ -78,6 +78,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(
                 Cors::default()
                     .allowed_origin("http://localhost:5173")
+                    .allowed_origin("http://localhost:4173")
                     .allowed_methods(vec!["GET", "POST"])
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
                     .allowed_header(header::CONTENT_TYPE)
@@ -131,7 +132,7 @@ async fn export_bindings() {
         .register::<LinkPreview>()
         // forms
         .register::<LoginForm>()
-        .register::<CreateUserForm>()
+        .register::<SignupForm>()
         .register::<GetFeatsFilterForm>()
         .export_to(Typescript::new(), "../frontend/src/lib/bindings.ts")
         .unwrap();

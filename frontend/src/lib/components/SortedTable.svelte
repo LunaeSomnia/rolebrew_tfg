@@ -15,7 +15,6 @@
         type TableHeaderDef,
     } from "$lib/compendiumTableDef";
     import { abbreviateSource, hrefToSummaryHref } from "$lib/textProcessing";
-    import LinkPreview from "./LinkPreview.svelte";
     import TableRowPreview from "./table/TableRowPreview.svelte";
 
     let {
@@ -136,7 +135,7 @@
 
 <Table class="table">
     <TableHeader>
-        <TableRow>
+        <TableRow {altBackground}>
             {#each tableHeaderState ?? [] as data, i (i)}
                 <TableHead
                     {data}
@@ -179,15 +178,3 @@
         {/each}
     </TableBody>
 </Table>
-
-<style lang="scss">
-    .header {
-        width: 100%;
-        align-items: flex-end;
-
-        h1 {
-            line-height: 3rem;
-            text-transform: capitalize;
-        }
-    }
-</style>

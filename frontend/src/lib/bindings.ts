@@ -16,8 +16,6 @@ export type BoostOrFlaw = { type: "free" } | { type: "grant"; att: Attribute } |
 
 export type ChoiceSetAllowedDrops = { label: string | null; predicate?: MVec<RulePredicateFilter> }
 
-export type CreateUserForm = { username: string; password: string; email: string }
-
 export type Damage = { base: DamageRoll }
 
 export type DamageCategory = "Persistent"
@@ -57,6 +55,8 @@ export type Rule = { key: "ActiveEffectLike"; mode: string; path: string; phase:
 export type RuleChoice = { label: string | null; item_type: string | null; value: JsonValue | null; filter?: MVec<RulePredicateFilter> }
 
 export type RulePredicateFilter = string | number | { not: MVec<RulePredicateFilter> } | { and: MVec<RulePredicateFilter> } | { or: MVec<RulePredicateFilter> } | { nand: MVec<RulePredicateFilter> } | { nor: MVec<RulePredicateFilter> } | { lt: MVec<RulePredicateFilter> } | { lte: MVec<RulePredicateFilter> } | { gt: MVec<RulePredicateFilter> } | { gte: MVec<RulePredicateFilter> }
+
+export type SignupForm = { username: string; password: string; email: string }
 
 export type Size = "Tiny" | "Small" | "Medium" | "Large"
 

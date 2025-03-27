@@ -57,7 +57,7 @@
             background: color-mix(
                 in hsl shorter hue,
                 #{var(--dark-3)},
-                #{var(--light-3)} 50%
+                #{var(--dark-4)} 50%
             );
         }
     }

@@ -117,7 +117,7 @@ async fn refresh(req: actix_web::HttpRequest) -> impl Responder {
 }
 
 #[derive(Serialize, Deserialize, Type)]
-pub struct CreateUserForm {
+pub struct SignupForm {
     username: String,
     password: String,
     email: String,
@@ -126,7 +126,7 @@ pub struct CreateUserForm {
 #[post("/api/auth/signup")]
 pub async fn create_user(
     db: CollectionData<'_>,
-    form: actix_web::web::Json<CreateUserForm>,
+    form: actix_web::web::Json<SignupForm>,
 ) -> impl Responder {
     let db = db.read().await;
     if let Ok(db_user_result) = db.get_from_username(&form.username).await {

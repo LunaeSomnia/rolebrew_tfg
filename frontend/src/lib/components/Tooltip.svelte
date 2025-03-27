@@ -72,7 +72,8 @@
         border-radius: 0.5rem;
         transition: position 0ms;
         padding: 0.5rem 1rem;
-        box-shadow: 0px 0px 0.5rem 0px rgba(0, 0, 0, 0.5);
+        border: solid 0.125rem var(--dark-2);
+        box-shadow: 0rem 0rem 4rem #00000088;
         gap: 2rem;
     }
 </style>

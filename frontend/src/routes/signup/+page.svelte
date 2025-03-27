@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
     import { PUBLIC_BACKEND_URL } from "$env/static/public";
+    import type { SignupForm } from "$lib/bindings";
     import Button from "$lib/components/Button.svelte";
     import InputField from "$lib/components/InputField.svelte";
 
@@ -8,11 +9,23 @@
     let password = $state("test_password");
 
     async function sendSignupRequest() {
-        await fetch(PUBLIC_BACKEND_URL + "/api/auth/signup", {
-            method: "POST",
-            body: JSON.stringify({ email, username, password }),
-            credentials: "include",
-        });
+        const singupRequest = await fetch(
+            PUBLIC_BACKEND_URL + "/api/auth/signup",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email,
+                    username,
+                    password,
+                } as SignupForm),
+                credentials: "include",
+            },
+        );
+
+        console.log(singupRequest);
     }
 </script>
 

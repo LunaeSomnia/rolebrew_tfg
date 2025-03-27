@@ -47,7 +47,6 @@
 <style lang="scss">
     .compendium-table {
         flex: 1;
-        height: 100%;
         max-height: 50rem;
         gap: 2rem;
     }

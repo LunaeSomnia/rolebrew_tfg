@@ -2,16 +2,14 @@
     import { goto } from "$app/navigation";
     import type { Snippet } from "svelte";
     import type { HTMLAttributes } from "svelte/elements";
-    import { createFloatingActions } from "svelte-floating-ui";
-    import { offset, flip, shift } from "svelte-floating-ui/dom";
-    import {
-        linkToLinkPreviewConverter,
-        transformDescription,
-    } from "$lib/textProcessing";
-    import { fly } from "svelte/transition";
-    import { cubicOut } from "svelte/easing";
-    import Traits from "../Traits.svelte";
     import type { LinkPreview } from "$lib/bindings";
+    import LinkPreviewError from "../link-preview/LinkPreviewError.svelte";
+    import LinkPreviewPanel from "../link-preview/LinkPreviewPanel.svelte";
+    import {
+        createLinkPreviewActions,
+        HIDE_TIME_OFFSET,
+        SHOW_TIME_OFFSET,
+    } from "../link-preview/linkPreview";
 
     let {
         children,
@@ -28,31 +26,24 @@
         altBackground?: boolean;
     } & { href?: string; children: Snippet } = $props();
 
-    const showTimeOffset = 500;
-    const hideTimeOffset = 200;
-
     const initialState = false;
     let isOpen: boolean = $state(initialState); // if the tooltip is rendered (time offset affected)
     let showTooltip: boolean = $state(initialState); // if the tooltip SHOULD render
 
-    const [floatingRef, floatingContent] = createFloatingActions({
-        strategy: "absolute",
-        placement: "bottom",
-        middleware: [offset(8), flip(), shift()],
-    });
+    const [floatingRef, floatingContent] = createLinkPreviewActions();
 
     function openPreview() {
         showTooltip = true;
         setTimeout(() => {
             if (showTooltip) isOpen = true;
-        }, showTimeOffset);
+        }, SHOW_TIME_OFFSET);
     }
 
     function closePreview() {
         showTooltip = false;
         setTimeout(() => {
             if (!showTooltip) isOpen = false;
-        }, hideTimeOffset);
+        }, HIDE_TIME_OFFSET);
     }
 
     async function getSummaryFromFetchResult(fetchResult: Response) {
@@ -79,60 +70,37 @@
     </tr>
 {/if}
 
-{#snippet errorSnippet(error: any)}
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div
-        class="link-preview column"
-        use:floatingContent
-        transition:fly|global={{
-            duration: 200,
-            y: 8,
-            easing: cubicOut,
-        }}
-        onmouseenter={openPreview}
-        onmouseleave={closePreview}
-    >
-        <div class="column link-preview-header">
-            <h3>Error!</h3>
-            <p>{error}</p>
-        </div>
-    </div>
-{/snippet}
 {#if isOpen && summaryHref}
     {#await fetch(summaryHref) then fetchResult}
         {#await getSummaryFromFetchResult(fetchResult) then preview}
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <div
-                class="link-preview column"
-                use:floatingContent
-                transition:fly|global={{
-                    duration: 200,
-                    y: 8,
-                    easing: cubicOut,
-                }}
-                onmouseenter={openPreview}
-                onmouseleave={closePreview}
-            >
-                <div class="column link-preview-header">
-                    <h4>{preview.name}</h4>
-                    <Traits rarity={preview.rarity} traits={preview.traits} />
-                </div>
-                {@html linkToLinkPreviewConverter(
-                    transformDescription(preview.description),
-                )}
-            </div>
+            <LinkPreviewPanel
+                {floatingContent}
+                {closePreview}
+                {openPreview}
+                {preview}
+            />
         {:catch error}
-            {@render errorSnippet(error)}
+            <LinkPreviewError
+                {floatingContent}
+                {closePreview}
+                {openPreview}
+                {error}
+            />
         {/await}
     {:catch error}
-        {@render errorSnippet(error)}
+        <LinkPreviewError
+            {floatingContent}
+            {closePreview}
+            {openPreview}
+            {error}
+        />
     {/await}
 {/if}
 
 <style lang="scss">
     tr {
         background-color: var(--dark-2);
-        border-bottom: 0.125rem solid var(--dark-1);
+        border-bottom: 0.125rem solid var(--dark-2);
 
         &.altBackground {
             background-color: var(--dark-3);
@@ -161,23 +129,6 @@
                 #{var(--dark-3)},
                 #{var(--orange)} 20%
             );
-        }
-    }
-
-    .link-preview {
-        max-width: 40rem;
-        position: absolute;
-        display: flex;
-        border-width: 1px;
-        background-color: var(--dark-1);
-        border-radius: 0.5rem;
-        transition: position 0ms;
-        padding: 1.5rem;
-        box-shadow: 0px 0px 0.5rem 0px rgba(0, 0, 0, 0.5);
-        gap: 2rem;
-
-        .link-preview-header {
-            gap: 0.5rem;
         }
     }
 </style>

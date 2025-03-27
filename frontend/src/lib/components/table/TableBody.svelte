@@ -12,3 +12,6 @@
 <tbody {...props}>
     {@render children()}
 </tbody>
+
+<style lang="scss">
+</style>

@@ -18,14 +18,6 @@
 {@render children()}
 
 <style lang="scss">
-    .compendium {
-        width: 100%;
-        max-width: 100%;
-        align-items: flex-start;
-        height: 100%;
-        max-height: 50rem;
-    }
-
     .row {
         gap: 2rem;
     }

@@ -99,8 +99,9 @@ export function linkToLinkPreviewConverter(html: string) {
         const wholeMatch = match[0];
         const href = match[1]
         const text = match[2]
+        console.log(text)
 
-        html = html.replaceAll(wholeMatch, `<link-preview href="${href}" text=${text}>${text}</link-preview>`)
+        html = html.replaceAll(wholeMatch, `<link-preview href="${href}" text="${text}">${text}</link-preview>`)
     }
     return html
 }

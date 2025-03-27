@@ -5,7 +5,7 @@
     import { getColorByCategory } from "$lib/color_category";
     import { linkToLinkPreviewConverter } from "$lib/textProcessing";
     import { onMount } from "svelte";
-    import LinkPreviewCE from "$lib/components/LinkPreviewCE.svelte";
+    import LinkPreviewCE from "$lib/components/link-preview/LinkPreviewCE.svelte";
     import Traits from "$lib/components/Traits.svelte";
 
     let { data }: PageProps = $props();

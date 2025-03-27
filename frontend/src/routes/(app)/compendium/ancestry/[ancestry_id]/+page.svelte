@@ -13,11 +13,12 @@
     import IconSvg from "$lib/icons/IconSVG.svelte";
     import { Icon } from "$lib/icons/icons";
     import Button from "$lib/components/Button.svelte";
-    import LinkPreviewCe from "$lib/components/LinkPreviewCE.svelte";
+    import LinkPreviewCe from "$lib/components/link-preview/LinkPreviewCE.svelte";
     import Tooltip from "$lib/components/Tooltip.svelte";
     import SortedTable from "$lib/components/SortedTable.svelte";
     import { PUBLIC_BACKEND_URL } from "$env/static/public";
     import { CompendiumSection } from "$lib/compendiumTableDef";
+    import Traits from "$lib/components/Traits.svelte";
 
     let { data }: PageProps = $props();
 
@@ -57,14 +58,14 @@
                 <p>{data.ancestryData.hp.toString()}</p>
             </AncestryStat>
             <AncestryStat label="Speed" layout="column" spacing="0.5rem">
-                <div class="speed-row row">
+                <div class="speed-row row" style="gap: 0.5rem;">
                     <Tooltip text="Speed">
                         <IconSvg icon={Icon.Speed} fill="var(--green)" />
                     </Tooltip>
                     <p>{data.ancestryData.speed.walk + " feet"}</p>
                 </div>
                 {#if data.ancestryData.speed.swim !== null}
-                    <div class="speed-row row">
+                    <div class="speed-row row" style="gap: 0.5rem;">
                         <Tooltip text="Swim">
                             <IconSvg icon={Icon.Swim} fill="var(--blue)" />
                         </Tooltip>
@@ -134,21 +135,10 @@
                     </Tag>
                 </div>
             </div>
-            <div class="traits row">
-                <Tag
-                    color={getColorByCategory(
-                        "rarity",
-                        data.ancestryData.rarity,
-                    )}
-                >
-                    {data.ancestryData.rarity}
-                </Tag>
-                {#each data.ancestryData.traits ?? [] as trait}
-                    <Tag>
-                        {trait}
-                    </Tag>
-                {/each}
-            </div>
+            <Traits
+                rarity={data.ancestryData.rarity}
+                traits={data.ancestryData.traits}
+            />
 
             <p class="description fancy column">
                 {@html transformDescription(
@@ -167,39 +157,41 @@
 
         <section class="column heritages">
             <h2 id="heritages">Heritages</h2>
-            <div class="row heritages-header">
-                {#each data.ancestryData.heritage ?? [] as heritage, i}
-                    <Button
-                        type="button"
-                        class={i === heritageTab ? "primary" : "secondary"}
-                        onclick={() => selectHeritageTab(i)}
-                    >
-                        {heritage.name
-                            .replace(data.ancestryData.name, "")
-                            .trim()}
-                    </Button>
-                {/each}
-            </div>
-            <div class="column heritages-content">
-                {#each data.ancestryData.heritage ?? [] as heritage, i}
-                    {#if i === heritageTab}
-                        <div class="column heritage">
-                            <span class="fake-h">{heritage.name}</span>
-                            {#if heritage.traits?.length !== 0}
-                                <div class="traits row">
-                                    {#each heritage.traits ?? [] as trait}
-                                        <Tag>
-                                            {trait}
-                                        </Tag>
-                                    {/each}
-                                </div>
-                            {/if}
-                            {@html linkToLinkPreviewConverter(
-                                transformDescription(heritage.description),
-                            )}
-                        </div>
-                    {/if}
-                {/each}
+            <div class="column" style="gap: 1rem;">
+                <div class="row heritages-header">
+                    {#each data.ancestryData.heritage ?? [] as heritage, i}
+                        <Button
+                            type="button"
+                            class={i === heritageTab ? "primary" : "secondary"}
+                            onclick={() => selectHeritageTab(i)}
+                        >
+                            {heritage.name
+                                .replace(data.ancestryData.name, "")
+                                .trim()}
+                        </Button>
+                    {/each}
+                </div>
+                <div class="column heritages-content">
+                    {#each data.ancestryData.heritage ?? [] as heritage, i}
+                        {#if i === heritageTab}
+                            <div class="column heritage">
+                                <span class="fake-h">{heritage.name}</span>
+                                {#if heritage.traits?.length !== 0}
+                                    <div class="traits row">
+                                        {#each heritage.traits ?? [] as trait}
+                                            <Tag>
+                                                {trait}
+                                            </Tag>
+                                        {/each}
+                                    </div>
+                                {/if}
+                                {@html linkToLinkPreviewConverter(
+                                    transformDescription(heritage.description),
+                                )}
+                            </div>
+                        {/if}
+                    {/each}
+                </div>
             </div>
         </section>
         <section class="column feats">
@@ -215,7 +207,10 @@
             {/await}
         </section>
         <section class="column roleplaying">
-            <h2 id="roleplaying-the-{data.ancestryData.slug}">
+            <h2
+                id="roleplaying-the-{data.ancestryData.slug}"
+                style="margin-top: 0;"
+            >
                 Roleplaying the {data.ancestryData.name}
             </h2>
             {@html data.ancestryData.description.roleplaying}
@@ -285,16 +280,6 @@
         background-color: var(--dark-3);
     }
 
-    .roleplaying {
-        h2 {
-            margin-top: 0;
-        }
-    }
-
-    .traits {
-        gap: 0.5rem;
-    }
-
     .side-data {
         height: auto;
 
@@ -309,9 +294,5 @@
         //     background-color: var(--dark-2);
         //     padding: 1rem;
         // }
-    }
-
-    .speed-row {
-        gap: 0.5rem;
     }
 </style>

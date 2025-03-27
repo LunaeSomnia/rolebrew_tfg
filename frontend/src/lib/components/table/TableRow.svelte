@@ -2,7 +2,7 @@
     import { goto } from "$app/navigation";
     import type { Snippet } from "svelte";
     import type { HTMLAttributes } from "svelte/elements";
-    import LinkPreview from "../LinkPreview.svelte";
+    import LinkPreview from "../link-preview/LinkPreview.svelte";
 
     let {
         href,
