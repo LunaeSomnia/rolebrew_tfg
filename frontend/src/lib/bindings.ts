@@ -74,3 +74,5 @@ export type SummaryDataNumberUnit = "feet"
 
 export type SummaryDataTagCategory = "rarity"
 
+export type UserClaims = { sub: string; iat: string; exp: string }
+

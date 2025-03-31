@@ -57,8 +57,6 @@ async fn main() -> std::io::Result<()> {
             .app_data(action_data)
             // auth
             .service(login)
-            .service(logout)
-            .service(refresh)
             .service(hash)
             // users
             .service(create_user)
@@ -121,6 +119,7 @@ async fn export_bindings() {
     use models::summary::Summary;
     use specta_typescript::Typescript;
     use specta_util::TypeCollection;
+    use user::UserClaims;
 
     // Export types to Typescript file
     TypeCollection::default()
@@ -130,6 +129,7 @@ async fn export_bindings() {
         //
         .register::<Summary>()
         .register::<LinkPreview>()
+        .register::<UserClaims>()
         // forms
         .register::<LoginForm>()
         .register::<SignupForm>()

@@ -1,8 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import type { Snippet } from "svelte";
+    import { type Snippet } from "svelte";
     import type { HTMLAttributes } from "svelte/elements";
-    import LinkPreview from "../link-preview/LinkPreview.svelte";
 
     let {
         href,

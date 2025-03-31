@@ -1,17 +1,29 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import { dev } from '$app/environment';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import type { RequestEvent } from "@sveltejs/kit";
+import { JWT_SECRET } from "$env/static/private";
+import type { UserState } from "./store.svelte";
+import type { UserClaims } from "./bindings";
+import { PUBLIC_BACKEND_URL } from "$env/static/public";
 
-const JWT_SECRET = 'your_secret_key'; // Use env vars in production
-const REFRESH_SECRET = 'your_refresh_secret';
-const ACCESS_EXPIRES_IN = '15m';
-const REFRESH_EXPIRES_IN = '7d';
+export async function authenticateUser(event: RequestEvent) {
+    const cookies = event.cookies;
 
-export function generateTokens(userId: string) {
-    const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: ACCESS_EXPIRES_IN });
-    const refreshToken = jwt.sign({ userId }, REFRESH_SECRET, { expiresIn: REFRESH_EXPIRES_IN });
+    const token = cookies.get("token");
+    const tokenDecoded = verifyToken(
+        token ?? "",
+        JWT_SECRET,
+    ) as UserClaims | null;
 
-    return { accessToken, refreshToken };
+    if (token && tokenDecoded) {
+        // access token exists, we are logged in
+        return {
+            username: tokenDecoded.sub,
+        } as UserState;
+    }
+
+    // no refresh token, we need to re-login
+    return null;
 }
 
 export async function hashPassword(password: string) {

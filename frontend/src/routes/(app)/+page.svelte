@@ -2,7 +2,6 @@
     import { goto } from "$app/navigation";
     import Button from "$lib/components/Button.svelte";
     import HeroTitle from "$lib/icons/HeroTitle.svelte";
-    import Navbar from "$lib/Navbar.svelte";
     import type { LayoutProps } from "./$types";
 
     let { data }: LayoutProps = $props();
@@ -12,7 +11,6 @@
     }
 </script>
 
-<Navbar basePath={data.basePath ?? ""} />
 <section class="hero max-width-wrapper">
     <div class="column max-width">
         <div class="hero-img"></div>
@@ -32,8 +30,9 @@
 <style lang="scss">
     .hero {
         background-color: var(--orange);
+        width: 100%;
         height: 100%;
-        padding: 8rem 0;
+        padding: 4rem 0;
 
         .max-width {
             gap: 2rem;

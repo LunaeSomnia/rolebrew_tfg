@@ -11,50 +11,54 @@
         ["feat", "Feats"],
         ["spell", "Spells"],
     ];
+
+    const forEveryone = [
+        ["action", "Actions"],
+        ["condition", "Conditions"],
+        ["item", "Items"],
+        ["trait", "Traits"],
+    ];
+
+    const forDms = [
+        ["bestiary", "Bestiary"],
+        ["quick-reference", "Quick Reference"],
+    ];
 </script>
+
+{#snippet reference(link: string, header: string)}
+    <a
+        class="no-accent no-decoration"
+        class:active={compendiumSection === link}
+        href="{HREF_BASE}{link}/"
+        data-sveltekit-preload-data={false}
+    >
+        {header}</a
+    >
+{/snippet}
 
 <aside class="column">
     <div class="column aside-group">
         <span class="tag">For the Users</span>
         <div class="column aside-group-inner">
             {#each forTheUsers as [link, header]}
-                <a
-                    class="no-accent no-decoration"
-                    class:active={compendiumSection === link}
-                    href="{HREF_BASE}{link}/"
-                    data-sveltekit-preload-data={false}
-                >
-                    {header}</a
-                >
+                {@render reference(link, header)}
             {/each}
         </div>
     </div>
     <div class="column aside-group">
         <span class="tag">For Everyone</span>
         <div class="column aside-group-inner">
-            <a class="no-accent no-decoration" href="{HREF_BASE}action/"
-                >Actions</a
-            >
-            <a class="no-accent no-decoration" href="{HREF_BASE}archetypes/"
-                >Conditions</a
-            >
-            <a class="no-accent no-decoration" href="{HREF_BASE}archetypes/"
-                >Items</a
-            >
-            <a class="no-accent no-decoration" href="{HREF_BASE}archetypes/"
-                >Traits</a
-            >
+            {#each forEveryone as [link, header]}
+                {@render reference(link, header)}
+            {/each}
         </div>
     </div>
     <div class="aside-group column">
         <span class="tag">For the DMs</span>
         <div class="column aside-group-inner">
-            <a class="no-accent no-decoration" href="{HREF_BASE}archetypes/"
-                >Bestiary</a
-            >
-            <a class="no-accent no-decoration" href="{HREF_BASE}archetypes/"
-                >Quick Reference</a
-            >
+            {#each forDms as [link, header]}
+                {@render reference(link, header)}
+            {/each}
         </div>
     </div>
 </aside>

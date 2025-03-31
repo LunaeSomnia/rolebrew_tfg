@@ -1,5 +1,7 @@
 use bson::oid::ObjectId;
+use chrono::{Days, Utc};
 use serde::{Deserialize, Serialize};
+use specta::Type;
 
 use crate::storeable::Storeable;
 
@@ -14,11 +16,25 @@ pub struct User {
     pub email: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Type)]
 pub struct UserClaims {
     pub sub: String, // username
-    pub iat: usize,  // timestamp of creation
-    pub exp: usize,  // expiration (1day)
+    pub iat: String, // timestamp of creation
+    pub exp: String, // expiration (1day)
+}
+
+impl From<&User> for UserClaims {
+    fn from(value: &User) -> Self {
+        Self {
+            sub: value.username.clone(),
+            iat: Utc::now().timestamp_millis().to_string(),
+            exp: Utc::now()
+                .checked_add_days(Days::new(1))
+                .expect("couldnt add days to token expiration date")
+                .timestamp_millis()
+                .to_string(),
+        }
+    }
 }
 
 impl Storeable for User {

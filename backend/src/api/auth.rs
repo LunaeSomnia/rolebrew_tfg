@@ -1,6 +1,6 @@
 use actix_web::{
     Responder,
-    cookie::{Cookie, time::Duration},
+    cookie::Cookie,
     get, post,
     web::{Data, Path},
 };
@@ -13,7 +13,7 @@ use crate::{
     DatabaseCollection,
     auth::{generate_tokens, verify_token},
     hash::{hash_password, verify_hash},
-    user::User,
+    user::{User, UserClaims},
     users_db_impl::UserDBImpl,
 };
 
@@ -35,85 +35,29 @@ pub async fn login(
     match db.get_from_username(&form.username).await {
         Ok(user_option) => {
             if user_option.is_none() {
-                return actix_web::HttpResponse::BadRequest().body("username not found");
+                return actix_web::HttpResponse::BadRequest().body("Username not found");
             }
 
             let user = user_option.unwrap();
 
             if verify_hash(&user.password_hash, &form.password) {
-                let (access_token, refresh_token) = generate_tokens(&form.username);
+                let token = generate_tokens(&form.username);
 
                 actix_web::HttpResponse::Ok()
                     .cookie(
-                        Cookie::build("access_token", access_token)
+                        Cookie::build("token", token)
                             .path("/")
                             .secure(true)
                             .http_only(true)
                             .finish(),
                     )
-                    .cookie(
-                        Cookie::build("refresh_token", refresh_token)
-                            .path("/")
-                            .secure(true)
-                            .http_only(true)
-                            .finish(),
-                    )
-                    .finish()
+                    .json(UserClaims::from(&user))
             } else {
-                actix_web::HttpResponse::BadRequest().body("incorrect password")
+                actix_web::HttpResponse::BadRequest().body("Incorrect password")
             }
         }
-        Err(_e) => actix_web::HttpResponse::BadRequest().body("username not found"),
+        Err(_e) => actix_web::HttpResponse::BadRequest().body("Username not found"),
     }
-}
-
-#[post("/api/auth/logout")]
-async fn logout() -> impl Responder {
-    actix_web::HttpResponse::Ok()
-        .cookie(
-            Cookie::build("access_token", "")
-                .path("/")
-                .secure(true)
-                .http_only(true)
-                .max_age(Duration::new(0, 0))
-                .finish(),
-        )
-        .cookie(
-            Cookie::build("refresh_token", "")
-                .path("/")
-                .secure(true)
-                .http_only(true)
-                .max_age(Duration::new(0, 0))
-                .finish(),
-        )
-        .json("Logged out")
-}
-
-#[post("/api/auth/refresh")]
-async fn refresh(req: actix_web::HttpRequest) -> impl Responder {
-    let refresh_secret = std::env::var("REFRESH_SECRET").expect("REFRESH_SECRET not set");
-
-    if let Some(cookie) = req.cookie("refresh_token") {
-        if let Some(claims) = verify_token(cookie.value(), &refresh_secret) {
-            let (access_token, new_refresh_token) = generate_tokens(&claims.sub);
-
-            return actix_web::HttpResponse::Ok()
-                .insert_header((
-                    "Set-Cookie",
-                    format!("access_token={}; HttpOnly; Secure; Path=/", access_token),
-                ))
-                .insert_header((
-                    "Set-Cookie",
-                    format!(
-                        "refresh_token={}; HttpOnly; Secure; Path=/",
-                        new_refresh_token
-                    ),
-                ))
-                .json("Token refreshed");
-        }
-    }
-
-    actix_web::HttpResponse::Unauthorized().body("Invalid refresh token")
 }
 
 #[derive(Serialize, Deserialize, Type)]
@@ -131,7 +75,7 @@ pub async fn create_user(
     let db = db.read().await;
     if let Ok(db_user_result) = db.get_from_username(&form.username).await {
         if db_user_result.is_some() {
-            return actix_web::HttpResponse::BadRequest().body("user already exists");
+            return actix_web::HttpResponse::BadRequest().body("User already exists");
         }
     }
 

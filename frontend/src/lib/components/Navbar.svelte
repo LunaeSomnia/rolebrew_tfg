@@ -1,15 +1,12 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import Button from "./components/Button.svelte";
-    import { Icon } from "./icons/icons";
-    import IconSVG from "./icons/IconSVG.svelte";
-    import { userState } from "./store.svelte";
+    import Button from "$lib/components/Button.svelte";
+    import { Icon } from "$lib/icons/icons";
+    import IconSVG from "$lib/icons/IconSVG.svelte";
+    import { appState } from "$lib/store.svelte";
+    import Popover from "./Popover.svelte";
 
-    type Props = {
-        basePath: string;
-    };
-
-    let { basePath }: Props = $props();
+    let { basePath, user } = $props();
 
     function onLogin() {
         goto("/login");
@@ -45,8 +42,16 @@
             {/each}
         </div>
         <div class="right">
-            {#if userState.username}
-                <p>{userState.username}</p>
+            {#if user}
+                {#snippet userHeader()}
+                    <p>{user.username}</p>
+                {/snippet}
+                <Popover headerSnippet={userHeader}>
+                    <div class="column user-popover-content">
+                        <a href="/profile">Profile</a>
+                        <a href="/logout">Log out</a>
+                    </div>
+                </Popover>
             {:else}
                 <Button class="secondary" onclick={onLogin}>Log in</Button>
                 <Button onclick={onSignup}>Sign up</Button>
@@ -64,7 +69,8 @@
         }
     }
     nav {
-        position: fixed;
+        position: sticky;
+        top: 0;
         width: 100%;
         display: grid;
         place-items: center;
@@ -95,5 +101,9 @@
         .right {
             justify-content: flex-start;
         }
+    }
+
+    .user-popover-content {
+        padding: 1rem 2rem;
     }
 </style>

@@ -1,13 +1,13 @@
 import type { LayoutLoad } from "./$types";
 
-export const load: LayoutLoad = ({ route }) => {
-
-    const routeId = route.id?.replaceAll("/(app)/", "")
-    const basePathSplit = routeId?.split('/')
-    const basePath = basePathSplit !== undefined ? basePathSplit[0] : routeId
+export const load: LayoutLoad = async ({ route, data }) => {
+    const routeId = route.id?.replaceAll("/(app)/", "");
+    const basePathSplit = routeId?.split("/");
+    const basePath = basePathSplit !== undefined ? basePathSplit[0] : routeId;
 
     return {
         basePath,
-        route
-    }
-}
+        route,
+        user: data.user,
+    };
+};

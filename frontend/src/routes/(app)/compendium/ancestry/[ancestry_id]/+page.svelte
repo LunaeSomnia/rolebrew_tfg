@@ -5,7 +5,7 @@
     import TableOfContents from "$lib/components/tableOfContents/TableOfContents.svelte";
     import AncestryStat from "./AncestryStat.svelte";
     import AncestryFeature from "./AncestryFeature.svelte.svelte";
-    import { afterNavigate } from "$app/navigation";
+    import { afterNavigate, goto } from "$app/navigation";
     import {
         linkToLinkPreviewConverter,
         transformDescription,
@@ -28,60 +28,55 @@
         heritageTab = 0;
     });
 
+    function afterLoad() {
+        goto("#" + data.ancestry_id);
+    }
+
     function selectHeritageTab(index: number) {
         heritageTab = index;
     }
-
-    async function fetchFeats() {
-        const params = new URLSearchParams();
-        params.append("has_traits", data.ancestry_id);
-
-        return await (
-            await fetch(
-                PUBLIC_BACKEND_URL + "/api/feat/summary?" + params.toString(),
-            )
-        ).json();
-    }
 </script>
 
-<div class="ancestry-wrapper row">
-    <aside class="column side-data">
-        <!-- <img
-            src="/{data.ancestryData.img.replace('systems/pf2e/', '')}"
+{#await data.ancestryRequest then ancestry}
+    {afterLoad()}
+    <div class="ancestry-wrapper row">
+        <aside class="column side-data">
+            <!-- <img
+            src="/{ancestry.img.replace('systems/pf2e/', '')}"
             alt=""
         /> -->
-        <div class="column stats compact">
-            <AncestryStat label="Hit Points" layout="row" spacing="0.5rem">
-                <Tooltip text="Health">
-                    <IconSvg icon={Icon.Health} fill="var(--red)" />
-                </Tooltip>
-                <p>{data.ancestryData.hp.toString()}</p>
-            </AncestryStat>
-            <AncestryStat label="Speed" layout="column" spacing="0.5rem">
-                <div class="speed-row row" style="gap: 0.5rem;">
-                    <Tooltip text="Speed">
-                        <IconSvg icon={Icon.Speed} fill="var(--green)" />
+            <div class="column stats compact">
+                <AncestryStat label="Hit Points" layout="row" spacing="0.5rem">
+                    <Tooltip text="Health">
+                        <IconSvg icon={Icon.Health} fill="var(--red)" />
                     </Tooltip>
-                    <p>{data.ancestryData.speed.walk + " feet"}</p>
-                </div>
-                {#if data.ancestryData.speed.swim !== null}
+                    <p>{ancestry.hp.toString()}</p>
+                </AncestryStat>
+                <AncestryStat label="Speed" layout="column" spacing="0.5rem">
                     <div class="speed-row row" style="gap: 0.5rem;">
-                        <Tooltip text="Swim">
-                            <IconSvg icon={Icon.Swim} fill="var(--blue)" />
+                        <Tooltip text="Speed">
+                            <IconSvg icon={Icon.Speed} fill="var(--green)" />
                         </Tooltip>
-                        <p>{data.ancestryData.speed.swim + " feet"}</p>
+                        <p>{ancestry.speed.walk + " feet"}</p>
                     </div>
-                {/if}
-            </AncestryStat>
-            <AncestryStat label="Size" layout="row" spacing="0.5rem">
-                <Tooltip text="Size">
-                    <IconSvg icon={Icon.Size} fill="var(--orange)" />
-                </Tooltip>
-                {data.ancestryData.size}
-            </AncestryStat>
-            <AncestryStat label="Boosts">
-                <ul>
-                    {#each (data.ancestryData.boosts ?? []).flatMap( (v: any) => {
+                    {#if ancestry.speed.swim !== null}
+                        <div class="speed-row row" style="gap: 0.5rem;">
+                            <Tooltip text="Swim">
+                                <IconSvg icon={Icon.Swim} fill="var(--blue)" />
+                            </Tooltip>
+                            <p>{ancestry.speed.swim + " feet"}</p>
+                        </div>
+                    {/if}
+                </AncestryStat>
+                <AncestryStat label="Size" layout="row" spacing="0.5rem">
+                    <Tooltip text="Size">
+                        <IconSvg icon={Icon.Size} fill="var(--orange)" />
+                    </Tooltip>
+                    {ancestry.size}
+                </AncestryStat>
+                <AncestryStat label="Boosts">
+                    <ul>
+                        {#each (ancestry.boosts ?? []).flatMap((v: any) => {
                             switch (v.type) {
                                 case "grant":
                                     return v.att;
@@ -90,134 +85,135 @@
                                 case "free":
                                     return "Free";
                             }
-                        }, ) as element}
-                        <li>{element}</li>
-                    {/each}
-                </ul>
-            </AncestryStat>
-            <AncestryStat label="Senses"
-                ><p style="text-transform: capitalize;">
-                    {data.ancestryData.vision}
-                </p></AncestryStat
-            >
-            <AncestryStat label="Languages">
-                <ul class="m-4">
-                    {#each data.ancestryData.languages.value as element}
-                        <li style="text-transform: capitalize;">{element}</li>
-                    {/each}
-                </ul>
-                <p class="m-3">
-                    {"Additional languages equal to your Intelligence modifier (if positive)" +
-                        (data.ancestryData.additionalLanguages.count == 0
-                            ? ""
-                            : ` + ${data.ancestryData.additionalLanguages.value.toString()}`)}
+                        }) as element}
+                            <li>{element}</li>
+                        {/each}
+                    </ul>
+                </AncestryStat>
+                <AncestryStat label="Senses"
+                    ><p style="text-transform: capitalize;">
+                        {ancestry.vision}
+                    </p></AncestryStat
+                >
+                <AncestryStat label="Languages">
+                    <ul class="m-4">
+                        {#each ancestry.languages.value as element}
+                            <li style="text-transform: capitalize;">
+                                {element}
+                            </li>
+                        {/each}
+                    </ul>
+                    <p class="m-3">
+                        {"Additional languages equal to your Intelligence modifier (if positive)" +
+                            (ancestry.additionalLanguages.count == 0
+                                ? ""
+                                : ` + ${ancestry.additionalLanguages.value.toString()}`)}
+                    </p>
+                    <ul>
+                        {#each ancestry.additionalLanguages.value as element}
+                            <li style="text-transform: capitalize;">
+                                {element}
+                            </li>
+                        {/each}
+                    </ul>
+                </AncestryStat>
+            </div>
+        </aside>
+        <div id="toc-target" class="main-content column">
+            <section class="column general-info">
+                <div class="header row spaced-between">
+                    <h2 id={data.ancestry_id}>
+                        {ancestry.name}
+                    </h2>
+                    <div class="meta row">
+                        <p class="id">{ancestry.publication.title}</p>
+                        <Tag>
+                            <p class="license">
+                                {ancestry.publication.license}
+                            </p>
+                        </Tag>
+                    </div>
+                </div>
+                <Traits rarity={ancestry.rarity} traits={ancestry.traits} />
+
+                <p class="description fancy column">
+                    {@html transformDescription(ancestry.description.summary)}
                 </p>
-                <ul>
-                    {#each data.ancestryData.additionalLanguages.value as element}
-                        <li style="text-transform: capitalize;">{element}</li>
-                    {/each}
-                </ul>
-            </AncestryStat>
-        </div>
-    </aside>
-    <div id="toc-target" class="main-content column">
-        <section class="column general-info">
-            <div class="header row spaced-between">
-                <h2 id={data.ancestry_id}>
-                    {data.ancestryData.name}
+
+                {#if ancestry.features?.length !== 0}
+                    <div class="column features">
+                        {#each ancestry.features ?? [] as feature}
+                            <AncestryFeature {feature} />
+                        {/each}
+                    </div>
+                {/if}
+            </section>
+
+            <section class="column heritages">
+                <h2 id="heritages">Heritages</h2>
+                <div class="column" style="gap: 1rem; width: 100%;">
+                    <div class="row heritages-header">
+                        {#each ancestry.heritage ?? [] as heritage, i}
+                            <Button
+                                type="button"
+                                class={i === heritageTab
+                                    ? "primary"
+                                    : "secondary"}
+                                onclick={() => selectHeritageTab(i)}
+                            >
+                                {heritage.name
+                                    .replace(ancestry.name, "")
+                                    .trim()}
+                            </Button>
+                        {/each}
+                    </div>
+                    <div class="column heritages-content">
+                        {#each ancestry.heritage ?? [] as heritage, i}
+                            {#if i === heritageTab}
+                                <div class="column heritage">
+                                    <span class="fake-h">{heritage.name}</span>
+                                    {#if heritage.traits?.length !== 0}
+                                        <div class="traits row">
+                                            {#each heritage.traits ?? [] as trait}
+                                                <Tag>
+                                                    {trait}
+                                                </Tag>
+                                            {/each}
+                                        </div>
+                                    {/if}
+                                    {@html linkToLinkPreviewConverter(
+                                        transformDescription(
+                                            heritage.description,
+                                        ),
+                                    )}
+                                </div>
+                            {/if}
+                        {/each}
+                    </div>
+                </div>
+            </section>
+            <section class="column feats">
+                <h2 id="feats">Feats</h2>
+                {#await data.ancestryFeatsRequest then featsData}
+                    <SortedTable
+                        tableData={featsData}
+                        compendiumSection={CompendiumSection.Feat}
+                        selectedRowSlug={""}
+                        includePreviews={true}
+                        altBackground={true}
+                    />
+                {/await}
+            </section>
+            <section class="column roleplaying">
+                <h2 id="roleplaying-the-{ancestry.slug}" style="margin-top: 0;">
+                    Roleplaying the {ancestry.name}
                 </h2>
-                <div class="meta row">
-                    <p class="id">{data.ancestryData.publication.title}</p>
-                    <Tag>
-                        <p class="license">
-                            {data.ancestryData.publication.license}
-                        </p>
-                    </Tag>
-                </div>
-            </div>
-            <Traits
-                rarity={data.ancestryData.rarity}
-                traits={data.ancestryData.traits}
-            />
-
-            <p class="description fancy column">
-                {@html transformDescription(
-                    data.ancestryData.description.summary,
-                )}
-            </p>
-
-            {#if data.ancestryData.features?.length !== 0}
-                <div class="column features">
-                    {#each data.ancestryData.features ?? [] as feature}
-                        <AncestryFeature {feature} />
-                    {/each}
-                </div>
-            {/if}
-        </section>
-
-        <section class="column heritages">
-            <h2 id="heritages">Heritages</h2>
-            <div class="column" style="gap: 1rem;">
-                <div class="row heritages-header">
-                    {#each data.ancestryData.heritage ?? [] as heritage, i}
-                        <Button
-                            type="button"
-                            class={i === heritageTab ? "primary" : "secondary"}
-                            onclick={() => selectHeritageTab(i)}
-                        >
-                            {heritage.name
-                                .replace(data.ancestryData.name, "")
-                                .trim()}
-                        </Button>
-                    {/each}
-                </div>
-                <div class="column heritages-content">
-                    {#each data.ancestryData.heritage ?? [] as heritage, i}
-                        {#if i === heritageTab}
-                            <div class="column heritage">
-                                <span class="fake-h">{heritage.name}</span>
-                                {#if heritage.traits?.length !== 0}
-                                    <div class="traits row">
-                                        {#each heritage.traits ?? [] as trait}
-                                            <Tag>
-                                                {trait}
-                                            </Tag>
-                                        {/each}
-                                    </div>
-                                {/if}
-                                {@html linkToLinkPreviewConverter(
-                                    transformDescription(heritage.description),
-                                )}
-                            </div>
-                        {/if}
-                    {/each}
-                </div>
-            </div>
-        </section>
-        <section class="column feats">
-            <h2 id="feats">Feats</h2>
-            {#await fetchFeats() then featsData}
-                <SortedTable
-                    tableData={featsData}
-                    compendiumSection={CompendiumSection.Feat}
-                    selectedRowSlug={""}
-                    includePreviews={true}
-                    altBackground={true}
-                />
-            {/await}
-        </section>
-        <section class="column roleplaying">
-            <h2
-                id="roleplaying-the-{data.ancestryData.slug}"
-                style="margin-top: 0;"
-            >
-                Roleplaying the {data.ancestryData.name}
-            </h2>
-            {@html data.ancestryData.description.roleplaying}
-        </section>
+                {@html ancestry.description.roleplaying}
+            </section>
+        </div>
+        <TableOfContents />
     </div>
-    <TableOfContents />
-</div>
+{/await}
 
 <style lang="scss">
     .side-data {

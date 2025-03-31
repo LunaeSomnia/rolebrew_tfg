@@ -9,10 +9,6 @@
     import Traits from "$lib/components/Traits.svelte";
 
     let { data }: PageProps = $props();
-
-    onMount(() => {
-        console.log(document.querySelector("link-preview"));
-    });
 </script>
 
 <div class="ancestry-wrapper row">
