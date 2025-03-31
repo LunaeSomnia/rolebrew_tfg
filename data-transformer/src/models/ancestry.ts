@@ -1,9 +1,9 @@
 import { Exclude, Expose, Transform, Type } from "class-transformer";
-import type { Boost, Flaw } from "../models/secondary/boost";
-import type { Item } from "../models/secondary/item";
+import type { Boost, Flaw } from "./secondary/boost";
+import type { Item } from "./secondary/item";
 import { extractLastUuid, extractTypeLinkFromText } from "./utils/uuid";
-import type { Publication } from "../models/secondary/publication";
-import { mapToRule, type RuleType } from "../models/secondary/rule";
+import type { Publication } from "./secondary/publication";
+import { mapToRule, type RuleType } from "./secondary/rule";
 import { ANCESTRY_FEATURES, ANCESTRY_JOURNAL, HERITAGES } from ".";
 import { nameToSlug } from "../utils/testTransform";
 import { exit } from "node:process";
