@@ -1,0 +1,57 @@
+services:
+    mongo:
+        image: mongo:6.0
+        ports:
+            - "27017:27017"
+        env_file:
+            - path: ./env/mongo.env
+        volumes:
+            - mongo-data:/data/db
+        networks:
+            - app-network
+
+    data-transformer:
+        build:
+            context: ./data-transformer
+            dockerfile: Dockerfile
+        env_file:
+            - path: ./env/data-transformer.env
+        depends_on:
+            - mongo
+        networks:
+            - app-network
+
+    backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        ports:
+            - "8080:8080"
+        env_file:
+            - path: ./env/backend.env
+        depends_on:
+            - mongo
+            - data-transformer
+        networks:
+            - app-network
+
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        env_file:
+            - path: ./env/frontend.env
+        depends_on:
+            - backend
+        networks:
+            - app-network
+
+volumes:
+    mongo-data:
+        driver: local
+
+networks:
+    app-network:
+        driver: bridge

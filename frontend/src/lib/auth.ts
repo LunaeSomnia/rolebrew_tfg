@@ -4,7 +4,6 @@ import type { RequestEvent } from "@sveltejs/kit";
 import { JWT_SECRET } from "$env/static/private";
 import type { UserState } from "./store.svelte";
 import type { UserClaims } from "./bindings";
-import { PUBLIC_BACKEND_URL } from "$env/static/public";
 
 export async function authenticateUser(event: RequestEvent) {
     const cookies = event.cookies;

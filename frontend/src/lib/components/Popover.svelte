@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Popover } from "bits-ui";
     import type { Snippet } from "svelte";
     import { createLinkPreviewActions } from "./link-preview/linkPreview";
 

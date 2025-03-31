@@ -26,6 +26,7 @@
         } else {
             tocTree = null;
         }
+
     }
 
     function onScroll() {

@@ -44,6 +44,8 @@ async fn main() -> std::io::Result<()> {
         .expect("error while creating mongodb connection");
     let db_ref = Arc::new(db);
 
+    println!("Running rolebrew backend...");
+
     HttpServer::new(move || {
         let users_data = create_collection_and_data::<User>(db_ref.clone());
         let feat_data = create_collection_and_data::<Feat>(db_ref.clone());
@@ -77,6 +79,7 @@ async fn main() -> std::io::Result<()> {
                 Cors::default()
                     .allowed_origin("http://localhost:5173")
                     .allowed_origin("http://localhost:4173")
+                    .allowed_origin("http://localhost:3000")
                     .allowed_methods(vec!["GET", "POST"])
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
                     .allowed_header(header::CONTENT_TYPE)
@@ -85,7 +88,7 @@ async fn main() -> std::io::Result<()> {
             )
             .wrap(Logger::default())
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("0.0.0.0", 8080))?
     .workers(1)
     .run()
     .await

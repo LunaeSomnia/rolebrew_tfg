@@ -18,7 +18,7 @@ pub struct Database {
 impl Database {
     /// Creates or open a database from the path given.
     pub async fn connect() -> Result<Self, mongodb::error::Error> {
-        let uri = std::env::var("MONGO_URI").unwrap();
+        let uri = std::env::var("MONGO_URL").unwrap();
 
         let client = Client::with_uri_str(uri).await.expect("failed to connect");
 

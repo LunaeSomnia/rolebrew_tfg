@@ -1,6 +1,5 @@
 <script>
     import { goto } from "$app/navigation";
-    import { PUBLIC_BACKEND_URL } from "$env/static/public";
     import { AlertType } from "$lib/components/alert/alert.js";
     import Button from "$lib/components/Button.svelte";
     import InputField from "$lib/components/InputField.svelte";
@@ -13,7 +12,7 @@
     let password = $state("test_password");
 
     async function sendLoginRequest() {
-        const response = await fetch(PUBLIC_BACKEND_URL + "/api/auth/login", {
+        const response = await fetch("/api/auth/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

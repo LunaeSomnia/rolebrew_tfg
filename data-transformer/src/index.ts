@@ -3,16 +3,18 @@ import "reflect-metadata";
 import "es6-shim";
 import * as mongoDB from "mongodb";
 import * as dotenv from "dotenv";
-import { ACTIONS, ANCESTRIES, FEATS } from "./src/models/index.ts";
+import { ACTIONS, ANCESTRIES, FEATS } from "./models/index.ts";
 
-console.log(`Init`);
+const dbConnectionString = process.env.MONGO_URL ?? "";
+console.info("Connecting to", dbConnectionString);
+
 export const mongoDBClient: mongoDB.MongoClient = new mongoDB.MongoClient(
-    process.env.DB_CONN_STRING ?? "",
+    dbConnectionString,
 );
 await mongoDBClient.connect();
-export const db: mongoDB.Db = mongoDBClient.db(process.env.DB_NAME);
+export const db: mongoDB.Db = mongoDBClient.db("rolebrew");
 await db.dropDatabase();
-console.log(`Successfully connected to database: ${db.databaseName}`);
+console.info(`Successfully connected to database`);
 export const docMap: Map<string, any[]> = new Map();
 
 db.collection("feat").insertMany(Array.from(FEATS.values()));

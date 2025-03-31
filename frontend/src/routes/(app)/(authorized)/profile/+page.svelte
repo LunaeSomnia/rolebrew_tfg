@@ -5,8 +5,6 @@
 
     // @ts-ignore
     const user: UserState | null = $derived(data.user);
-
-    console.log(user);
 </script>
 
 {#if user}

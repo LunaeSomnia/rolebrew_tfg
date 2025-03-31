@@ -16,7 +16,6 @@
     import LinkPreviewCe from "$lib/components/link-preview/LinkPreviewCE.svelte";
     import Tooltip from "$lib/components/Tooltip.svelte";
     import SortedTable from "$lib/components/SortedTable.svelte";
-    import { PUBLIC_BACKEND_URL } from "$env/static/public";
     import { CompendiumSection } from "$lib/compendiumTableDef";
     import Traits from "$lib/components/Traits.svelte";
 
@@ -39,7 +38,7 @@
 
 {#await data.ancestryRequest then ancestry}
     {afterLoad()}
-    <div class="ancestry-wrapper row">
+    <div class="ancestry row">
         <aside class="column side-data">
             <!-- <img
             src="/{ancestry.img.replace('systems/pf2e/', '')}"
@@ -222,7 +221,7 @@
         height: 20rem;
     }
 
-    .ancestry-wrapper {
+    .ancestry {
         width: 100%;
         max-width: 100%;
         gap: 2rem;
