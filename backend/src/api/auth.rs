@@ -11,7 +11,7 @@ use tokio::sync::RwLock;
 
 use crate::{
     DatabaseCollection,
-    auth::{generate_tokens, verify_token},
+    auth::generate_tokens,
     hash::{hash_password, verify_hash},
     user::{User, UserClaims},
     users_db_impl::UserDBImpl,

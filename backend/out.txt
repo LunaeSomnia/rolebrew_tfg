@@ -1,31 +1,10 @@
    Compiling backend v0.1.0 (/home/lunae/Documents/rolebrew/backend)
-error[E0432]: unresolved import `models::primary::journal`
- --> src/main.rs:9:63
-  |
-9 |     primary::{action::Action, ancestry::Ancestry, feat::Feat, journal::Journal},
-  |                                                               ^^^^^^^ could not find `journal` in `primary`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.07s
+     Running unittests src/main.rs (target/debug/deps/backend-399d3368c8b8d2c6)
 
-error[E0425]: cannot find value `get_journal` in this scope
-  --> src/main.rs:78:22
-   |
-78 |             .service(get_journal)
-   |                      ^^^^^^^^^^^ not found in this scope
+running 2 tests
+test export_bindings ... ok
+test test_database_data ... ok
 
-warning: unused import: `Responder`
- --> src/api/mod.rs:2:17
-  |
-2 | use actix_web::{Responder, web::Data};
-  |                 ^^^^^^^^^
-  |
-  = note: `#[warn(unused_imports)]` on by default
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.79s
 
-warning: unused import: `summary::Summary`
- --> src/api/ancestry_api.rs:3:43
-  |
-3 |     models::{primary::ancestry::Ancestry, summary::Summary},
-  |                                           ^^^^^^^^^^^^^^^^
-
-Some errors have detailed explanations: E0425, E0432.
-For more information about an error, try `rustc --explain E0425`.
-warning: `backend` (bin "backend" test) generated 2 warnings
-error: could not compile `backend` (bin "backend" test) due to 2 previous errors; 2 warnings emitted

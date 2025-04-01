@@ -12,27 +12,3 @@ pub struct LinkPreview {
     pub rarity: Option<String>,
     pub traits: Vec<String>,
 }
-
-impl From<Action> for LinkPreview {
-    fn from(value: Action) -> Self {
-        Self {
-            slug: value.slug,
-            name: value.name,
-            description: value.description,
-            rarity: value.rarity,
-            traits: value.traits,
-        }
-    }
-}
-
-impl From<Feat> for LinkPreview {
-    fn from(value: Feat) -> Self {
-        Self {
-            slug: value.slug,
-            name: value.name,
-            description: value.description,
-            rarity: Some(value.rarity),
-            traits: value.traits,
-        }
-    }
-}

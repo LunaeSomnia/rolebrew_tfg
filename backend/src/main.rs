@@ -4,7 +4,10 @@ use actix_cors::Cors;
 use actix_web::{App, HttpServer, http::header, middleware::Logger, web::Data};
 use db::storeable::Storeable;
 use dotenv::dotenv;
-use models::primary::{action::Action, ancestry::Ancestry, feat::Feat};
+use models::{
+    Background, Class,
+    primary::{action::Action, ancestry::Ancestry, feat::Feat},
+};
 use tokio::sync::RwLock;
 use user::User;
 
@@ -51,12 +54,16 @@ async fn main() -> std::io::Result<()> {
         let feat_data = create_collection_and_data::<Feat>(db_ref.clone());
         let ancestry_data = create_collection_and_data::<Ancestry>(db_ref.clone());
         let action_data = create_collection_and_data::<Action>(db_ref.clone());
+        let class_data = create_collection_and_data::<Class>(db_ref.clone());
+        let background_data = create_collection_and_data::<Background>(db_ref.clone());
 
         App::new()
             .app_data(users_data)
             .app_data(feat_data)
             .app_data(ancestry_data)
             .app_data(action_data)
+            .app_data(class_data)
+            .app_data(background_data)
             // auth
             .service(login)
             .service(hash)
@@ -66,6 +73,14 @@ async fn main() -> std::io::Result<()> {
             .service(get_action_summaries)
             .service(get_action_preview)
             .service(get_action)
+            // class
+            .service(get_class_summaries)
+            .service(get_class_preview)
+            .service(get_class)
+            // background
+            .service(get_background_summaries)
+            .service(get_background_preview)
+            .service(get_background)
             // feat
             .service(get_feat_summaries)
             .service(get_feat_preview)
@@ -110,10 +125,14 @@ async fn test_database_data() {
     let feat_collection = DatabaseCollection::<Feat>::new(db_ref.clone());
     let ancestry_collection = DatabaseCollection::<Ancestry>::new(db_ref.clone());
     let action_collection = DatabaseCollection::<Action>::new(db_ref.clone());
+    let class_collection = DatabaseCollection::<Class>::new(db_ref.clone());
+    let background_collection = DatabaseCollection::<Background>::new(db_ref.clone());
 
-    feat_collection.get_all().await.unwrap();
-    ancestry_collection.get_all().await.unwrap();
-    action_collection.get_all().await.unwrap();
+    let _feats: Vec<Feat> = feat_collection.get_all().await.unwrap();
+    let _ancestries: Vec<Ancestry> = ancestry_collection.get_all().await.unwrap();
+    let _actions: Vec<Action> = action_collection.get_all().await.unwrap();
+    let _classes: Vec<Class> = class_collection.get_all().await.unwrap();
+    let _backgrounds: Vec<Background> = background_collection.get_all().await.unwrap();
 }
 
 #[tokio::test]
@@ -129,6 +148,8 @@ async fn export_bindings() {
         .register::<Ancestry>()
         .register::<Feat>()
         .register::<Action>()
+        .register::<Class>()
+        .register::<Background>()
         //
         .register::<Summary>()
         .register::<LinkPreview>()

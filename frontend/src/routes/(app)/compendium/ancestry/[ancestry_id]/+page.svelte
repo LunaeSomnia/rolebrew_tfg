@@ -18,6 +18,7 @@
     import SortedTable from "$lib/components/SortedTable.svelte";
     import { CompendiumSection } from "$lib/compendiumTableDef";
     import Traits from "$lib/components/Traits.svelte";
+    import GeneralInfoHeader from "$lib/components/GeneralInfoHeader.svelte";
 
     let { data }: PageProps = $props();
 
@@ -120,20 +121,13 @@
         </aside>
         <div id="toc-target" class="main-content column">
             <section class="column general-info">
-                <div class="header row spaced-between">
-                    <h2 id={data.ancestry_id}>
-                        {ancestry.name}
-                    </h2>
-                    <div class="meta row">
-                        <p class="id">{ancestry.publication.title}</p>
-                        <Tag>
-                            <p class="license">
-                                {ancestry.publication.license}
-                            </p>
-                        </Tag>
-                    </div>
-                </div>
-                <Traits rarity={ancestry.rarity} traits={ancestry.traits} />
+                <GeneralInfoHeader
+                    id={data.ancestry_id}
+                    name={ancestry.name}
+                    publication={ancestry.publication}
+                    rarity={ancestry.rarity}
+                    traits={ancestry.traits}
+                />
 
                 <p class="description fancy column">
                     {@html transformDescription(ancestry.description.summary)}
@@ -242,21 +236,7 @@
         gap: 2rem;
     }
 
-    .general-info {
-        // .meta {
-        // }
 
-        h2 {
-            width: auto;
-        }
-
-        .features {
-            width: 100%;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            gap: 0.125rem;
-        }
-    }
 
     .heritages-header {
         flex-wrap: wrap;

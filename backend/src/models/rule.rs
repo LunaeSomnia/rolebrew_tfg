@@ -17,7 +17,7 @@ pub enum Rule {
         value: serde_json::Value,
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
-        priority: Option<u8>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     Strike {
@@ -49,10 +49,11 @@ pub enum Rule {
 
         label: Option<String>,
         option: String,
+        selector: Option<String>,
         phase: Option<String>,
         domain: Option<String>,
         placement: Option<String>,
-        priority: Option<u8>,
+        priority: Option<i16>,
         #[serde(default, deserialize_with = "null_to_default")]
         disabled_if: MVec<RulePredicateFilter>,
         #[serde(default, deserialize_with = "null_to_default")]
@@ -88,7 +89,7 @@ pub enum Rule {
         preselect_choices: BTreeMap<String, String>,
         on_delete_actions: Option<serde_json::Value>, // Worth nothing
         alterations: Option<serde_json::Value>,       // TODO: Check
-        priority: Option<u8>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     ItemAlteration {
@@ -109,7 +110,7 @@ pub enum Rule {
     },
     #[serde(rename_all = "camelCase")]
     ChoiceSet {
-        adjust_name: Option<bool>,
+        adjust_name: Option<Either<bool, String>>,
         actor_flag: Option<bool>,
 
         allowed_drops: Option<ChoiceSetAllowedDrops>,
@@ -119,10 +120,11 @@ pub enum Rule {
         label: Option<String>,
         selection: Option<String>,
         flag: Option<String>,
+        slug: Option<String>,
         prompt: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
-        priority: Option<u8>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     CreatureSize {
@@ -139,9 +141,11 @@ pub enum Rule {
         critical: Option<bool>,
         hide_if_disabled: Option<bool>,
         from_equipment: Option<bool>,
+        force: Option<bool>,
 
         damage_category: Option<String>,
         damage_type: Option<String>,
+        phase: Option<String>,
         ability: Option<String>,
         label: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
@@ -272,7 +276,7 @@ pub enum Rule {
         selectors: Option<Vec<String>>,
         slug: Option<String>,
         value: Option<serde_json::Value>,
-        priority: Option<u8>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     TokenLight {
@@ -323,7 +327,7 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         selectors: Vec<String>,
         value: Option<serde_json::Value>,
-        priority: Option<u8>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     MartialProficiency {
@@ -395,9 +399,12 @@ pub enum Rule {
     #[serde(rename_all = "camelCase")]
     SpecialStatistic {
         extends: String,
-        item_casting: SpecialStatisticItemCasting,
-        priority: Option<u8>,
+        item_casting: Option<SpecialStatisticItemCasting>,
+        priority: Option<i16>,
         slug: String,
+        label: Option<String>,
+        #[serde(rename = "type")]
+        statistic_type: Option<String>,
     },
     #[serde(rename_all = "camelCase")]
     TokenEffectIcon {
@@ -413,30 +420,39 @@ pub enum RulePredicateFilter {
     String(String),
     Number(i8),
     Not {
+        #[serde(default, deserialize_with = "null_to_default")]
         not: MVec<Box<RulePredicateFilter>>,
     },
     And {
+        #[serde(default, deserialize_with = "null_to_default")]
         and: MVec<Box<RulePredicateFilter>>,
     },
     Or {
+        #[serde(default, deserialize_with = "null_to_default")]
         or: MVec<Box<RulePredicateFilter>>,
     },
     Nand {
+        #[serde(default, deserialize_with = "null_to_default")]
         nand: MVec<Box<RulePredicateFilter>>,
     },
     Nor {
+        #[serde(default, deserialize_with = "null_to_default")]
         nor: MVec<Box<RulePredicateFilter>>,
     },
     Lt {
+        #[serde(default, deserialize_with = "null_to_default")]
         lt: MVec<Box<RulePredicateFilter>>,
     },
     Lte {
+        #[serde(default, deserialize_with = "null_to_default")]
         lte: MVec<Box<RulePredicateFilter>>,
     },
     Gt {
+        #[serde(default, deserialize_with = "null_to_default")]
         gt: MVec<Box<RulePredicateFilter>>,
     },
     Gte {
+        #[serde(default, deserialize_with = "null_to_default")]
         gte: MVec<Box<RulePredicateFilter>>,
     },
 }

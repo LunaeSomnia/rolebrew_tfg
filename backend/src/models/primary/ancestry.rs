@@ -1,4 +1,8 @@
 use crate::helpers::null_to_default;
+use crate::models::{
+    LinkPreview, Summary, SummaryData, SummaryDataAbbreviateType, SummaryDataNumberUnit,
+    SummaryDataTagCategory,
+};
 use crate::{
     models::{
         boost_flaw::BoostOrFlaw, languages::Languages, publication::Publication, rule::Rule,
@@ -9,6 +13,8 @@ use crate::{
 use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 use specta::Type;
+
+use super::Feat;
 
 #[derive(Serialize, Deserialize, Debug, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -36,7 +42,7 @@ pub struct Ancestry {
     pub speed: Speed,
     pub languages: Languages,
     #[serde(default, deserialize_with = "null_to_default")]
-    pub features: Vec<AncestryFeature>,
+    pub features: Vec<Feat>,
     pub publication: Publication,
     #[serde(default, deserialize_with = "null_to_default")]
     pub heritage: Vec<AncestryHeritage>,
@@ -58,25 +64,6 @@ pub struct AncestryDescription {
 
 #[derive(Serialize, Deserialize, Debug, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct AncestryFeature {
-    // CompendiumFile
-    pub fvtt_id: String,
-    pub slug: String,
-    pub name: String,
-    pub rarity: String,
-    #[serde(default, deserialize_with = "null_to_default")]
-    pub traits: Vec<String>,
-    pub action_type: String,
-    pub description: String,
-    #[serde(default, deserialize_with = "null_to_default")]
-    pub rules: Vec<Rule>,
-    #[serde(default, deserialize_with = "null_to_default")]
-    pub selected_traits: serde_json::Value, // TODO: Check
-    pub publication: Publication,
-}
-
-#[derive(Serialize, Deserialize, Debug, Type)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct AncestryHeritage {
     // CompendiumFile
     pub fvtt_id: String,
@@ -90,4 +77,87 @@ pub struct AncestryHeritage {
     pub rarity: String,
     #[serde(default, deserialize_with = "null_to_default")]
     pub traits: Vec<String>,
+}
+
+impl From<Ancestry> for Summary {
+    fn from(value: Ancestry) -> Self {
+        let data = vec![
+            SummaryData::String {
+                value: value.name.clone(),
+                link: None,
+                tooltip: None,
+                abbreviation: None,
+            },
+            SummaryData::Tag {
+                value: value.rarity,
+                category: SummaryDataTagCategory::Rarity,
+                link: None,
+                tooltip: None,
+                abbreviation: None,
+            },
+            SummaryData::Number {
+                value: value.hp,
+                unit: None,
+            },
+            SummaryData::String {
+                value: value.size.to_string(),
+                link: None,
+                tooltip: None,
+                abbreviation: None,
+            },
+            SummaryData::Number {
+                value: value.speed.walk,
+                unit: Some(SummaryDataNumberUnit::Feet),
+            },
+            SummaryData::String {
+                value: value.boosts.iter().fold(String::new(), |acc, v| {
+                    if acc.is_empty() {
+                        v.to_string_shortened()
+                    } else {
+                        format!("{}, {}", acc, v.to_string_shortened())
+                    }
+                }),
+                link: None,
+                tooltip: None,
+                abbreviation: None,
+            },
+            SummaryData::String {
+                value: value.flaws.iter().fold(String::new(), |acc, v| {
+                    if acc.is_empty() {
+                        v.to_string_shortened()
+                    } else {
+                        format!("{}, {}", acc, v.to_string_shortened())
+                    }
+                }),
+                link: None,
+                tooltip: None,
+                abbreviation: None,
+            },
+            SummaryData::String {
+                value: value.publication.title,
+                link: None,
+                tooltip: None,
+                abbreviation: Some(SummaryDataAbbreviateType::Source),
+            },
+        ];
+
+        Self {
+            id: value.fvtt_id,
+            name: value.name,
+            slug: value.slug,
+            data,
+        }
+    }
+}
+
+impl From<Ancestry> for LinkPreview {
+    fn from(value: Ancestry) -> Self {
+        Self {
+            slug: value.slug,
+            name: value.name,
+            description: value.description.summary,
+            rarity: Some(value.rarity),
+            traits: value.traits,
+        }
+    }
 }

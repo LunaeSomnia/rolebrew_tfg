@@ -1,6 +1,6 @@
 use crate::{
     helpers::null_to_default,
-    models::{publication::Publication, rule::Rule},
+    models::{LinkPreview, Summary, SummaryData, publication::Publication, rule::Rule},
     storeable::Storeable,
 };
 use bson::oid::ObjectId;
@@ -12,7 +12,7 @@ use specta::Type;
 pub struct Feat {
     // CompendiuancestrymFile
     #[serde(rename = "_id")]
-    pub mongo_id: ObjectId,
+    pub mongo_id: Option<ObjectId>,
     pub fvtt_id: String,
     pub name: String,
     pub action_type: String,
@@ -34,5 +34,35 @@ pub struct Feat {
 impl Storeable for Feat {
     fn table_name() -> &'static str {
         "feat"
+    }
+}
+
+impl From<Feat> for Summary {
+    fn from(value: Feat) -> Self {
+        let data = vec![SummaryData::String {
+            value: value.name.clone(),
+            link: None,
+            tooltip: None,
+            abbreviation: None,
+        }];
+
+        Self {
+            id: value.fvtt_id,
+            name: value.name,
+            slug: value.slug,
+            data,
+        }
+    }
+}
+
+impl From<Feat> for LinkPreview {
+    fn from(value: Feat) -> Self {
+        Self {
+            slug: value.slug,
+            name: value.name,
+            description: value.description,
+            rarity: Some(value.rarity),
+            traits: value.traits,
+        }
     }
 }

@@ -17,15 +17,17 @@
     <div id="toc-target" class="main-content column">
         <section class="column general-info">
             <GeneralInfoHeader
-                id={data.feat_id}
-                name={data.featData.name}
-                publication={data.featData.publication}
-                rarity={data.featData.rarity}
-                traits={data.featData.traits}
+                id={data.background_id}
+                name={data.backgroundData.name}
+                publication={data.backgroundData.publication}
+                rarity={data.backgroundData.rarity}
+                traits={data.backgroundData.traits}
             />
 
             <p class="description column">
-                {@html linkToLinkPreviewConverter(data.featData.description)}
+                {@html linkToLinkPreviewConverter(
+                    data.backgroundData.description,
+                )}
             </p>
         </section>
     </div>

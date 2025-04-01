@@ -12,14 +12,14 @@ export class Background {
     name!: string;
 
     @Transform(({ obj }) => {
-        type KeyValue = { key: string; value: any };
-        const mapResult: KeyValue[] = [];
+        const map: Record<number, number[]> = {};
 
-        Object.entries(obj.system.boosts).forEach((value, _i) => {
-            mapResult.push({ key: value[0], value: value[1] } as KeyValue);
-        });
-
-        return mapResult.map((v) => v.value.value);
+        Object.entries(obj.system.boosts).forEach(
+            (value: [string, any], _i) => {
+                map[Number.parseInt(value[0])] = value[1].value;
+            },
+        );
+        return map;
     })
     @Expose()
     boosts!: Record<number, number[]>;
