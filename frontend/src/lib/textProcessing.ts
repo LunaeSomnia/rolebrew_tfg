@@ -116,7 +116,6 @@ export function linkToLinkPreviewConverter(html: string) {
 
 export function hrefToSummaryHref(href: string): string {
     return (
-        PUBLIC_BACKEND_URL +
         href.replaceAll("compendium", "api").replaceAll(/#.+?[$\/]/g, "") +
         "/preview"
     );

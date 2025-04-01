@@ -136,6 +136,8 @@ const IGNORED_SECTIONS = [
     "bestiary-effects",
     "lost-omens-tian-xia-world-guide",
     "pf2e-macros",
+    "rollable-tables",
+    "campaign-effects",
 ];
 
 const COMPENDIUM_SECTION_MATCHER: Map<string, string> = new Map([

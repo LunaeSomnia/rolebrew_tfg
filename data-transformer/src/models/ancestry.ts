@@ -15,6 +15,7 @@ import {
     stepHeaders,
 } from "./utils/html";
 import { parseFragment } from "parse5";
+import { Feat } from "./feat";
 
 export class Ancestry {
     @Expose({ name: "_id" }) fvttId!: string;
@@ -169,16 +170,9 @@ export class Ancestry {
 
         return items.map((item) => {
             const uuid = extractLastUuid(item.uuid);
-            const feature = ANCESTRY_FEATURES.get(nameToSlug(item.name));
+            const feature = ANCESTRY_FEATURES.get(uuid);
             if (feature) {
                 return feature;
-            }
-
-            const feature2 = ANCESTRY_FEATURES.get(
-                nameToSlug(item.name + " " + obj.name),
-            );
-            if (feature2) {
-                return feature2;
             }
 
             throw new Error(
@@ -186,8 +180,8 @@ export class Ancestry {
             );
         });
     })
-    @Type(() => AncestryFeature)
-    features!: AncestryFeature[];
+    @Type(() => Feat)
+    features!: Feat[];
 
     @Transform(({ obj }) => obj.system.publication)
     @Expose()
@@ -252,49 +246,4 @@ export class Ancestry {
     @Exclude() system!: any;
     @Exclude() type!: any;
     @Exclude() _stats!: any;
-}
-
-export class AncestryFeature {
-    @Expose({ name: "_id" }) fvttId!: string;
-
-    name!: string;
-
-    @Transform(({ obj }) => obj.system.slug)
-    @Expose()
-    slug!: string;
-
-    @Transform(({ obj }) => obj.system.traits.rarity)
-    @Expose()
-    rarity!: string;
-
-    @Transform(({ obj }) => obj.system.traits.value)
-    @Expose()
-    traits!: string[];
-
-    @Transform(({ obj }) => obj.system.actionType.value)
-    @Expose()
-    actionType!: string;
-
-    @Transform(({ obj }) => obj.system.description.value)
-    @Expose()
-    description!: string;
-
-    @Transform(({ obj }) => obj.system.rules.map((v: any) => mapToRule(v)))
-    @Expose()
-    rules!: RuleType[];
-
-    @Transform(({ obj }) => obj.system.traits.selected)
-    @Expose()
-    selectedTraits!: any;
-
-    @Transform(({ obj }) => obj.system.publication as Publication)
-    @Expose()
-    publication!: Publication;
-
-    @Exclude() type!: null;
-    @Exclude() img!: null;
-    @Exclude() system!: null;
-    @Exclude() effects!: null;
-    @Exclude() _stats!: null;
-    @Exclude() _migration!: null;
 }
