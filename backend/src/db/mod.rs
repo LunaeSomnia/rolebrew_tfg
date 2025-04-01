@@ -65,10 +65,21 @@ where
         secondary_col: &str,
     ) -> Result<Option<T>, mongodb::error::Error> {
         let client = self.database.get_client().await?;
-        let collection: mongodb::Collection<T> =
+        let collection: mongodb::Collection<serde_json::Value> =
             client.database(DATABASE_NAME).collection(T::table_name());
-        let result: Option<T> = match collection.find_one(doc! { secondary_col: id }).await {
-            Ok(Some(v)) => Some(v),
+        let json_value: Result<Option<serde_json::Value>, mongodb::error::Error> =
+            collection.find_one(doc! { secondary_col: id }).await;
+        let result: Option<T> = match json_value {
+            Ok(Some(v)) => {
+                let str = serde_json::to_string(&v).unwrap();
+                let parse_result = serde_json::from_str(&str);
+                if let Err(e) = parse_result {
+                    eprintln!("This value failed to parse {}\n with error: {}", v, e);
+                    exit(1)
+                } else {
+                    parse_result.unwrap()
+                }
+            }
             Ok(None) => None,
             Err(err) => return Err(err),
         };
