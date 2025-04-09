@@ -2,7 +2,20 @@ use serde::{Deserialize, Serialize};
 use specta::Type;
 use strum::{Display, EnumString};
 
-#[derive(Serialize, Deserialize, Debug, Type, Clone, Copy, EnumString, Display)]
+#[derive(
+    Serialize,
+    Deserialize,
+    Debug,
+    Type,
+    Clone,
+    Copy,
+    EnumString,
+    Display,
+    PartialEq,
+    PartialOrd,
+    Eq,
+    Ord,
+)]
 #[serde(deny_unknown_fields)]
 pub enum Attribute {
     #[serde(alias = "str")]

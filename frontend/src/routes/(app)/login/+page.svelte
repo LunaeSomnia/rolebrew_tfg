@@ -1,12 +1,13 @@
-<script>
+<script lang="ts">
     import { goto } from "$app/navigation";
     import { AlertType } from "$lib/components/alert/alert.js";
     import Button from "$lib/components/Button.svelte";
     import InputField from "$lib/components/InputField.svelte";
     import { Icon } from "$lib/icons/icons.js";
     import { appState } from "$lib/store.svelte";
+    import type { PageProps } from "./$types";
 
-    let { data } = $props();
+    let { data }: PageProps = $props();
 
     let username = $state("test_user");
     let password = $state("test_password");
@@ -26,7 +27,14 @@
 
         if (response.ok && response.status === 200) {
             appState.addAlert(AlertType.Success, Icon.Logo, "Welcome", null);
-            goto("/", {
+
+            let finalUrl = "/";
+
+            let fromQueryParam = data.queryParams.get("from");
+            if (fromQueryParam) {
+                finalUrl = fromQueryParam;
+            }
+            goto(finalUrl, {
                 invalidateAll: true,
             });
         } else {

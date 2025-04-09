@@ -1,6 +1,6 @@
 use crate::helpers::null_to_default;
 use crate::models::{
-    LinkPreview, Summary, SummaryData, SummaryDataAbbreviateType, SummaryDataNumberUnit,
+    Item, LinkPreview, Summary, SummaryData, SummaryDataAbbreviateType, SummaryDataNumberUnit,
     SummaryDataTagCategory,
 };
 use crate::{
@@ -45,8 +45,10 @@ pub struct Ancestry {
     pub features: Vec<Feat>,
     pub publication: Publication,
     #[serde(default, deserialize_with = "null_to_default")]
-    pub heritage: Vec<AncestryHeritage>,
+    pub heritages: Vec<Item>,
     pub description: AncestryDescription,
+    #[serde(rename = "type")]
+    pub data_type: String,
 }
 
 impl Storeable for Ancestry {
@@ -60,23 +62,6 @@ impl Storeable for Ancestry {
 pub struct AncestryDescription {
     summary: String,
     roleplaying: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Type)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-pub struct AncestryHeritage {
-    // CompendiumFile
-    pub fvtt_id: String,
-    pub name: String,
-    pub slug: String,
-    pub description: String,
-    pub ancestry_slug: String,
-    pub publication: Publication,
-    #[serde(default, deserialize_with = "null_to_default")]
-    pub rules: Vec<Rule>,
-    pub rarity: String,
-    #[serde(default, deserialize_with = "null_to_default")]
-    pub traits: Vec<String>,
 }
 
 impl From<Ancestry> for Summary {

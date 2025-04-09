@@ -31,6 +31,8 @@
                 errorBody = await signupRequest.text();
             }
             appState.addAlert(AlertType.Error, Icon.Logo, "Error", errorBody);
+        } else {
+            appState.addAlert(AlertType.Success, Icon.Logo, "Success");
         }
     }
 </script>

@@ -4,6 +4,9 @@ pub use action::*;
 pub mod ancestry;
 pub use ancestry::*;
 
+pub mod heritage;
+pub use heritage::*;
+
 pub mod feat;
 pub use feat::*;
 

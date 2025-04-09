@@ -4,8 +4,9 @@ use actix_cors::Cors;
 use actix_web::{App, HttpServer, http::header, middleware::Logger, web::Data};
 use db::storeable::Storeable;
 use dotenv::dotenv;
+use helpers::MVecType;
 use models::{
-    Background, Class,
+    Background, Class, Heritage,
     primary::{action::Action, ancestry::Ancestry, feat::Feat},
 };
 use tokio::sync::RwLock;
@@ -24,6 +25,12 @@ pub mod models;
 pub mod auth;
 pub mod hash;
 pub mod user;
+
+pub mod character_creator;
+pub use character_creator::*;
+
+pub mod character;
+pub use character::*;
 
 fn create_collection_and_data<T>(db_ref: Arc<Database>) -> Data<RwLock<DatabaseCollection<T>>>
 where
@@ -52,6 +59,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         let users_data = create_collection_and_data::<User>(db_ref.clone());
         let feat_data = create_collection_and_data::<Feat>(db_ref.clone());
+        let heritage_data = create_collection_and_data::<Heritage>(db_ref.clone());
         let ancestry_data = create_collection_and_data::<Ancestry>(db_ref.clone());
         let action_data = create_collection_and_data::<Action>(db_ref.clone());
         let class_data = create_collection_and_data::<Class>(db_ref.clone());
@@ -60,6 +68,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(users_data)
             .app_data(feat_data)
+            .app_data(heritage_data)
             .app_data(ancestry_data)
             .app_data(action_data)
             .app_data(class_data)
@@ -67,6 +76,9 @@ async fn main() -> std::io::Result<()> {
             // auth
             .service(login)
             .service(hash)
+            // characters
+            .service(get_characters)
+            .service(create_new_character)
             // users
             .service(create_user)
             // action
@@ -85,9 +97,13 @@ async fn main() -> std::io::Result<()> {
             .service(get_feat_summaries)
             .service(get_feat_preview)
             .service(get_feat)
+            .service(get_feat_filtered)
             // ancestries
             .service(get_ancestry_summaries)
             .service(get_ancestry)
+            // heritages
+            .service(get_heritage_summaries)
+            .service(get_heritage)
             //
             .wrap(actix_web::middleware::DefaultHeaders::new())
             .wrap(
@@ -123,12 +139,14 @@ async fn test_database_data() {
     let db_ref = Arc::new(db);
 
     let feat_collection = DatabaseCollection::<Feat>::new(db_ref.clone());
+    let heritage_collection = DatabaseCollection::<Ancestry>::new(db_ref.clone());
     let ancestry_collection = DatabaseCollection::<Ancestry>::new(db_ref.clone());
     let action_collection = DatabaseCollection::<Action>::new(db_ref.clone());
     let class_collection = DatabaseCollection::<Class>::new(db_ref.clone());
     let background_collection = DatabaseCollection::<Background>::new(db_ref.clone());
 
     let _feats: Vec<Feat> = feat_collection.get_all().await.unwrap();
+    let _heritages: Vec<Ancestry> = heritage_collection.get_all().await.unwrap();
     let _ancestries: Vec<Ancestry> = ancestry_collection.get_all().await.unwrap();
     let _actions: Vec<Action> = action_collection.get_all().await.unwrap();
     let _classes: Vec<Class> = class_collection.get_all().await.unwrap();
@@ -145,12 +163,14 @@ async fn export_bindings() {
 
     // Export types to Typescript file
     TypeCollection::default()
+        .register::<Heritage>()
         .register::<Ancestry>()
         .register::<Feat>()
         .register::<Action>()
         .register::<Class>()
         .register::<Background>()
         //
+        .register::<Character>()
         .register::<Summary>()
         .register::<LinkPreview>()
         .register::<UserClaims>()
@@ -158,6 +178,7 @@ async fn export_bindings() {
         .register::<LoginForm>()
         .register::<SignupForm>()
         .register::<GetFeatsFilterForm>()
+        .register::<NewCharacterForm>()
         .export_to(Typescript::new(), "../frontend/src/lib/bindings.ts")
         .unwrap();
 }

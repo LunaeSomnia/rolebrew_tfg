@@ -9,9 +9,7 @@ pub struct Claims {
     pub exp: usize,
 }
 
-const ACCESS_EXPIRY: usize = 15 * 60; // 15 minutes
-// const ACCESS_EXPIRY: usize = 15; // 15 secs
-// const REFRESH_EXPIRY: usize = 7 * 24 * 60 * 60; // 7 days
+const ACCESS_EXPIRY: usize = 7 * 24 * 60 * 60; // 7 days
 
 pub fn generate_tokens(user_id: &str) -> String {
     let secret = env::var("JWT_SECRET").expect("JWT_SECRET not set");

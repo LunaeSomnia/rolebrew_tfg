@@ -21,5 +21,7 @@
 <style lang="scss">
     .traits {
         gap: 0.5rem;
+        flex-wrap: wrap;
+        width: 100%;
     }
 </style>

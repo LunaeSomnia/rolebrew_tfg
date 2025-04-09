@@ -12,15 +12,11 @@
 
     type Props = {
         icon: Icon;
-        size?: number | string;
         fill?: string;
+        size?: number | string;
     };
 
-    let {
-        icon,
-        size = DEFAULT_ICON_SIZE,
-        fill = DEFAULT_ICON_FILL,
-    }: Props = $props();
+    let { icon, size = DEFAULT_ICON_SIZE, fill }: Props = $props();
 
     const iconDefinition = ICON_VALUES.get(icon);
 </script>
@@ -31,8 +27,8 @@
     viewBox={`0 0 ${
         iconDefinition?.iconViewportSize ?? DEFAULT_ICON_VIEWPORT_WIDTH
     } ${iconDefinition?.iconViewportSize ?? DEFAULT_ICON_VIEWPORT_HEIGHT}`}
-    fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    style={fill ? "--icon-stroke: " + fill : ""}
 >
     {#each iconDefinition?.d ?? [] as iconDef}
         {#if iconDefinition?.isStroke}
@@ -40,7 +36,6 @@
                 fill-rule={DEFAULT_ICON_FILL_RULE}
                 clip-rule={DEFAULT_ICON_CLIP_RULE}
                 d={iconDef}
-                stroke={fill}
                 stroke-width="0.125rem"
             />
         {:else}
@@ -48,8 +43,15 @@
                 fill-rule={DEFAULT_ICON_FILL_RULE}
                 clip-rule={DEFAULT_ICON_CLIP_RULE}
                 d={iconDef}
-                {fill}
             />
         {/if}
     {/each}
 </svg>
+
+<style lang="scss">
+    path {
+        stroke: var(--icon-stroke);
+        stroke-width: var(--icon-stroke-width);
+        fill: var(--icon-fill);
+    }
+</style>

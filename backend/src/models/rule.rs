@@ -37,6 +37,7 @@ pub enum Rule {
         base_type: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         options: Vec<String>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     RollOption {
@@ -53,7 +54,6 @@ pub enum Rule {
         phase: Option<String>,
         domain: Option<String>,
         placement: Option<String>,
-        priority: Option<i16>,
         #[serde(default, deserialize_with = "null_to_default")]
         disabled_if: MVec<RulePredicateFilter>,
         #[serde(default, deserialize_with = "null_to_default")]
@@ -62,6 +62,7 @@ pub enum Rule {
         suboptions: Vec<RuleChoice>,
         #[serde(default, deserialize_with = "null_to_default")]
         value: Option<serde_json::Value>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     BaseSpeed {
@@ -72,9 +73,11 @@ pub enum Rule {
         value: serde_json::Value, // u8 originally
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     GrantItem {
+        track: Option<bool>,
         in_memory_only: Option<bool>,
         reevaluate_on_update: Option<bool>,
         allow_duplicate: Option<bool>,
@@ -106,22 +109,23 @@ pub enum Rule {
         text_ref: Vec<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         value: Option<serde_json::Value>,
-        priority: Option<serde_json::Value>, // Worth nothing
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     ChoiceSet {
-        adjust_name: Option<Either<bool, String>>,
+        adjust_name: Option<Either<bool, String>>, // Whether to edit the name of the original item to include the selection made
+        slugs_as_values: Option<bool>,
         actor_flag: Option<bool>,
 
         allowed_drops: Option<ChoiceSetAllowedDrops>,
         #[serde(default, deserialize_with = "null_to_default")]
         choices: MVec<Either<RuleChoice, String>>,
-        roll_option: Option<String>,
+        roll_option: Option<String>, // Adds a prefix to the 'Choice'
         label: Option<String>,
         selection: Option<String>,
-        flag: Option<String>,
+        flag: Option<String>, // Sets the flag's name for the ruleSections data path
         slug: Option<String>,
-        prompt: Option<String>,
+        prompt: Option<String>, // Heading on the prompt
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         priority: Option<i16>,
@@ -134,6 +138,7 @@ pub enum Rule {
         reach: Option<serde_json::Value>,
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     FlatModifier {
@@ -155,6 +160,7 @@ pub enum Rule {
         #[serde(rename = "type")]
         modifier_type: Option<String>,
         value: Option<serde_json::Value>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     AdjustDegreeOfSuccess {
@@ -167,6 +173,7 @@ pub enum Rule {
         selector_type: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         outcome: Vec<String>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     Weakness {
@@ -175,13 +182,15 @@ pub enum Rule {
         #[serde(rename = "type", default, deserialize_with = "null_to_default")]
         weakness_type: MVec<String>,
         value: serde_json::Value,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     Immunity {
         #[serde(rename = "type")]
-        immunity_type: String,
+        immunity_type: MVec<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     AdjustStrike {
@@ -193,6 +202,7 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         selector: Option<String>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     Sense {
@@ -202,6 +212,7 @@ pub enum Rule {
         value: Option<serde_json::Value>,
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     Resistance {
@@ -213,11 +224,12 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         double_vs: Vec<String>,
         #[serde(default, deserialize_with = "null_to_default")]
-        exceptions: Vec<String>,
+        exceptions: serde_json::Value, // originally string
         #[serde(default, deserialize_with = "null_to_default")]
         definition: MVec<RulePredicateFilter>,
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     DamageDice {
@@ -237,6 +249,7 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         value: Option<serde_json::Value>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     Note {
@@ -248,6 +261,7 @@ pub enum Rule {
         title: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         outcome: Vec<String>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     ActorTraits {
@@ -257,6 +271,7 @@ pub enum Rule {
         add: Vec<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         remove: Vec<String>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     AdjustModifier {
@@ -284,14 +299,17 @@ pub enum Rule {
         predicate: MVec<RulePredicateFilter>,
         #[serde(skip_serializing)]
         value: serde_json::Value, // Worth nothing
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     Aura {
         slug: Option<serde_json::Value>,      // Worth nothing
+        level: Option<serde_json::Value>,     // Worth nothing
         effects: Option<serde_json::Value>,   // Worth nothing
         radius: Option<serde_json::Value>,    // Worth nothing
         traits: Option<serde_json::Value>,    // Worth nothing
         predicate: Option<serde_json::Value>, // Worth nothing
+        priority: Option<serde_json::Value>,  // Worth nothing
     },
     #[serde(rename_all = "camelCase")]
     CraftingEntry {
@@ -307,6 +325,9 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         craftable_items: MVec<RulePredicateFilter>,
         batch_sizes: Option<serde_json::Value>,
+        #[serde(default, deserialize_with = "null_to_default")]
+        predicate: MVec<RulePredicateFilter>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     EphemeralEffect {
@@ -316,6 +337,7 @@ pub enum Rule {
         predicate: MVec<RulePredicateFilter>,
         #[serde(default, deserialize_with = "null_to_default")]
         selectors: MVec<String>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     DamageAlteration {
@@ -333,11 +355,13 @@ pub enum Rule {
     MartialProficiency {
         label: Option<String>,
         same_as: Option<String>,
+        kind: Option<String>,
         slug: Option<String>,
         max_rank: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         definition: MVec<RulePredicateFilter>,
         value: Option<serde_json::Value>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     CriticalSpecialization {
@@ -346,6 +370,7 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         damage_dice: Option<DamageRoll>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     SubstituteRoll {
@@ -358,6 +383,7 @@ pub enum Rule {
         value: u8,
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     MultipleAttackPenalty {
@@ -366,6 +392,7 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         selector: String,
         value: i8,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     RollTwice {
@@ -375,6 +402,7 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         selector: String,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     FastHealing {
@@ -383,18 +411,21 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         value: u8,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     DexterityModifierCap {
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         value: u8,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     TempHP {
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         value: u8,
+        priority: Option<i16>,
     },
     #[serde(rename_all = "camelCase")]
     SpecialStatistic {
@@ -411,6 +442,7 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         value: String,
+        priority: Option<i16>,
     },
 }
 

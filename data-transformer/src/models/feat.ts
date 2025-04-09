@@ -46,10 +46,13 @@ export class Feat {
     @Expose()
     publication!: Publication;
 
-    // @Transform(({ obj }) => obj.system.rules.map((v: any) => mapToRule(v))) TODO: Check rules
-    @Transform(({ obj }) => obj.system.rules)
+    @Transform(({ obj }) => obj.system.rules.map((v: any) => mapToRule(v)))
     @Expose()
     rules!: any[];
+
+    @Transform(({ obj }) => obj.system.traits.otherTags)
+    @Expose()
+    tags!: string[];
 
     @Transform(({ obj }) => obj.system.traits.rarity)
     @Expose()
@@ -66,6 +69,5 @@ export class Feat {
     @Exclude() system!: any;
     @Exclude() img!: any;
     @Exclude() _stats!: any;
-    @Exclude() type!: any;
     @Exclude() effects!: any; // TODO: Check
 }

@@ -4,7 +4,6 @@ use actix_web::{
     get, post,
     web::{Data, Path},
 };
-use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use tokio::sync::RwLock;
@@ -60,7 +59,7 @@ pub async fn login(
     }
 }
 
-#[derive(Serialize, Deserialize, Type)]
+#[derive(Serialize, Deserialize, Type, Debug)]
 pub struct SignupForm {
     username: String,
     password: String,
@@ -72,6 +71,7 @@ pub async fn create_user(
     db: CollectionData<'_>,
     form: actix_web::web::Json<SignupForm>,
 ) -> impl Responder {
+    println!("{:?}", &form.0);
     let db = db.read().await;
     if let Ok(db_user_result) = db.get_from_username(&form.username).await {
         if db_user_result.is_some() {
@@ -84,12 +84,11 @@ pub async fn create_user(
         return actix_web::HttpResponse::InternalServerError().finish();
     }
 
-    let new_user = User {
-        id: ObjectId::new(),
-        username: form.username.to_string(),
-        password_hash: password_hashed_result.unwrap(),
-        email: form.email.to_string(),
-    };
+    let new_user = User::new(
+        form.username.to_string(),
+        password_hashed_result.unwrap(),
+        form.email.to_string(),
+    );
 
     if let Err(_e) = db.insert(&new_user).await {
         return actix_web::HttpResponse::InternalServerError().finish();

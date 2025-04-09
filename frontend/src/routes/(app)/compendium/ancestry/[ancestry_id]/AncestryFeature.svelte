@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { AncestryFeature } from "$lib/bindings";
+    import type { Feat } from "$lib/bindings";
     import { getColorByCategory } from "$lib/color_category";
     import Tag from "$lib/components/Tag.svelte";
     import { transformDescription } from "$lib/textProcessing";
 
-    let { feature }: { feature: AncestryFeature } = $props();
+    let { feature }: { feature: Feat } = $props();
 </script>
 
 <div class="column ancestry-feature">
@@ -29,6 +29,7 @@
         width: 100%;
         padding: 1rem;
         background-color: var(--dark-3);
+        border-radius: 0.5rem;
     }
 
     .traits {

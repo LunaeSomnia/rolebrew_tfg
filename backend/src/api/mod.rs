@@ -3,7 +3,7 @@ use actix_web::web::Data;
 use tokio::sync::RwLock;
 
 pub mod user;
-// pub use user::*;
+pub use user::*;
 
 pub mod auth;
 pub use auth::*;
@@ -17,11 +17,17 @@ pub use feat_api::*;
 pub mod ancestry_api;
 pub use ancestry_api::*;
 
+pub mod heritage_api;
+pub use heritage_api::*;
+
 pub mod class_api;
 pub use class_api::*;
 
 pub mod background_api;
 pub use background_api::*;
+
+pub mod characters_api;
+pub use characters_api::*;
 
 type Collection<'a, T> = DatabaseCollection<T>;
 type CollectionData<'a, T> = Data<RwLock<Collection<'a, T>>>;

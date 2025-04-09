@@ -1,5 +1,5 @@
 import { Exclude, Expose, Transform, Type } from "class-transformer";
-import type { Boost, Flaw } from "./secondary/boost";
+import { parseBoost, type Boost, type Flaw } from "./secondary/boost";
 import type { Item } from "./secondary/item";
 import { extractLastUuid, extractTypeLinkFromText } from "./utils/uuid";
 import type { Publication } from "./secondary/publication";
@@ -39,25 +39,7 @@ export class Ancestry {
         });
 
         return result
-            .map((v) => {
-                if (v.value.value.length === 0) {
-                    return undefined;
-                } else if (v.value.value.length === 1) {
-                    return {
-                        type: "grant",
-                        boost: v.value.value[0] as string,
-                    } as Boost;
-                } else if (v.value.value.length === 6) {
-                    return {
-                        type: "free",
-                    } as Boost;
-                } else {
-                    return {
-                        type: "choose",
-                        boosts: v.value.value,
-                    } as Boost;
-                }
-            })
+            .map((v) => parseBoost(v))
             .filter((v) => v !== undefined);
     })
     @Expose()
@@ -190,12 +172,17 @@ export class Ancestry {
     @Transform(({ obj }) => {
         const heritages = Array.from(HERITAGES.values()).filter(
             (v) => v.ancestrySlug === obj.system.slug,
-        );
+        ).map(v => {
+            return {
+                uuid: v.slug,
+                name: v.name,
+            } as Item
+        });
 
         return heritages;
     })
     @Expose()
-    heritage!: any[];
+    heritages!: Item[];
 
     @Transform(({ obj }) => {
         const links = extractTypeLinkFromText(obj.system.description.value);
@@ -244,6 +231,5 @@ export class Ancestry {
     @Exclude() effects!: any[];
     @Exclude() img!: string;
     @Exclude() system!: any;
-    @Exclude() type!: any;
     @Exclude() _stats!: any;
 }

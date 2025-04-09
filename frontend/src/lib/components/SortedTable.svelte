@@ -90,7 +90,6 @@
             throw new Error(`found no header with name: ${header.column}`);
         }
 
-        // TODO: WTF IS GOING ON
         for (let [i, sort] of tableSorting.entries()) {
             tableSorting[i] = 0;
             if (i === idx) {

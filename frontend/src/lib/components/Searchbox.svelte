@@ -12,17 +12,20 @@
 <div class="searchbox" class:has-input={value !== ""}>
     <input class="row" bind:value type="text" {placeholder} />
     <div class="left-overlay">
-        <IconSvg icon={Icon.Search} fill={"var(--light-3)"} />
+        <IconSvg icon={Icon.Search} />
     </div>
     <div class="right-overlay">
-        <Button class="row ghost" onclick={() => (value = "")}
-            ><IconSvg icon={Icon.Close} fill="var(--light-2)" />
-        </Button>
+        <Button
+            cta="ghost"
+            iconLeft={Icon.Close}
+            onclick={() => (value = "")}
+        />
     </div>
 </div>
 
 <style lang="scss">
     .searchbox {
+        width: 100%;
         position: relative;
         background-color: var(--dark-3);
         overflow: hidden;
@@ -32,7 +35,6 @@
             height: 2.5rem;
             padding: 1rem;
             padding-left: 2.5rem;
-            background-color: none;
             background-color: var(--dark-3);
             color: var(--light-1);
             font-size: 1rem;
@@ -49,6 +51,8 @@
             pointer-events: none;
             width: 1.5rem;
             height: 1.5rem;
+
+            --icon-stroke: var(--light-3);
         }
         .right-overlay {
             position: absolute;
@@ -59,14 +63,13 @@
             transform: translate(-100%, 0%);
             opacity: 0;
             pointer-events: none;
+
+            --icon-stroke: var(--light-2);
         }
 
         &.has-input .right-overlay {
             opacity: 1;
             pointer-events: all;
-        }
-
-        &:hover {
         }
     }
 </style>

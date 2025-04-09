@@ -37,7 +37,6 @@ export class JournalPage {
 
     @Exclude()
     title!: { level: number; show: boolean };
-    type!: string;
     @Exclude()
     video?: null;
     @Exclude()

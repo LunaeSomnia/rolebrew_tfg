@@ -9,6 +9,8 @@ pub trait UserDBImpl {
         &self,
         id: &str,
     ) -> impl Future<Output = Result<Option<User>, mongodb::error::Error>>;
+
+    fn replace_user(&self, user: User) -> impl Future<Output = Result<(), mongodb::error::Error>>;
 }
 
 impl UserDBImpl for DatabaseCollection<User> {
@@ -26,5 +28,17 @@ impl UserDBImpl for DatabaseCollection<User> {
             Err(err) => return Err(err),
         };
         Ok(result)
+    }
+
+    async fn replace_user(&self, user: User) -> Result<(), mongodb::error::Error> {
+        let client = self.database.get_client().await?;
+        let collection: mongodb::Collection<User> = client
+            .database(DATABASE_NAME)
+            .collection(User::table_name());
+        let username = user.username.clone();
+        collection
+            .replace_one(doc! { "username": username }, user)
+            .await
+            .map(|_| ())
     }
 }

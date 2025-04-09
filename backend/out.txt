@@ -1,10 +1,63 @@
+    Blocking waiting for file lock on build directory
    Compiling backend v0.1.0 (/home/lunae/Documents/rolebrew/backend)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.07s
+warning: unused import: `helpers::MVecType`
+ --> src/main.rs:7:5
+  |
+7 | use helpers::MVecType;
+  |     ^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `std::collections::BTreeMap`
+ --> src/api/feat_api.rs:1:5
+  |
+1 | use std::collections::BTreeMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Action` and `primary::feat::Feat`
+ --> src/models/link_preview.rs:4:13
+  |
+4 | use super::{Action, primary::feat::Feat};
+  |             ^^^^^^  ^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `BTreeMap` and `HashMap`
+ --> src/models/primary/background.rs:1:24
+  |
+1 | use std::collections::{BTreeMap, HashMap};
+  |                        ^^^^^^^^  ^^^^^^^
+
+warning: unused import: `Attribute`
+ --> src/models/primary/background.rs:4:21
+  |
+4 | use crate::models::{Attribute, BoostOrFlaw, LinkPreview, Publication, Rule, Summary, SummaryData};
+  |                     ^^^^^^^^^
+
+warning: unused imports: `Action`, `ancestry::Ancestry`, and `feat::Feat`
+ --> src/models/summary.rs:5:5
+  |
+5 |     Action,
+  |     ^^^^^^
+6 |     primary::{ancestry::Ancestry, feat::Feat},
+  |               ^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^
+
+warning: field `0` is never read
+  --> src/helpers.rs:15:24
+   |
+15 | pub struct MVecType<T>(Vec<T>);
+   |            --------    ^^^^^^
+   |            |
+   |            field in this struct
+   |
+   = help: consider removing this field
+   = note: `#[warn(dead_code)]` on by default
+
+warning: `backend` (bin "backend" test) generated 7 warnings (run `cargo fix --bin "backend" --tests` to apply 6 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 10.39s
      Running unittests src/main.rs (target/debug/deps/backend-399d3368c8b8d2c6)
 
 running 2 tests
 test export_bindings ... ok
 test test_database_data ... ok
 
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.79s
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.13s
 

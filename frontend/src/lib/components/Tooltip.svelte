@@ -48,7 +48,7 @@
 {#if isOpen}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-        class="tooltip column"
+        class="tooltip dialog column"
         use:floatingContent
         transition:fly|global={{
             duration: 200,
@@ -67,13 +67,9 @@
         max-width: 40rem;
         position: absolute;
         display: flex;
-        border-width: 1px;
-        background-color: var(--dark-1);
         border-radius: 0.5rem;
         transition: position 0ms;
         padding: 0.5rem 1rem;
-        border: solid 0.125rem var(--dark-2);
-        box-shadow: 0rem 0rem 4rem #00000088;
         gap: 2rem;
     }
 </style>

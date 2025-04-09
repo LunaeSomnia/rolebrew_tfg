@@ -26,6 +26,7 @@
     .wrapper {
         display: grid;
         place-items: center;
+        height: calc(100vh - 4rem);
     }
 
     .alert-wrapper {
@@ -48,6 +49,7 @@
 
     .wrapper > .column {
         width: 100%;
+        height: 100%;
         max-width: var(--max-width);
         padding: 4rem 0;
         gap: 2rem;

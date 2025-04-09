@@ -5,6 +5,8 @@ import { FEATS } from ".";
 import type { Item } from "./secondary/item";
 import { Feat } from "./feat";
 import type { Publication } from "./secondary/publication";
+import { parseBoost, type Boost } from "./secondary/boost";
+import { mapToRule } from "./secondary/rule";
 
 export class Background {
     @Expose({ name: "_id" }) fvttId!: string;
@@ -12,17 +14,19 @@ export class Background {
     name!: string;
 
     @Transform(({ obj }) => {
-        const map: Record<number, number[]> = {};
+        type KeyValue = { key: string; value: any };
+        const result: KeyValue[] = [];
 
-        Object.entries(obj.system.boosts).forEach(
-            (value: [string, any], _i) => {
-                map[Number.parseInt(value[0])] = value[1].value;
-            },
-        );
-        return map;
+        Object.entries(obj.system.boosts).forEach((value, _i) => {
+            result.push({ key: value[0], value: value[1] } as KeyValue);
+        });
+
+        return result
+            .map((v) => parseBoost(v))
+            .filter((v) => v !== undefined);
     })
     @Expose()
-    boosts!: Record<number, number[]>;
+    boosts!: Record<string, Boost>;
 
     @Transform(({ obj }) => {
         let description = obj.system.description.value;
@@ -73,7 +77,7 @@ export class Background {
     @Expose()
     publication!: Publication;
 
-    @Transform(({ obj }) => obj.system.rules)
+    @Transform(({ obj }) => obj.system.rules.map((v: any) => mapToRule(v)))
     @Expose()
     rules!: any[];
 
@@ -96,6 +100,5 @@ export class Background {
     @Exclude() effects!: any[];
     @Exclude() img!: string;
     @Exclude() system!: any;
-    @Exclude() type!: any;
     @Exclude() _stats!: any;
 }

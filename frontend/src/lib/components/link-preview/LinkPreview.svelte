@@ -8,7 +8,13 @@
         SHOW_TIME_OFFSET,
     } from "./linkPreview";
 
-    let { href, summaryHref, children } = $props();
+    let {
+        href,
+        summaryHref,
+        children,
+        textDecorations = "underline",
+        cursor = "auto",
+    } = $props();
 
     const initialState = false;
     let isOpen: boolean = $state(initialState);
@@ -39,6 +45,7 @@
     {href}
     onmouseenter={openPreview}
     onmouseleave={closePreview}
+    style="text-decoration: {textDecorations}; cursor: {cursor};"
     use:floatingRef
 >
     {@render children()}

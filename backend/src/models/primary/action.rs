@@ -24,6 +24,8 @@ pub struct Action {
     #[serde(default, deserialize_with = "null_to_default")]
     pub traits: Vec<String>,
     pub slug: String,
+    #[serde(rename = "type")]
+    pub data_type: String,
 }
 
 impl Storeable for Action {

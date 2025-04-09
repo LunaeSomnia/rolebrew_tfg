@@ -39,7 +39,6 @@ export class Heritage {
     @Exclude() effects!: null;
     @Exclude() folder!: null;
     @Exclude() _stats!: null;
-    @Exclude() type!: null;
     @Exclude() img!: null;
     @Exclude() system!: null;
 }

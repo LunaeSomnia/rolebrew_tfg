@@ -1,5 +1,7 @@
 use crate::helpers::null_to_default;
-use crate::models::{LinkPreview, Publication, Rule, Summary, SummaryData};
+use crate::models::{
+    Attribute, LinkPreview, Proficiency, Publication, Rule, Skill, Summary, SummaryData,
+};
 use crate::storeable::Storeable;
 use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
@@ -27,8 +29,8 @@ pub struct Class {
     #[serde(default, deserialize_with = "null_to_default")]
     pub features: Vec<Feat>,
     #[serde(default, deserialize_with = "null_to_default")]
-    pub key_ability: Vec<String>,
-    pub perception: u8,
+    pub key_ability: Vec<Attribute>,
+    pub perception: Proficiency,
     pub publication: Publication,
     #[serde(default, deserialize_with = "null_to_default")]
     pub rules: Vec<Rule>,
@@ -43,6 +45,8 @@ pub struct Class {
     #[serde(default, deserialize_with = "null_to_default")]
     pub traits: Vec<String>,
     pub slug: String,
+    #[serde(rename = "type")]
+    pub data_type: String,
 }
 
 impl Storeable for Class {
@@ -95,7 +99,7 @@ pub struct ClassAttacks {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ClassAttacksOther {
     pub name: String,
-    pub rank: u8,
+    pub rank: Proficiency,
 }
 
 #[derive(Serialize, Deserialize, Debug, Type)]
@@ -110,15 +114,15 @@ pub struct ClassDefenses {
 #[derive(Serialize, Deserialize, Debug, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ClassSavingThrows {
-    pub fortitude: u8,
-    pub reflex: u8,
-    pub will: u8,
+    pub fortitude: Proficiency,
+    pub reflex: Proficiency,
+    pub will: Proficiency,
 }
 
 #[derive(Serialize, Deserialize, Debug, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ClassTrainedSkills {
     pub additional: u8,
-    pub value: Vec<String>,
+    pub value: Vec<Skill>,
     pub custom: Option<String>,
 }

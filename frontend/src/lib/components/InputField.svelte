@@ -17,9 +17,19 @@
         background-color: var(--dark-1);
         border-radius: 0.5rem;
         border: 0;
+        color: var(--light-3);
 
         &.has-input {
             background-color: var(--dark-3);
+            color: var(--light-1);
+        }
+
+        input {
+            color: inherit;
+
+            &::placeholder {
+                color: inherit;
+            }
         }
     }
 </style>

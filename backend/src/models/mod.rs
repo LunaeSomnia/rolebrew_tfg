@@ -37,5 +37,11 @@ pub use size::*;
 pub mod speed;
 pub use speed::*;
 
+pub mod proficiency;
+pub use proficiency::*;
+
+pub mod skill;
+pub use skill::*;
+
 pub mod summary;
 pub use summary::*;

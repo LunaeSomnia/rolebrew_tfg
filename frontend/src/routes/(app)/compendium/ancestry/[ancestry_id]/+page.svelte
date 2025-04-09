@@ -4,7 +4,7 @@
     import { getColorByCategory } from "$lib/color_category";
     import TableOfContents from "$lib/components/tableOfContents/TableOfContents.svelte";
     import AncestryStat from "./AncestryStat.svelte";
-    import AncestryFeature from "./AncestryFeature.svelte.svelte";
+    import AncestryFeature from "./AncestryFeature.svelte";
     import { afterNavigate, goto } from "$app/navigation";
     import {
         linkToLinkPreviewConverter,
@@ -22,18 +22,18 @@
 
     let { data }: PageProps = $props();
 
-    let heritageTab = $state(0);
+    let heritageTab = $state("");
 
     afterNavigate(() => {
-        heritageTab = 0;
+        heritageTab = "";
     });
 
     function afterLoad() {
         goto("#" + data.ancestry_id);
     }
 
-    function selectHeritageTab(index: number) {
-        heritageTab = index;
+    function selectHeritageTab(heritage: string) {
+        heritageTab = heritage;
     }
 </script>
 
@@ -146,13 +146,12 @@
                 <h2 id="heritages">Heritages</h2>
                 <div class="column" style="gap: 1rem; width: 100%;">
                     <div class="row heritages-header">
-                        {#each ancestry.heritage ?? [] as heritage, i}
+                        {#each ancestry.heritages ?? [] as heritage, i}
                             <Button
-                                type="button"
-                                class={i === heritageTab
+                                cta={heritage.uuid === heritageTab
                                     ? "primary"
                                     : "secondary"}
-                                onclick={() => selectHeritageTab(i)}
+                                onclick={() => selectHeritageTab(heritage.uuid)}
                             >
                                 {heritage.name
                                     .replace(ancestry.name, "")
@@ -161,27 +160,23 @@
                         {/each}
                     </div>
                     <div class="column heritages-content">
-                        {#each ancestry.heritage ?? [] as heritage, i}
-                            {#if i === heritageTab}
-                                <div class="column heritage">
-                                    <span class="fake-h">{heritage.name}</span>
-                                    {#if heritage.traits?.length !== 0}
-                                        <div class="traits row">
-                                            {#each heritage.traits ?? [] as trait}
-                                                <Tag>
-                                                    {trait}
-                                                </Tag>
-                                            {/each}
-                                        </div>
-                                    {/if}
-                                    {@html linkToLinkPreviewConverter(
-                                        transformDescription(
-                                            heritage.description,
-                                        ),
-                                    )}
-                                </div>
-                            {/if}
-                        {/each}
+                        {#await fetch(`/api/heritage/${heritageTab}`).then( (v) => v.json(), ) then heritage}
+                            <div class="column heritage">
+                                <span class="fake-h">{heritage.name}</span>
+                                {#if heritage.traits?.length !== 0}
+                                    <div class="traits row">
+                                        {#each heritage.traits ?? [] as trait}
+                                            <Tag>
+                                                {trait}
+                                            </Tag>
+                                        {/each}
+                                    </div>
+                                {/if}
+                                {@html linkToLinkPreviewConverter(
+                                    transformDescription(heritage.description),
+                                )}
+                            </div>
+                        {/await}
                     </div>
                 </div>
             </section>
@@ -220,13 +215,6 @@
         max-width: 100%;
         gap: 2rem;
     }
-    .main-content {
-        width: calc(100% - 4rem - 2 * 202px);
-        .header {
-            width: 100%;
-        }
-        gap: 2rem;
-    }
 
     section {
         width: 100%;
@@ -235,8 +223,6 @@
         background-color: var(--dark-2);
         gap: 2rem;
     }
-
-
 
     .heritages-header {
         flex-wrap: wrap;

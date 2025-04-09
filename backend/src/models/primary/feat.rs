@@ -27,8 +27,12 @@ pub struct Feat {
     pub rules: Vec<Rule>,
     pub rarity: String,
     #[serde(default, deserialize_with = "null_to_default")]
+    pub tags: Vec<String>,
+    #[serde(default, deserialize_with = "null_to_default")]
     pub traits: Vec<String>,
     pub slug: String,
+    #[serde(rename = "type")]
+    pub data_type: String,
 }
 
 impl Storeable for Feat {

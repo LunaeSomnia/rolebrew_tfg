@@ -6,6 +6,7 @@ import { CLASS_FEATURES } from ".";
 import { extractLastUuid } from "./utils/uuid";
 import { nameToSlug } from "../utils/testTransform";
 import type { Item } from "./secondary/item";
+import { mapToRule } from "./secondary/rule";
 
 export class Class {
     @Expose({ name: "_id" }) fvttId!: string;
@@ -99,7 +100,7 @@ export class Class {
     @Expose()
     keyAbility!: string[];
 
-    @Transform(({ obj }) => obj.system.hp)
+    @Transform(({ obj }) => obj.system.perception)
     @Expose()
     perception!: number;
 
@@ -107,7 +108,7 @@ export class Class {
     @Expose()
     publication!: Publication;
 
-    @Transform(({ obj }) => obj.system.rules)
+    @Transform(({ obj }) => obj.system.rules.map((v: any) => mapToRule(v)))
     @Expose()
     rules!: any[];
 
@@ -145,7 +146,7 @@ export class Class {
 
     @Exclude() effects!: null;
     @Exclude() _stats!: null;
-    @Exclude() type!: null;
+
     @Exclude() img!: null;
     @Exclude() system!: null;
 }

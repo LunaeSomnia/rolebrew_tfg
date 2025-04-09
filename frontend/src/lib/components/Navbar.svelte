@@ -28,7 +28,7 @@
     <div class="max-width">
         <div class="left">
             <a href="/" data-sveltekit-preload-data={false}>
-                <IconSVG icon={Icon.Logo} fill="var(--light-1)" size={32} />
+                <IconSVG icon={Icon.Logo} size={32} />
             </a>
             {#each navLinks as [link, header]}
                 <a
@@ -53,7 +53,7 @@
                     </div>
                 </Popover>
             {:else}
-                <Button class="secondary" onclick={onLogin}>Log in</Button>
+                <Button cta="secondary" onclick={onLogin}>Log in</Button>
                 <Button onclick={onSignup}>Sign up</Button>
             {/if}
         </div>
@@ -100,6 +100,8 @@
         .left,
         .right {
             justify-content: flex-start;
+            --icon-stroke: var(--orange);
+            --icon-stroke-width: 0.09375rem; // 1.5px
         }
     }
 

@@ -1,13 +1,17 @@
+use std::collections::BTreeMap;
+
 use crate::generic_get_single;
 use crate::helpers::none_single_or_vec;
 use crate::{
     DatabaseCollection,
     models::{link_preview::LinkPreview, primary::feat::Feat, summary::Summary},
 };
+use actix_web::post;
 use actix_web::{
     Responder, get,
     web::{Data, Path, Query},
 };
+use bson::Document;
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use tokio::sync::RwLock;
@@ -56,4 +60,15 @@ pub async fn get_feat_preview(db: CollectionData<'_>, slug: Path<String>) -> imp
         }
         None => actix_web::HttpResponse::NotFound().finish(),
     }
+}
+
+#[post("/api/feat/filtered")]
+pub async fn get_feat_filtered(
+    db: CollectionData<'_>,
+    filters: actix_web::web::Json<Document>,
+) -> impl Responder {
+    let db = db.read().await;
+    let data: Vec<Feat> = db.get_all_filtered(filters.0).await.unwrap();
+
+    actix_web::HttpResponse::Ok().json(data)
 }

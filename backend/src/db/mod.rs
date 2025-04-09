@@ -1,6 +1,6 @@
 use std::{marker::PhantomData, process::exit, sync::Arc};
 
-use bson::doc;
+use bson::{Document, doc};
 use futures::TryStreamExt;
 use mongodb::Client;
 use storeable::Storeable;
@@ -93,6 +93,34 @@ where
                 .database(DATABASE_NAME)
                 .collection::<serde_json::Value>(T::table_name());
         let cursor = collection.find(doc! {}).await?;
+        let col: Vec<serde_json::Value> = cursor.try_collect().await?;
+        let transformed_col: Vec<T> = col
+            .into_iter()
+            .map(|v| {
+                let str = serde_json::to_string(&v).unwrap();
+                let parse_result = serde_json::from_str(&str);
+                if let Err(e) = parse_result {
+                    eprintln!("This value failed to parse {}\n with error: {}", v, e);
+                    exit(1)
+                } else {
+                    parse_result.unwrap()
+                }
+            })
+            .collect();
+        Ok(transformed_col)
+    }
+
+    pub async fn get_all_filtered(
+        &self,
+        filter: Document,
+    ) -> Result<Vec<T>, mongodb::error::Error> {
+        let client = self.database.get_client().await?;
+        let collection: mongodb::Collection<serde_json::Value> =
+            client
+                .database(DATABASE_NAME)
+                .collection::<serde_json::Value>(T::table_name());
+        println!("{:?}", filter);
+        let cursor = collection.find(filter).await?;
         let col: Vec<serde_json::Value> = cursor.try_collect().await?;
         let transformed_col: Vec<T> = col
             .into_iter()

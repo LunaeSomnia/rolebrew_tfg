@@ -1,13 +1,30 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer, ser::SerializeSeq};
 use specta::Type;
 
-#[derive(Serialize, Deserialize, Debug, Default, Type)]
+#[derive(Deserialize, Debug, Default)]
 #[serde(untagged)]
 pub enum MVec<T> {
     #[default]
     None,
     Single(T),
     Vec(Vec<T>),
+}
+
+#[derive(Type)]
+#[serde(remote = MVec)]
+pub struct MVecType<T>(Vec<T>);
+
+impl<T: Serialize> Serialize for MVec<T> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        match self {
+            MVec::None => serializer.serialize_seq(Some(0))?.end(),
+            MVec::Single(item) => serializer.collect_seq(std::iter::once(item)),
+            MVec::Vec(vec) => serializer.collect_seq(vec),
+        }
+    }
 }
 
 pub fn none_single_or_vec<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>

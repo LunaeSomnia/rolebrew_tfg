@@ -3,7 +3,7 @@ use chrono::{Days, Utc};
 use serde::{Deserialize, Serialize};
 use specta::Type;
 
-use crate::storeable::Storeable;
+use crate::{Character, storeable::Storeable};
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -14,6 +14,20 @@ pub struct User {
     pub username: String,
     pub password_hash: String,
     pub email: String,
+
+    pub characters: Vec<Character>,
+}
+
+impl User {
+    pub fn new(username: String, password_hash: String, email: String) -> Self {
+        Self {
+            id: ObjectId::new(),
+            username,
+            password_hash,
+            email,
+            characters: Vec::new(),
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Type)]

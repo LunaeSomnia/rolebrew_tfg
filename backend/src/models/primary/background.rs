@@ -1,7 +1,9 @@
 use std::collections::{BTreeMap, HashMap};
 
 use crate::helpers::null_to_default;
-use crate::models::{Attribute, LinkPreview, Publication, Rule, Summary, SummaryData};
+use crate::models::{
+    Attribute, BoostOrFlaw, LinkPreview, Publication, Rule, Skill, Summary, SummaryData,
+};
 use crate::storeable::Storeable;
 use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
@@ -17,7 +19,7 @@ pub struct Background {
     pub fvtt_id: String,
     pub name: String,
     #[serde(default, deserialize_with = "null_to_default")]
-    pub boosts: BTreeMap<u8, Vec<Attribute>>,
+    pub boosts: Vec<BoostOrFlaw>,
     pub description: String,
     #[serde(default, deserialize_with = "null_to_default")]
     pub features: Vec<Feat>,
@@ -29,6 +31,8 @@ pub struct Background {
     #[serde(default, deserialize_with = "null_to_default")]
     pub traits: Vec<String>,
     pub slug: String,
+    #[serde(rename = "type")]
+    pub data_type: String,
 }
 
 impl Storeable for Background {
@@ -74,5 +78,5 @@ pub struct BackgroundTrainedSkills {
     #[serde(default, deserialize_with = "null_to_default")]
     lore: Vec<String>,
     #[serde(default, deserialize_with = "null_to_default")]
-    value: Vec<String>,
+    value: Vec<Skill>,
 }

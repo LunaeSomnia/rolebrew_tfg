@@ -53,7 +53,6 @@ export class Action {
     @Exclude() folder!: string;
     @Exclude() img!: string;
     @Exclude() system!: string;
-    @Exclude() type!: string;
     @Exclude() _stats!: string;
     @Exclude() effects!: string;
 }

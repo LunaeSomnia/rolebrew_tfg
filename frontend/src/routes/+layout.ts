@@ -8,6 +8,5 @@ export const load: LayoutLoad = async ({ route, data }) => {
     return {
         basePath,
         route,
-        user: data.user,
     };
 };

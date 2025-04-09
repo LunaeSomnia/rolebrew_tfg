@@ -18,9 +18,9 @@
     </span>
     <div class="overlay">
         {#if sortingData === TableSorting.Ascending}
-            <IconSvg icon={Icon.ChevronUp} fill="var(--light-1)" />
+            <IconSvg icon={Icon.ChevronUp} />
         {:else if sortingData === TableSorting.Descending}
-            <IconSvg icon={Icon.ChevronDown} fill="var(--light-1)" />
+            <IconSvg icon={Icon.ChevronDown} />
         {/if}
     </div>
 </th>
@@ -42,6 +42,8 @@
             transform: translate(-100%, 0%);
             width: 1.5rem;
             height: 1.5rem;
+
+            --icon-stroke: var(--light-1);
         }
 
         &:hover {

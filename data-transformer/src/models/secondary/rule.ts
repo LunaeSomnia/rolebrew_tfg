@@ -9,107 +9,23 @@ import {
 } from "class-transformer";
 import { exit } from "process";
 import type { Damage } from "./damage";
+import { possiblyTranslate } from "../../utils/lang";
 
 export function mapToRule(obj: any): RuleType {
     switch (obj.key) {
-        case ACTIVE_EFFECT_LIKE_NAME:
-            return plainToInstance(ActiveEffectLikeRule, obj);
-
-        case STRIKE_NAME:
-            return plainToInstance(StrikeRule, obj);
-
-        case ITEM_ALTERATION_NAME:
-            return plainToInstance(ItemAlterationRule, obj);
-
-        case ROLL_OPTION_NAME:
-            return plainToInstance(RollOptionRule, obj);
-
-        case BASE_SPEED_NAME:
-            return plainToInstance(BaseSpeedRule, obj);
-
-        case GRANT_ITEM_NAME:
-            return plainToInstance(GrantItemRule, obj);
-
         case CHOICE_SET_NAME:
             return plainToInstance(ChoiceSetRule, obj);
 
-        case CREATURE_SIZE_NAME:
-            return plainToInstance(CreatureSizeRule, obj);
-
-        case FLAT_MODIFIER_NAME:
-            return plainToInstance(FlatModifierRule, obj);
-
-        case ADJUST_DEGREE_OF_SUCCESS_NAME:
-            return plainToInstance(AdjustDegreeOfSuccessRule, obj);
-
-        case WEAKNESS_NAME:
-            return plainToInstance(WeaknessRule, obj);
-
-        case IMMUNITY_NAME:
-            return plainToInstance(ImmunityRule, obj);
-
-        case ADJUST_STRIKE_NAME:
-            return plainToInstance(AdjustStrikeRule, obj);
-
-        case SENSE_NAME:
-            return plainToInstance(SenseRule, obj);
-
-        case RESISTANCE_NAME:
-            return plainToInstance(ResistanceRule, obj);
-
-        case DAMAGE_DICE_NAME:
-            return plainToInstance(DamageDiceRule, obj);
-
-        case NOTE_NAME:
-            return plainToInstance(NoteRule, obj);
-
-        case ACTOR_TRAITS_NAME:
-            return plainToInstance(ActorTraitsRule, obj);
-
-        case ADJUST_MODIFIER_NAME:
-            return plainToInstance(AdjustModifierRule, obj);
-
-        case TOKEN_LIGHT_NAME:
-            return plainToInstance(TokenLightRule, obj);
-
-        case AURA_NAME:
-            return plainToInstance(AuraRule, obj);
-
-        case CRAFTING_ENTRY_NAME:
-            return plainToInstance(CraftingEntryRule, obj);
-
         default:
-            console.error(obj);
-            throw new Error("Unknown rule key: " + obj.key);
-            exit(1);
+            return obj
     }
 }
 
-export class RulePredicate {}
+export class RulePredicate { }
 
 export type RuleType =
-    | ActiveEffectLikeRule
-    | StrikeRule
-    | ItemAlterationRule
-    | RollOptionRule
-    | BaseSpeedRule
-    | GrantItemRule
     | ChoiceSetRule
-    | CreatureSizeRule
-    | FlatModifierRule
-    | AdjustDegreeOfSuccessRule
-    | WeaknessRule
-    | ImmunityRule
-    | AdjustStrikeRule
-    | SenseRule
-    | ResistanceRule
-    | DamageDiceRule
-    | NoteRule
-    | ActorTraitsRule
-    | AdjustModifierRule
-    | TokenLightRule
-    | AuraRule
-    | CraftingEntryRule;
+    | any;
 
 export class Rule {
     key!: string;
@@ -194,11 +110,36 @@ export class ChoiceSetRule extends Rule {
     @Type(() => RuleChoice)
     choices!: RuleChoice[];
     flag!: string;
+
+    @Transform(({ obj }) => {
+        if (obj.prompt) {
+            const translated = possiblyTranslate(obj.prompt);
+            return translated
+        }
+    })
     prompt!: string;
+
+    @Transform(({ obj }) => {
+        if (obj.label) {
+            const translated = possiblyTranslate(obj.label);
+            return translated
+        }
+    })
+    label!: string;
 }
 
 export class RuleChoice {
+    @Transform(({ obj }) => {
+        if (obj.label)
+            return possiblyTranslate(obj.label)
+    })
     label!: string;
+
+    @Transform(({ obj }) => {
+        if (obj.prompt)
+            return possiblyTranslate(obj.prompt)
+    })
+    prompt!: any;
     value!: any;
 }
 
