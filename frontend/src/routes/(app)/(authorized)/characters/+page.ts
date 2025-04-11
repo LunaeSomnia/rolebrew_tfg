@@ -6,8 +6,6 @@ export const load: PageLoad = ({ fetch, data }) => {
         .then((v) => v.json())
         .then((v) => v as Character[]);
 
-    console.log(charactersRequest)
-
     return {
         charactersRequest,
     };

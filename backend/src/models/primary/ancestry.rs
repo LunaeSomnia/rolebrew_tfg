@@ -1,7 +1,7 @@
 use crate::helpers::null_to_default;
 use crate::models::{
     Item, LinkPreview, Summary, SummaryData, SummaryDataAbbreviateType, SummaryDataNumberUnit,
-    SummaryDataTagCategory,
+    SummaryDataTagCategory, Vision,
 };
 use crate::{
     models::{
@@ -37,7 +37,7 @@ pub struct Ancestry {
     pub rarity: String,
     #[serde(default, deserialize_with = "null_to_default")]
     pub traits: Vec<String>,
-    pub vision: String,
+    pub vision: Vision,
     pub slug: String,
     pub speed: Speed,
     pub languages: Languages,

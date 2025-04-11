@@ -13,7 +13,7 @@
     let {
         label,
         from,
-        decision,
+        decision = $bindable(),
         value = $bindable(),
         allDecisionsMade = $bindable(decision.choices.length === 0),
     }: {
@@ -23,8 +23,6 @@
         value: Choice[];
         allDecisionsMade: boolean;
     } = $props();
-
-    let decisionData = $state(decision);
 
     function onSelect(selectDecision: DecisionTree, idx: number, e: Event) {
         // @ts-ignore
@@ -63,7 +61,7 @@
         {/if}
 
         {#if choiceSelected}
-            {#if choiceSelected && choiceSelected.compendiumType !== "skill"}
+            {#if choiceSelected && choiceSelected.compendiumType && choiceSelected.compendiumType !== "skill"}
                 {#await fetch(`/api/${choiceSelected.compendiumType}/${choiceSelected.value}`).then( (v) => v.json(), ) then fetchedItem}
                     {#if fetchedItem !== null && "description" in fetchedItem}
                         <p
@@ -79,7 +77,7 @@
                                     iconLeft={Icon.Logo}
                                     onclick={() =>
                                         goto(
-                                            `/compendium/${choiceSelected.compendiumType}/${choiceSelected}`,
+                                            `/compendium/${choiceSelected.compendiumType}/${choiceSelected.value}`,
                                         )}
                                 />
                             </Tooltip>
@@ -109,7 +107,7 @@
             <span>from {from}</span>
         </div>
     </div>
-    {@render decisionSnippet(decisionData, 0)}
+    {@render decisionSnippet(decision, 0)}
 </div>
 
 <style lang="scss">

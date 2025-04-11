@@ -9,8 +9,17 @@
         linkToLinkPreviewConverter,
         transformDescription,
     } from "$lib/textProcessing";
+    import type { Snippet } from "svelte";
 
-    let { text, children } = $props();
+    let {
+        text,
+        textSnippet,
+        children,
+    }: {
+        text?: string;
+        textSnippet?: Snippet;
+        children?: Snippet;
+    } = $props();
 
     const showTimeOffset = 500;
     const hideTimeOffset = 200;
@@ -42,7 +51,9 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div onmouseenter={openPreview} onmouseleave={closePreview} use:floatingRef>
-    {@render children()}
+    {#if children}
+        {@render children()}
+    {/if}
 </div>
 
 {#if isOpen}
@@ -58,7 +69,11 @@
         onmouseenter={openPreview}
         onmouseleave={closePreview}
     >
-        {text}
+        {#if text}
+            {text}
+        {:else if textSnippet}
+            {@render textSnippet()}
+        {/if}
     </div>
 {/if}
 

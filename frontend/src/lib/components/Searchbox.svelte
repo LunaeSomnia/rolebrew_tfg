@@ -52,7 +52,7 @@
             width: 1.5rem;
             height: 1.5rem;
 
-            --icon-stroke: var(--light-3);
+            --icon-color: var(--light-3);
         }
         .right-overlay {
             position: absolute;
@@ -64,7 +64,7 @@
             opacity: 0;
             pointer-events: none;
 
-            --icon-stroke: var(--light-2);
+            --icon-color: var(--light-2);
         }
 
         &.has-input .right-overlay {

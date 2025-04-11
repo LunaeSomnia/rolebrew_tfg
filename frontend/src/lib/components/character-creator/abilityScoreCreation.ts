@@ -49,7 +49,6 @@ export function rollAbilityScores(method: AbilityScoreMethod, rollCount: number 
                 const rollsWithoutMin = rolledScoresMapped.filter((v, i) => i !== minRolledIdx)
                 if (minRolled)
                     minRolled.excluded = true
-                console.log(rolledScoresMapped)
                 return {
                     total: rollsWithoutMin.reduce((t, v) => t += v.value, 0),
                     rolls: rolledScoresMapped

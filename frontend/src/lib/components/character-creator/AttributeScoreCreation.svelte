@@ -41,7 +41,6 @@
     let chosenAttributes = $state<(Attribute | undefined)[]>([]);
 
     function onRollAbilityScoreMethod() {
-        console.log("roll");
         if (abilityScoreMethod) {
             rolledAbilityScores = rollAbilityScores(abilityScoreMethod);
             if (abilityScoreMethod !== AbilityScoreMethod.DicePool) {
@@ -87,10 +86,10 @@
     </div>
     <Button
         cta="primary"
-        iconLeft={Icon.Logo}
+        iconLeft={Icon.Dice}
         disabled={abilityScoreMethod === undefined}
-        onclick={onRollAbilityScoreMethod}>Roll</Button
-    >
+        onclick={onRollAbilityScoreMethod}
+    ></Button>
 </div>
 <div class="column rolls" style="width: 100%;">
     {#if rolledAbilityScores}

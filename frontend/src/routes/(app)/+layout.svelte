@@ -16,9 +16,9 @@
 </div>
 <div class="alert-wrapper">
     {#each appState.alerts as alert (alert)}
-            <div class="alert" animate:flip>
-                <Alert {alert} id={alert.id} />
-            </div>
+        <div class="alert" animate:flip>
+            <Alert {alert} id={alert.id} />
+        </div>
     {/each}
 </div>
 
@@ -51,7 +51,7 @@
         width: 100%;
         height: 100%;
         max-width: var(--max-width);
-        padding: 4rem 0;
+        padding: 2rem 0;
         gap: 2rem;
         align-items: flex-start;
     }

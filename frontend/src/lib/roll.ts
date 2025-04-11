@@ -1,3 +1,4 @@
 export function roll(max: number) {
-    return Math.floor(Math.random() * max) + 1;
+    const roll = Math.floor(Math.random() * max) + 1;
+    return roll;
 }

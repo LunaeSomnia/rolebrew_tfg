@@ -1,5 +1,7 @@
 import type { Either, Rule, RuleChoice, Attribute } from "$lib/bindings";
-import type { Choice, DecisionTree } from "./characterCreator.svelte";
+import { stringToSlug } from "$lib/textProcessing";
+import { capitalize } from "$lib/utils";
+import { SKILLS, type Choice, type DecisionTree } from "./characterCreator.svelte";
 
 export const ATTRIBUTE_VALUES = [
     "Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"
@@ -9,26 +11,27 @@ export const FETCHABLE_TYPES = [
     'heritage', 'feat', 'ancestry', 'trait'
 ]
 
-const CLEANUP_TITLE_REGEX = /Select an? /g
+const CLEANUP_TITLE_REGEX = /Select (an?|your) /g
 function cleanupDecisionTitle(title: string) {
     title = title.replaceAll(CLEANUP_TITLE_REGEX, "")
-    title = title[0].toUpperCase() + title.slice(1)
-    return title
+    return capitalize(title)
 }
 
-export async function parseChoiceSet(rule: Rule, name: string = "", slug: string = "") {
+export async function parseChoiceSet(rule: Rule, name: string | null = null, slug: string | null = null) {
     if (rule.key !== 'ChoiceSet') {
         throw new Error(`rule '${rule.key}' can't be parsed. reason: wasn't a 'ChoiceSet'`)
     }
 
+    const label = name ?? cleanupDecisionTitle((rule.prompt ?? rule.label ?? "").replace('.', ""));
+
     let decision = {
-        label: cleanupDecisionTitle((rule.label ?? name).replace('.', "")),
-        slug: (rule.slug ?? slug).replace('.', ""),
+        label,
+        slug: slug ?? stringToSlug(label),
         choices: []
     } as DecisionTree
 
     if (rule.flag === 'skill') {
-        decision.choices = ATTRIBUTE_VALUES.map(v => {
+        decision.choices = SKILLS.map(v => {
             return {
                 label: v,
                 value: v.toLowerCase(),

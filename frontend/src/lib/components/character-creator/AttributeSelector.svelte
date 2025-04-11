@@ -6,7 +6,7 @@
         value = $bindable(),
     }: {
         boostOrFlaw: BoostOrFlaw;
-        value: Attribute;
+        value: Attribute | undefined;
     } = $props();
 
     const allAttributes: Attribute[] = [
@@ -17,6 +17,14 @@
         "Wisdom",
         "Charisma",
     ];
+
+    if (boostOrFlaw.type === "grant") {
+        value = boostOrFlaw.att;
+    }
+
+    function setValue(v: Attribute) {
+        value = v;
+    }
 </script>
 
 {#snippet buttonValue(attribute: Attribute)}
@@ -29,7 +37,7 @@
     {#if boostOrFlaw.type === "free"}
         {#each allAttributes as attribute}
             <button
-                onclick={() => (value = attribute)}
+                onclick={() => setValue(attribute)}
                 class:active={value === attribute}
             >
                 {@render buttonValue(attribute)}
@@ -38,7 +46,7 @@
     {:else if boostOrFlaw.type === "choose"}
         {#each boostOrFlaw.atts as attribute}
             <button
-                onclick={() => (value = attribute)}
+                onclick={() => setValue(attribute)}
                 class:active={value === attribute}
             >
                 {@render buttonValue(attribute)}
@@ -46,7 +54,7 @@
         {/each}
     {:else}
         <button
-            onclick={() => (value = boostOrFlaw.att)}
+            onclick={() => setValue(boostOrFlaw.att)}
             class:active={value === boostOrFlaw.att}
         >
             {@render buttonValue(boostOrFlaw.att)}

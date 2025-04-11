@@ -77,7 +77,7 @@
         height: 4rem;
         background-color: var(--dark-2);
         z-index: 1;
-        box-shadow: 0rem 0rem 4rem #00000088;
+        box-shadow: 0rem 0rem 2rem #00000088;
 
         .max-width,
         .left,
@@ -100,7 +100,7 @@
         .left,
         .right {
             justify-content: flex-start;
-            --icon-stroke: var(--orange);
+            --icon-color: var(--orange);
             --icon-stroke-width: 0.09375rem; // 1.5px
         }
     }

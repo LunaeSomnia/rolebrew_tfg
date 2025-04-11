@@ -37,11 +37,17 @@ pub use size::*;
 pub mod speed;
 pub use speed::*;
 
+pub mod vision;
+pub use vision::*;
+
 pub mod proficiency;
 pub use proficiency::*;
 
 pub mod skill;
 pub use skill::*;
+
+pub mod saving_throw;
+pub use saving_throw::*;
 
 pub mod summary;
 pub use summary::*;

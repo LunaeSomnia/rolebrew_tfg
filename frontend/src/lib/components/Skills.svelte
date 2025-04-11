@@ -1,39 +1,55 @@
 <script lang="ts">
     import type { Attribute, Proficiency, Skill } from "$lib/bindings";
+    import { capitalize } from "$lib/utils";
     import {
         BASIC_SKILL_TO_ATTRIBUTE,
         proficiencyBonus,
         scoreToModifier,
     } from "./character-creator/characterCreator.svelte";
+    import HorizontalDivisor from "./divisor/HorizontalDivisor.svelte";
     import Profifiency from "./Profifiency.svelte";
 
     let {
         skills,
         additionalSkills,
-        attributeScores,
+        attributeModifiers,
         level,
     }: {
         skills: Record<Skill, Proficiency>;
         additionalSkills: Record<string, [Attribute, Proficiency]>;
-        attributeScores: Record<Attribute, number>;
+        attributeModifiers: Record<Attribute, number>;
         level: number;
     } = $props();
 </script>
 
+{#snippet skillRender(
+    skill: string,
+    proficiency: Proficiency,
+    attribute?: Attribute,
+)}
+    {@const finalAttribute =
+        attribute ?? BASIC_SKILL_TO_ATTRIBUTE[skill as Skill]}
+    {@const skillModifier =
+        attributeModifiers[finalAttribute] +
+        proficiencyBonus(proficiency, level)}
+    <div class="row skill">
+        <Profifiency {proficiency} />
+        <div class="row text">
+            <span class="skill-text">{capitalize(skill)}</span>
+            <span class="tag">{finalAttribute.substring(0, 3)}</span>
+        </div>
+        <span class="value">{skillModifier >= 0 ? "+" : ""}{skillModifier}</span
+        >
+    </div>
+{/snippet}
+
 <div class="column skills">
     {#each Object.entries(skills) as [skill, proficiency]}
-        {@const attribute = BASIC_SKILL_TO_ATTRIBUTE[skill as Skill]}
-        {@const modifier =
-            scoreToModifier(attributeScores[attribute]) +
-            proficiencyBonus(proficiency, level)}
-        <div class="row skill">
-            <Profifiency {proficiency} />
-            <div class="row text">
-                <span class="skill-text">{skill}</span>
-                <span class="tag">{attribute.substring(0, 3)}</span>
-            </div>
-            <span class="value">{modifier >= 0 ? "+" : ""}{modifier}</span>
-        </div>
+        {@render skillRender(skill, proficiency)}
+    {/each}
+    <HorizontalDivisor />
+    {#each Object.entries(additionalSkills) as [skill, [attribute, proficiency]]}
+        {@render skillRender(skill, proficiency, attribute)}
     {/each}
 </div>
 

@@ -4,7 +4,6 @@ use actix_cors::Cors;
 use actix_web::{App, HttpServer, http::header, middleware::Logger, web::Data};
 use db::storeable::Storeable;
 use dotenv::dotenv;
-use helpers::MVecType;
 use models::{
     Background, Class, Heritage,
     primary::{action::Action, ancestry::Ancestry, feat::Feat},
@@ -77,6 +76,7 @@ async fn main() -> std::io::Result<()> {
             .service(login)
             .service(hash)
             // characters
+            .service(get_character)
             .service(get_characters)
             .service(create_new_character)
             // users
@@ -169,6 +169,7 @@ async fn export_bindings() {
         .register::<Action>()
         .register::<Class>()
         .register::<Background>()
+        .register::<SavingThrow>()
         //
         .register::<Character>()
         .register::<Summary>()

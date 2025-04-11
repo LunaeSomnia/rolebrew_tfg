@@ -151,14 +151,14 @@ td {
   --min-height: 1120px; /* 70rem */
   --col-width: 5.3125rem;
   --col-spacing: 2rem;
-  --icon-stroke: red;
+  --icon-color: red;
   --icon-stroke-width: 0.125rem;
-  --icon-fill: none;
+  --icon-color: none;
   font-size: 16px;
   background: var(--dark-1);
   color: var(--light-2);
   font-family: "Switzer", "Inter", sans-serif;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.03125rem;
   line-height: 150%;
   font-weight: 400;
 }
@@ -376,7 +376,7 @@ input:focus-visible {
 }
 
 .dialog {
-  box-shadow: 0rem 0rem 4rem rgba(0, 0, 0, 0.5333333333);
+  box-shadow: 0rem 0rem 1rem rgba(0, 0, 0, 0.5333333333);
   border: solid 0.125rem var(--dark-2);
   border-width: 0.0625;
   background-color: var(--dark-1);

@@ -4,20 +4,18 @@
 
     let {
         attribute,
-        value,
+        value = $bindable(),
         modified = false,
     }: {
         attribute: Attribute;
         value: number;
         modified?: boolean;
     } = $props();
-
-    let modifier = $derived(scoreToModifier(value));
 </script>
 
 <div class="column attribute" class:modified>
     <span class="tag">{attribute.toString().substring(0, 3)}</span>
-    <span class="value">{modifier >= 0 ? "+" : ""}{modifier}</span>
+    <span class="value">{value >= 0 ? "+" : ""}{value}</span>
 </div>
 
 <style lang="scss">
@@ -28,6 +26,10 @@
         background-color: var(--dark-2);
         border-radius: 0.5rem;
         gap: 0.5rem;
+
+        &.modified span.value {
+            color: var(--orange-lighter);
+        }
     }
 
     .value {

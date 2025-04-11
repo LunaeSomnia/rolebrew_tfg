@@ -2,7 +2,7 @@
 
 export type Action = { _id: string; fvttId: string; name: string; actionType: string | null; actions: number | null; category: string | null; description: string; publication: Publication; rules?: Rule[]; rarity: string | null; traits?: string[]; slug: string; type: string }
 
-export type Ancestry = { _id: string; fvttId: string; name: string; additionalLanguages: Languages; boosts?: BoostOrFlaw[]; flaws?: BoostOrFlaw[]; hp: number; reach: number | null; rules?: Rule[]; size: Size; rarity: string; traits?: string[]; vision: string; slug: string; speed: Speed; languages: Languages; features?: Feat[]; publication: Publication; heritages?: Item[]; description: AncestryDescription; type: string }
+export type Ancestry = { _id: string; fvttId: string; name: string; additionalLanguages: Languages; boosts?: BoostOrFlaw[]; flaws?: BoostOrFlaw[]; hp: number; reach: number | null; rules?: Rule[]; size: Size; rarity: string; traits?: string[]; vision: Vision; slug: string; speed: Speed; languages: Languages; features?: Feat[]; publication: Publication; heritages?: Item[]; description: AncestryDescription; type: string }
 
 export type AncestryDescription = { summary: string; roleplaying: string }
 
@@ -14,7 +14,7 @@ export type BackgroundTrainedSkills = { custom: string | null; lore?: string[]; 
 
 export type BoostOrFlaw = { type: "free" } | { type: "grant"; att: Attribute } | { type: "choose"; atts: Attribute[] }
 
-export type Character = { _id: string; name: string; level: number; ancestry: string; class: string; background: string }
+export type Character = { _id: string; name: string; level: number; attributeModifiers: { [key in Attribute]: number }; hp: number; skills: { [key in Skill]: Proficiency }; additionalSkills: { [key in string]: [Attribute, Proficiency] }; vision: Vision; speed: Speed; size: Size; savingThrows: SavingThrows; keyAbility: Attribute[]; ancestry: string; class: string; background: string }
 
 export type Choice = { label: string; value: string }
 
@@ -68,7 +68,7 @@ export type LoginForm = { username: string; password: string }
 
 export type MVecType<T> = T[]
 
-export type NewCharacterForm = { name: string; level: number; attributeScores: { [key in Attribute]: number }; ancestry: string; ancestryDecisions: { [key in string]: Choice[] }; heritageDecisions: Choice[]; ancestryBoosts: Attribute[]; background: string; backgroundDecisions: { [key in string]: Choice[] }; backgroundBoosts: Attribute[]; class: string; classDecisions: { [key in string]: { [key in string]: Choice[] } }; skills: { [key in Skill]: Proficiency }; additionalSkills: { [key in string]: [Attribute, Proficiency] } }
+export type NewCharacterForm = { name: string; level: number; attributeModifiers: { [key in Attribute]: number }; keyAbility: Attribute; ancestry: string; ancestryDecisions: { [key in string]: Choice[] }; heritageDecisions: Choice[]; background: string; backgroundDecisions: { [key in string]: Choice[] }; class: string; classDecisions: { [key in string]: { [key in string]: Choice[] } }; skills: { [key in Skill]: Proficiency }; additionalSkills: { [key in string]: [Attribute, Proficiency] } }
 
 export type Proficiency = "Untrained" | "Trained" | "Expert" | "Master" | "Legendary"
 
@@ -80,11 +80,15 @@ export type RuleChoice = { label: string | null; item_type: string | null; value
 
 export type RulePredicateFilter = string | number | { not?: MVecType<RulePredicateFilter> } | { and?: MVecType<RulePredicateFilter> } | { or?: MVecType<RulePredicateFilter> } | { nand?: MVecType<RulePredicateFilter> } | { nor?: MVecType<RulePredicateFilter> } | { lt?: MVecType<RulePredicateFilter> } | { lte?: MVecType<RulePredicateFilter> } | { gt?: MVecType<RulePredicateFilter> } | { gte?: MVecType<RulePredicateFilter> }
 
+export type SavingThrow = "fortitude" | "reflex" | "will"
+
+export type SavingThrows = { fortitude: Proficiency; reflex: Proficiency; will: Proficiency; classDc: Proficiency; perception: Proficiency }
+
 export type SignupForm = { username: string; password: string; email: string }
 
 export type Size = "Tiny" | "Small" | "Medium" | "Large"
 
-export type Skill = "Acrobatics" | "Arcana" | "Athletics" | "Crafting" | "Deception" | "Diplomacy" | "Intimidation" | "Medicine" | "Nature" | "Occultism" | "Performance" | "Religion" | "Society" | "Stealth" | "Survival" | "Thievery"
+export type Skill = "acrobatics" | "arcana" | "athletics" | "crafting" | "deception" | "diplomacy" | "intimidation" | "medicine" | "nature" | "occultism" | "performance" | "religion" | "society" | "stealth" | "survival" | "thievery"
 
 export type SpecialStatisticItemCasting = { predicate?: MVecType<RulePredicateFilter> }
 
@@ -101,4 +105,6 @@ export type SummaryDataNumberUnit = "feet"
 export type SummaryDataTagCategory = "rarity"
 
 export type UserClaims = { sub: string; iat: string; exp: string }
+
+export type Vision = "normal" | "low-light-vision" | "darkvision" | "greater-darkvision" | "scent" | "tremorsense"
 

@@ -51,10 +51,6 @@
         { value: "ocean-blue", label: "Ocean Blue", disabled: true },
         { value: "sunset-orange", label: "Sunset Orange" },
     ];
-
-    $effect(() => {
-        $inspect(attributeScores);
-    });
 </script>
 
 <section class="column" style="width: 30rem;">

@@ -15,6 +15,7 @@ use strum::{Display, EnumString};
     PartialOrd,
     Eq,
     Ord,
+    Hash,
 )]
 #[serde(deny_unknown_fields)]
 pub enum Attribute {

@@ -43,7 +43,7 @@
             width: 1.5rem;
             height: 1.5rem;
 
-            --icon-stroke: var(--light-1);
+            --icon-color: var(--light-1);
         }
 
         &:hover {

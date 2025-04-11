@@ -1,13 +1,14 @@
 <script lang="ts">
     import { Icon } from "$lib/icons/icons";
     import IconSvg from "$lib/icons/IconSVG.svelte";
+    import { capitalize } from "$lib/utils";
     import { Select } from "bits-ui";
     import type { EventHandler } from "svelte/elements";
 
-    type Choice = { label: string; value: string };
+    type Choice = { label: string; value: string; disabled?: boolean };
 
     let {
-        choices,
+        choices = $bindable(),
         placeholder,
         value = $bindable(),
         iconLeft,
@@ -20,15 +21,13 @@
         onselect?: EventHandler<Event, HTMLSelectElement> | null | undefined;
     } = $props();
 
+    let open = $state(false);
+
     const selectedLabel = $derived(
         value
             ? choices.find((choice: any) => choice.value === value)?.label
             : placeholder,
     );
-
-    $effect(() => {
-        console.log(value);
-    });
 </script>
 
 <select
@@ -39,7 +38,9 @@
 >
     <option value={undefined} disabled>{placeholder}</option>
     {#each choices as choice}
-        <option value={choice.value}>{choice.label}</option>
+        <option value={choice.value} disabled={choice.disabled}
+            >{capitalize(choice.label)}</option
+        >
     {/each}
 </select>
 
@@ -89,7 +90,7 @@
             </Select.ScrollDownButton>
         </Select.Content>
     </Select.Portal>
-</Select.Root>-->
+</Select.Root> -->
 
 <style>
     :global(.scroll-wrapper) {
@@ -104,17 +105,17 @@
         width: 100%;
         height: 2.5rem;
         padding: 0.5rem;
-        padding-left: 1rem;
         display: inline-flex;
 
         border-radius: 0.5rem;
         overflow: hidden;
         align-items: center;
         background-color: var(--dark-3);
+        /* border: 0.125rem solid var(--dark-3);
+        background-color: unset; */
         font-size: 1rem;
         user-select: none;
         gap: 0.5rem;
-        padding-right: 0.5rem;
         cursor: pointer;
         color: var(--light-1);
 
@@ -130,7 +131,11 @@
             }
         }
 
-        --icon-stroke: var(--light-3);
+        &.has-value {
+            background-color: var(--dark-3);
+        }
+
+        --icon-color: var(--light-3);
 
         &.has-icon-left {
             padding-left: 0.5rem;

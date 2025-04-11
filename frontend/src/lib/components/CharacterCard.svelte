@@ -1,19 +1,18 @@
 <script lang="ts">
     import type { Character } from "$lib/bindings";
+    import { capitalize } from "$lib/utils";
 
     let { character }: { character: Character } = $props();
 
     // @ts-ignore
     let id = $derived(character._id.$oid);
-
-    console.log(character);
 </script>
 
 <a class="card column character" href="/characters/{id}">
     <span class="name">{character.name}</span>
     <span
-        ><span class="ancestry">{character.ancestry}</span>
-        <span class="class">{character.class}</span>, {character.level}</span
+        ><span class="ancestry">{capitalize(character.ancestry)}</span>
+        <span class="class">{capitalize(character.class)}</span>, {character.level}</span
     >
 </a>
 

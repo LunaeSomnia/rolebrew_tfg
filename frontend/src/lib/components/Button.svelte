@@ -27,6 +27,7 @@
     {onclick}
     class="{cta} {classData}"
     class:disabled
+    class:has-content={children !== undefined}
     class:has-icon-left={iconLeft !== undefined}
     class:has-icon-right={iconRight !== undefined}
     {...props}
@@ -49,7 +50,7 @@
     button {
         height: fit-content;
         position: relative;
-        padding: 0.5rem 1rem;
+        padding: 0.5rem;
         border-radius: 0.25rem;
         font-weight: bold;
         color: var(--dark-1);
@@ -63,10 +64,14 @@
 
         $bg-color: colors.$orange;
         background-color: $bg-color;
-        --icon-stroke: var(--dark-1);
+        --icon-color: var(--dark-1);
 
         &:hover {
             background-color: color.adjust($bg-color, $lightness: 15%);
+        }
+
+        &.has-content {
+            padding: 0.5rem 1rem;
         }
 
         &.has-icon-left {
@@ -87,10 +92,11 @@
             $bg-color: colors.$dark-3;
             background-color: var(--dark-3);
             color: var(--light-1);
-            --icon-stroke: var(--light-3);
+            --icon-color: var(--light-3);
 
             &:hover {
                 background-color: color.adjust($bg-color, $lightness: 15%);
+                --icon-color: var(--light-2);
             }
         }
 
@@ -98,11 +104,12 @@
             $bg-color: colors.$dark-2;
             background-color: initial;
             color: var(--light-1);
-            --icon-stroke: var(--light-3);
+            --icon-color: var(--light-3);
             padding: 0;
 
             &:hover {
                 background-color: color.adjust($bg-color, $lightness: 15%);
+                --icon-color: var(--light-2);
             }
         }
     }

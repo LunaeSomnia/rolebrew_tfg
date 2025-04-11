@@ -28,7 +28,11 @@
         iconDefinition?.iconViewportSize ?? DEFAULT_ICON_VIEWPORT_WIDTH
     } ${iconDefinition?.iconViewportSize ?? DEFAULT_ICON_VIEWPORT_HEIGHT}`}
     xmlns="http://www.w3.org/2000/svg"
-    style={fill ? "--icon-stroke: " + fill : ""}
+    style={!iconDefinition?.isStroke
+        ? fill
+            ? "--icon-color: " + fill
+            : ""
+        : ""}
 >
     {#each iconDefinition?.d ?? [] as iconDef}
         {#if iconDefinition?.isStroke}
@@ -36,22 +40,20 @@
                 fill-rule={DEFAULT_ICON_FILL_RULE}
                 clip-rule={DEFAULT_ICON_CLIP_RULE}
                 d={iconDef}
-                stroke-width="0.125rem"
+                fill="none"
+                stroke="var(--icon-color)"
+                stroke-width="var(--icon-stroke-width)"
             />
         {:else}
             <path
                 fill-rule={DEFAULT_ICON_FILL_RULE}
                 clip-rule={DEFAULT_ICON_CLIP_RULE}
                 d={iconDef}
+                fill="var(--icon-color)"
             />
         {/if}
     {/each}
 </svg>
 
 <style lang="scss">
-    path {
-        stroke: var(--icon-stroke);
-        stroke-width: var(--icon-stroke-width);
-        fill: var(--icon-fill);
-    }
 </style>
