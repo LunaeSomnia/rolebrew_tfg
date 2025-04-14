@@ -1,10 +1,15 @@
 <script lang="ts">
     import type { Attribute } from "$lib/bindings";
+    import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
+    import { roll } from "$lib/roll";
     import { scoreToModifier } from "../character-creator/characterCreator.svelte";
+    import Rollable from "./Rollable.svelte";
 
     let {
+        simulationState,
         attributes,
     }: {
+        simulationState: CharacterSimulationState;
         attributes: Record<Attribute, number>;
     } = $props();
 
@@ -12,10 +17,19 @@
 </script>
 
 {#snippet attribute(attribute: Attribute, value: number)}
-    <div class="column attribute">
-        <span class="tag">{attribute.toString().substring(0, 3)}</span>
-        <span class="value">{value >= 0 ? "+" : ""}{value}</span>
-    </div>
+    <Rollable
+        style="width: 100%;"
+        onclick={() => {
+            simulationState.pushChatMessage(
+                `rolled ${attribute}: ${roll(20) + value}`,
+            );
+        }}
+    >
+        <div class="column attribute">
+            <span class="tag">{attribute.toString().substring(0, 3)}</span>
+            <span class="value">{value >= 0 ? "+" : ""}{value}</span>
+        </div>
+    </Rollable>
 {/snippet}
 
 <div class="row attributes spaced-between">
@@ -29,6 +43,7 @@
 
 <style lang="scss">
     .attributes {
+        position: relative;
         flex: 1;
         align-self: stretch;
         background-color: var(--dark-2);
@@ -44,10 +59,6 @@
         gap: 0.5rem;
         height: 100%;
         justify-content: center;
-
-        &:hover {
-            background-color: var(--dark-3);
-        }
     }
 
     .value {

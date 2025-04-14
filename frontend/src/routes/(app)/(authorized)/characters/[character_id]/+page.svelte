@@ -49,7 +49,10 @@
             totalHp={character.hp}
         />
 
-        <AttributesCard attributes={character.attributeModifiers} />
+        <AttributesCard
+            {simulationState}
+            attributes={character.attributeModifiers}
+        />
 
         <div class="card row other">
             <!-- <Stat
@@ -92,6 +95,7 @@
                 attributeModifiers={character.attributeModifiers}
             />
             <SavingThrows
+                {simulationState}
                 keyAbility={character.keyAbility[0]}
                 savingThrows={character.savingThrows}
                 attributeModifiers={character.attributeModifiers}

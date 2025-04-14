@@ -88,10 +88,10 @@ impl From<Class> for LinkPreview {
 #[derive(Serialize, Deserialize, Debug, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ClassAttacks {
-    pub unarmed: bool,
-    pub simple: bool,
-    pub martial: bool,
-    pub advanced: bool,
+    pub unarmed: Proficiency,
+    pub simple: Proficiency,
+    pub martial: Proficiency,
+    pub advanced: Proficiency,
     pub other: ClassAttacksOther,
 }
 
@@ -105,10 +105,10 @@ pub struct ClassAttacksOther {
 #[derive(Serialize, Deserialize, Debug, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ClassDefenses {
-    pub unarmored: bool,
-    pub light: bool,
-    pub medium: bool,
-    pub heavy: bool,
+    pub unarmored: Proficiency,
+    pub light: Proficiency,
+    pub medium: Proficiency,
+    pub heavy: Proficiency,
 }
 
 #[derive(Serialize, Deserialize, Debug, Type)]

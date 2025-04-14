@@ -11,7 +11,7 @@
         iconLeft,
         iconRight,
         onclick,
-        ...props
+        fake = false,
     }: {
         children?: Snippet;
         cta?: "primary" | "secondary" | "ghost";
@@ -19,46 +19,70 @@
         class?: string;
         iconLeft?: Icon;
         iconRight?: Icon;
+        fake?: boolean;
         onclick: () => void;
     } = $props();
 </script>
 
-<button
-    {onclick}
-    class="{cta} {classData}"
-    class:disabled
-    class:has-content={children !== undefined}
-    class:has-icon-left={iconLeft !== undefined}
-    class:has-icon-right={iconRight !== undefined}
-    {...props}
->
-    {#if iconLeft !== undefined}
-        <IconSvg icon={iconLeft} />
-    {/if}
-    {#if children}
-        {@render children()}
-    {/if}
-    {#if iconRight !== undefined}
-        <IconSvg icon={iconRight} />
-    {/if}
-</button>
+{#if fake}
+    <div
+        class="button row {cta} {classData}"
+        class:disabled
+        class:has-content={children !== undefined}
+        class:has-icon-left={iconLeft !== undefined}
+        class:has-icon-right={iconRight !== undefined}
+    >
+        {#if iconLeft !== undefined}
+            <IconSvg icon={iconLeft} />
+        {/if}
+        {#if children}
+            {@render children()}
+        {/if}
+        {#if iconRight !== undefined}
+            <IconSvg icon={iconRight} />
+        {/if}
+    </div>
+{:else}
+    <button
+        {onclick}
+        class="button row {cta} {classData}"
+        class:disabled
+        class:has-content={children !== undefined}
+        class:has-icon-left={iconLeft !== undefined}
+        class:has-icon-right={iconRight !== undefined}
+    >
+        {#if iconLeft !== undefined}
+            <IconSvg icon={iconLeft} />
+        {/if}
+        {#if children}
+            {@render children()}
+        {/if}
+        {#if iconRight !== undefined}
+            <IconSvg icon={iconRight} />
+        {/if}
+    </button>
+{/if}
 
 <style lang="scss">
     @use "sass:color";
     @use "/static/colors.scss";
 
-    button {
-        height: fit-content;
+    .button {
         position: relative;
-        padding: 0.5rem;
+        align-items: center;
+        height: fit-content;
         border-radius: 0.25rem;
+        padding: 0.5rem;
+        border: 0;
+        margin: 0;
+        line-height: inherit;
+
+        font-family: inherit;
         font-weight: bold;
+        letter-spacing: inherit;
         color: var(--dark-1);
         cursor: pointer;
         font-size: 1rem;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
         gap: 0.5rem;
         text-wrap: nowrap;
 

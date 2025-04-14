@@ -10,8 +10,18 @@ export class CharacterSimulationState {
 
     heroPoints: number = $state(0)
 
-    armorClass: number = $state(10)
-    currentArmor: string | undefined = $state(undefined)
+    armorClass: number = $derived.by(() => {
+        let base = 10;
+
+        console.log(this.character.armorProficiencies, this.currentArmor)
+
+        if (this.currentArmor === 'Unarmored') {
+            base += proficiencyBonus(this.character.armorProficiencies.unarmored, this.character.level)
+        }
+
+        return base
+    })
+    currentArmor: string = $state('Unarmored')
     hasShieldUp: boolean = $state(false)
     currentShield: string | undefined = $state(undefined)
 
@@ -21,6 +31,8 @@ export class CharacterSimulationState {
 
     constructor(character: Character) {
         this.character = character
+
+        this.hp = this.character.hp
     }
 
     rollInitiative(skill: Skill) {

@@ -45,6 +45,7 @@
         {/snippet}
 
         <Rollable
+            expandOnHover={true}
             onclick={() => {
                 simulationState.pushChatMessage(
                     `rolled ${skill}: ${roll(20) + modifier}`,
@@ -80,7 +81,7 @@
         background-color: var(--dark-2);
         border-radius: 0.5rem;
         padding: 1rem;
-        gap: 0.25rem;
+        gap: 0.5rem;
     }
 
     :global(.skill) {

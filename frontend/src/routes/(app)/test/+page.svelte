@@ -9,6 +9,9 @@
     } from "$lib/components/character-creator/characterCreator.svelte.js";
     import AttributeScoreCreation from "$lib/components/character-creator/AttributeScoreCreation.svelte";
     import Skills from "$lib/components/Skills.svelte";
+    import Dialog from "$lib/components/dialog/Dialog.svelte";
+    import Button from "$lib/components/Button.svelte";
+    import Slider from "$lib/components/Slider.svelte";
 
     let { data } = $props();
 
@@ -22,24 +25,24 @@
         Charisma: 0,
     });
 
-    let skills: Record<Skill, Proficiency> = $state({
-        Acrobatics: "Untrained",
-        Arcana: "Legendary",
-        Athletics: "Master",
-        Crafting: "Untrained",
-        Deception: "Trained",
-        Diplomacy: "Untrained",
-        Intimidation: "Untrained",
-        Medicine: "Untrained",
-        Nature: "Trained",
-        Occultism: "Untrained",
-        Performance: "Trained",
-        Religion: "Untrained",
-        Society: "Untrained",
-        Stealth: "Trained",
-        Survival: "Untrained",
-        Thievery: "Expert",
-    });
+    // let skills: Record<Skill, Proficiency> = $state({
+    //     Acrobatics: "Untrained",
+    //     Arcana: "Legendary",
+    //     Athletics: "Master",
+    //     Crafting: "Untrained",
+    //     Deception: "Trained",
+    //     Diplomacy: "Untrained",
+    //     Intimidation: "Untrained",
+    //     Medicine: "Untrained",
+    //     Nature: "Trained",
+    //     Occultism: "Untrained",
+    //     Performance: "Trained",
+    //     Religion: "Untrained",
+    //     Society: "Untrained",
+    //     Stealth: "Trained",
+    //     Survival: "Untrained",
+    //     Thievery: "Expert",
+    // });
 
     let selectValue: Choice[] = $state([]);
 
@@ -51,6 +54,8 @@
         { value: "ocean-blue", label: "Ocean Blue", disabled: true },
         { value: "sunset-orange", label: "Sunset Orange" },
     ];
+
+    let sliderValue = $state(10);
 </script>
 
 <section class="column" style="width: 30rem;">
@@ -61,8 +66,19 @@
 </section>
 
 <section>
-    <Skills level={3} {skills} additionalSkills={{}} {attributeScores} />
+    {#snippet headerSnippet()}
+        <div>
+            <Button onclick={() => {}} fake={false}>Open me</Button>
+        </div>
+    {/snippet}
+    <Dialog title="Testing dialog" {headerSnippet}>
+        <p>helloooo</p>
+    </Dialog>
 </section>
+
+<!-- <section>
+    <Skills level={3} {skills} additionalSkills={{}} {attributeScores} />
+</section> -->
 
 <section class="column">
     <Select
@@ -70,6 +86,11 @@
         placeholder="Select a Theme"
         iconLeft={Icon.Logo}
     ></Select>
+</section>
+
+<section>
+    <Slider min={0} max={10} bind:value={sliderValue} step={1} />
+    <p>{sliderValue}</p>
 </section>
 
 {#await data.ancestryRequest then ancestry: Ancestry}

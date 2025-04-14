@@ -86,5 +86,6 @@
         transition: position 0ms;
         padding: 0.5rem 1rem;
         gap: 2rem;
+        z-index: 200;
     }
 </style>

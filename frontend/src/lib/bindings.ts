@@ -14,7 +14,7 @@ export type BackgroundTrainedSkills = { custom: string | null; lore?: string[]; 
 
 export type BoostOrFlaw = { type: "free" } | { type: "grant"; att: Attribute } | { type: "choose"; atts: Attribute[] }
 
-export type Character = { _id: string; name: string; level: number; attributeModifiers: { [key in Attribute]: number }; hp: number; skills: { [key in Skill]: Proficiency }; additionalSkills: { [key in string]: [Attribute, Proficiency] }; vision: Vision; speed: Speed; size: Size; savingThrows: SavingThrows; keyAbility: Attribute[]; ancestry: string; class: string; background: string }
+export type Character = { _id: string; name: string; level: number; attributeModifiers: { [key in Attribute]: number }; hp: number; skills: { [key in Skill]: Proficiency }; additionalSkills: { [key in string]: [Attribute, Proficiency] }; vision: Vision; speed: Speed; size: Size; savingThrows: SavingThrows; keyAbility: Attribute[]; armorProficiencies: ClassDefenses; weaponProficiencies: ClassAttacks; ancestry: string; class: string; background: string }
 
 export type Choice = { label: string; value: string }
 
@@ -22,11 +22,11 @@ export type ChoiceSetAllowedDrops = { label: string | null; predicate?: MVecType
 
 export type Class = { _id: string; fvttId: string; name: string; ancestryFeatLevels?: number[]; attacks: ClassAttacks; classFeatLevels?: number[]; defenses: ClassDefenses; description: string; generalFeatLevels?: number[]; hp: number; features?: Feat[]; keyAbility?: Attribute[]; perception: Proficiency; publication: Publication; rules?: Rule[]; savingThrows: ClassSavingThrows; skillFeatLevels?: number[]; skillIncreaseLevels?: number[]; spellcasting: boolean; trainedSkills: ClassTrainedSkills; rarity: string; traits?: string[]; slug: string; type: string }
 
-export type ClassAttacks = { unarmed: boolean; simple: boolean; martial: boolean; advanced: boolean; other: ClassAttacksOther }
+export type ClassAttacks = { unarmed: Proficiency; simple: Proficiency; martial: Proficiency; advanced: Proficiency; other: ClassAttacksOther }
 
 export type ClassAttacksOther = { name: string; rank: Proficiency }
 
-export type ClassDefenses = { unarmored: boolean; light: boolean; medium: boolean; heavy: boolean }
+export type ClassDefenses = { unarmored: Proficiency; light: Proficiency; medium: Proficiency; heavy: Proficiency }
 
 export type ClassSavingThrows = { fortitude: Proficiency; reflex: Proficiency; will: Proficiency }
 

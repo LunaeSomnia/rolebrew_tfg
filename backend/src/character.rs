@@ -9,8 +9,8 @@ use tokio::sync::RwLock;
 use crate::{
     DatabaseCollection, NewCharacterForm,
     models::{
-        Ancestry, Attribute, Background, Class, Proficiency, SavingThrows, Size, Skill, Speed,
-        Vision,
+        Ancestry, Attribute, Background, Class, ClassAttacks, ClassAttacksOther, ClassDefenses,
+        Proficiency, SavingThrows, Size, Skill, Speed, Vision,
     },
 };
 
@@ -30,6 +30,8 @@ pub struct Character {
     pub size: Size,
     pub saving_throws: SavingThrows,
     pub key_ability: Vec<Attribute>,
+    pub armor_proficiencies: ClassDefenses,
+    pub weapon_proficiencies: ClassAttacks,
 
     pub ancestry: String,
     pub class: String,
@@ -85,6 +87,9 @@ impl Character {
         };
         let key_ability: Vec<Attribute> = class.key_ability;
 
+        let armor_proficiencies = class.defenses;
+        let weapon_proficiencies = class.attacks;
+
         Self {
             id: ObjectId::new(),
             name: form.name,
@@ -101,6 +106,8 @@ impl Character {
             background: form.background,
             class: form.class,
             key_ability,
+            armor_proficiencies,
+            weapon_proficiencies,
         }
     }
 }

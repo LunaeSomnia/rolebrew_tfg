@@ -6,6 +6,8 @@
         SavingThrows,
         Skill,
     } from "$lib/bindings";
+    import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
+    import { roll } from "$lib/roll";
     import { capitalize } from "$lib/utils";
     import {
         BASIC_SKILL_TO_ATTRIBUTE,
@@ -17,13 +19,16 @@
     import VerticalDivisor from "../divisor/VerticalDivisor.svelte";
     import Profifiency from "../Profifiency.svelte";
     import Tooltip from "../Tooltip.svelte";
+    import Rollable from "./Rollable.svelte";
 
     let {
+        simulationState,
         level,
         keyAbility,
         attributeModifiers,
         savingThrows,
     }: {
+        simulationState: CharacterSimulationState;
         level: number;
         keyAbility: Attribute;
         attributeModifiers: Record<Attribute, number>;
@@ -67,20 +72,36 @@
         </span>
     {/snippet}
     <div class="row saving-throw">
-        <Profifiency {proficiency} />
-        <div class="row text">
+        <Rollable
+            style="width: 100%;"
+            expandOnHover={true}
+            onclick={() => {
+                simulationState.pushChatMessage(
+                    `rolled ${capitalize(savingThrow)}: ${roll(20) + modifier}`,
+                );
+            }}
+        >
+            <Profifiency {proficiency} />
             <span class="saving-throw-text">{capitalize(savingThrow)}</span>
             <span class="tag">{attributeText}</span>
-        </div>
-        <div class="row" style="gap: 0.5rem;">
             <Tooltip textSnippet={valueTooltip}>
                 <span class="value">{modifier >= 0 ? "+" : ""}{modifier}</span>
             </Tooltip>
-            <VerticalDivisor />
+        </Rollable>
+        <VerticalDivisor />
+        <Rollable
+            style="width: fit-content;"
+            expandOnHover={true}
+            onclick={() => {
+                simulationState.pushChatMessage(
+                    `rolled ${capitalize(savingThrow)} DC: ${roll(20) + modifier}`,
+                );
+            }}
+        >
             <Tooltip textSnippet={dcTooltip}>
                 <span class="value">{dc >= 0 ? "+" : ""}{dc}</span>
             </Tooltip>
-        </div>
+        </Rollable>
     </div>
 {/snippet}
 
@@ -98,6 +119,7 @@
         height: 100%;
     }
     .skills {
+        position: relative;
         width: 100%;
         background-color: var(--dark-2);
         border-radius: 0.5rem;
@@ -105,14 +127,9 @@
         gap: 0.5rem;
 
         .saving-throw {
+            position: relative;
             width: 100%;
             align-items: center;
-
-            .text {
-                flex: 1;
-                align-items: baseline;
-                gap: 0.5rem;
-            }
 
             .saving-throw-text {
                 flex: 1;

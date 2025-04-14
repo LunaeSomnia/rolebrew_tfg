@@ -18,10 +18,10 @@ export class Class {
 
     @Transform(({ obj }) => {
         return {
-            unarmed: obj.system.attacks.unarmed === 1,
-            simple: obj.system.attacks.simple === 1,
-            martial: obj.system.attacks.martial === 1,
-            advanced: obj.system.attacks.advanced === 1,
+            unarmed: obj.system.attacks.unarmed,
+            simple: obj.system.attacks.simple,
+            martial: obj.system.attacks.martial,
+            advanced: obj.system.attacks.advanced,
             other: obj.system.attacks.other,
         };
     })
@@ -34,10 +34,10 @@ export class Class {
 
     @Transform(({ obj }) => {
         return {
-            unarmored: obj.system.defenses.unarmored === 1,
-            light: obj.system.defenses.light === 1,
-            medium: obj.system.defenses.medium === 1,
-            heavy: obj.system.defenses.heavy === 1,
+            unarmored: obj.system.defenses.unarmored,
+            light: obj.system.defenses.light,
+            medium: obj.system.defenses.medium,
+            heavy: obj.system.defenses.heavy,
         };
     })
     @Expose()
