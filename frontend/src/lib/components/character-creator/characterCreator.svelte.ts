@@ -108,12 +108,10 @@ export class CharacterState {
 
         const additional = this.classData?.trainedSkills.additional;
         if (additional) {
-            console.log('additional', additional)
             number += additional
         }
 
         if (this.keyAbility) {
-            console.log('this.keyAbility', this.keyAbility)
             number += this.attributeModifiers[this.keyAbility]
         }
 

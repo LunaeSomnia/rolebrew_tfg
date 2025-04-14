@@ -12,8 +12,6 @@
         simulationState: CharacterSimulationState;
         attributes: Record<Attribute, number>;
     } = $props();
-
-    console.log(attributes);
 </script>
 
 {#snippet attribute(attribute: Attribute, value: number)}

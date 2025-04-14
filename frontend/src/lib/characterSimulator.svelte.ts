@@ -13,8 +13,6 @@ export class CharacterSimulationState {
     armorClass: number = $derived.by(() => {
         let base = 10;
 
-        console.log(this.character.armorProficiencies, this.currentArmor)
-
         if (this.currentArmor === 'Unarmored') {
             base += proficiencyBonus(this.character.armorProficiencies.unarmored, this.character.level)
         }

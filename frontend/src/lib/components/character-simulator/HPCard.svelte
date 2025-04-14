@@ -49,10 +49,7 @@
     </div>
 
     {#snippet popoverHeader()}
-        <Button
-            cta="secondary"
-            onclick={() => console.log("hp")}
-            iconLeft={Icon.Math}
+        <Button cta="secondary" onclick={() => {}} iconLeft={Icon.Math}
         ></Button>
     {/snippet}
 
