@@ -138,6 +138,8 @@ const IGNORED_SECTIONS = [
     "pf2e-macros",
     "rollable-tables",
     "campaign-effects",
+    "pathfinder-bestiary-3",
+    "vehicles",
 ];
 
 const COMPENDIUM_SECTION_MATCHER: Map<string, string> = new Map([

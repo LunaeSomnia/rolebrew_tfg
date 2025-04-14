@@ -10,6 +10,7 @@ import {
     BACKGROUNDS,
     CLASS_FEATURES,
     CLASSES,
+    EQUIPMENT,
     FEATS,
     HERITAGES,
 } from "./models/index.ts";
@@ -34,6 +35,7 @@ await collectionDropAndInsertAll(db, 'action', ACTIONS)
 await collectionDropAndInsertAll(db, 'heritage', HERITAGES)
 await collectionDropAndInsertAll(db, 'class', CLASSES)
 await collectionDropAndInsertAll(db, 'background', BACKGROUNDS)
+await collectionDropAndInsertAll(db, 'equipment', EQUIPMENT)
 
 await db.createIndex("user", "email", { unique: true });
 await db.createIndex("user", "username", { unique: true });
@@ -42,6 +44,7 @@ await db.createIndex("action", "slug", { unique: true });
 await db.createIndex("ancestry", "slug", { unique: true });
 await db.createIndex("class", "slug", { unique: true });
 await db.createIndex("background", "slug", { unique: true });
+await db.createIndex("equipment", "slug", { unique: true });
 
 console.log(`Documents inserted successfully`);
 await mongoDBClient.close();

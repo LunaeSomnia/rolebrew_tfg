@@ -29,11 +29,14 @@ pub enum Rule {
         img: Option<String>,
         range: Option<serde_json::Value>,
         slug: Option<String>,
+        acuity: Option<String>,
         label: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         #[serde(default, deserialize_with = "null_to_default")]
         traits: Vec<String>,
+        #[serde(default, deserialize_with = "null_to_default")]
+        other_tags: Vec<String>,
         base_type: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         options: Vec<String>,
@@ -41,6 +44,7 @@ pub enum Rule {
     },
     #[serde(rename_all = "camelCase")]
     RollOption {
+        requires_equipped: Option<bool>,
         count: Option<bool>,
         always_active: Option<bool>,
         mergeable: Option<bool>,
@@ -53,6 +57,7 @@ pub enum Rule {
         selector: Option<String>,
         phase: Option<String>,
         domain: Option<String>,
+        selection: Option<String>,
         placement: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         disabled_if: MVec<RulePredicateFilter>,
@@ -142,6 +147,8 @@ pub enum Rule {
     },
     #[serde(rename_all = "camelCase")]
     FlatModifier {
+        require_investment: Option<bool>,
+        requires_equipped: Option<bool>,
         alternate: Option<bool>,
         critical: Option<bool>,
         hide_if_disabled: Option<bool>,
@@ -241,6 +248,7 @@ pub enum Rule {
         category: Option<String>,
         damage_type: Option<String>,
         dice_number: Option<Either<String, u8>>,
+        #[serde(alias = "diceSize")]
         die_size: Option<String>,
         #[serde(rename = "override")]
         #[serde(default)]
@@ -275,6 +283,8 @@ pub enum Rule {
     },
     #[serde(rename_all = "camelCase")]
     AdjustModifier {
+        requires_invested: Option<bool>,
+        requires_equipped: Option<bool>,
         suppress: Option<bool>,
 
         max_applications: Option<u8>,
@@ -341,6 +351,8 @@ pub enum Rule {
     },
     #[serde(rename_all = "camelCase")]
     DamageAlteration {
+        requires_equipped: Option<bool>,
+
         mode: String,
         slug: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
@@ -367,6 +379,7 @@ pub enum Rule {
     CriticalSpecialization {
         alternate: Option<bool>,
 
+        text: Option<String>,
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         damage_dice: Option<DamageRoll>,
@@ -442,6 +455,23 @@ pub enum Rule {
         #[serde(default, deserialize_with = "null_to_default")]
         predicate: MVec<RulePredicateFilter>,
         value: String,
+        priority: Option<i16>,
+    },
+    #[serde(rename_all = "camelCase")]
+    WeaponPotency {
+        #[serde(default, deserialize_with = "null_to_default")]
+        predicate: MVec<RulePredicateFilter>,
+        selector: String,
+        value: Either<u8, String>,
+        label: Option<String>,
+        priority: Option<i16>,
+    },
+    #[serde(rename_all = "camelCase")]
+    Striking {
+        #[serde(default, deserialize_with = "null_to_default")]
+        predicate: MVec<RulePredicateFilter>,
+        selector: String,
+        value: Either<u8, String>,
         priority: Option<i16>,
     },
 }

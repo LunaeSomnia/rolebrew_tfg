@@ -15,3 +15,6 @@ pub use class::*;
 
 pub mod background;
 pub use background::*;
+
+pub mod equipment;
+pub use equipment::*;

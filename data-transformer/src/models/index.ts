@@ -7,6 +7,7 @@ import { Feat } from "./feat";
 import { Action } from "./action";
 import { Class } from "./class";
 import { Background } from "./background";
+import { Equipment } from "./equipment";
 
 export const FEATS: Map<string, Feat> = new Map();
 export const FEATS_LOCATION = "./data/feats.json";
@@ -34,6 +35,9 @@ export const BACKGROUNDS_LOCATION = "./data/backgrounds.json";
 
 export const ACTIONS: Map<string, Action> = new Map();
 export const ACTIONS_LOCATION = "./data/actions.json";
+
+export const EQUIPMENT: Map<string, Equipment> = new Map();
+export const EQUIPMENT_LOCATION = "./data/equipment.json";
 
 async function transformToMap<T>(
     map: Map<string, T>,
@@ -105,4 +109,11 @@ await transformToMap(
     Background,
     (v) => nameToSlug(v.slug),
     BACKGROUNDS_LOCATION,
+);
+
+await transformToMap(
+    EQUIPMENT,
+    Equipment,
+    (v) => nameToSlug(v.slug),
+    EQUIPMENT_LOCATION,
 );

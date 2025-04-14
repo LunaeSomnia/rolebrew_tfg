@@ -5,7 +5,7 @@ use actix_web::{App, HttpServer, http::header, middleware::Logger, web::Data};
 use db::storeable::Storeable;
 use dotenv::dotenv;
 use models::{
-    Background, Class, Heritage,
+    Background, Class, Equipment, Heritage,
     primary::{action::Action, ancestry::Ancestry, feat::Feat},
 };
 use tokio::sync::RwLock;
@@ -63,6 +63,7 @@ async fn main() -> std::io::Result<()> {
         let action_data = create_collection_and_data::<Action>(db_ref.clone());
         let class_data = create_collection_and_data::<Class>(db_ref.clone());
         let background_data = create_collection_and_data::<Background>(db_ref.clone());
+        let equipment_data = create_collection_and_data::<Equipment>(db_ref.clone());
 
         App::new()
             .app_data(users_data)
@@ -72,6 +73,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(action_data)
             .app_data(class_data)
             .app_data(background_data)
+            .app_data(equipment_data)
             // auth
             .service(login)
             .service(hash)
@@ -144,6 +146,7 @@ async fn test_database_data() {
     let action_collection = DatabaseCollection::<Action>::new(db_ref.clone());
     let class_collection = DatabaseCollection::<Class>::new(db_ref.clone());
     let background_collection = DatabaseCollection::<Background>::new(db_ref.clone());
+    let equipment_collection = DatabaseCollection::<Equipment>::new(db_ref.clone());
 
     let _feats: Vec<Feat> = feat_collection.get_all().await.unwrap();
     let _heritages: Vec<Ancestry> = heritage_collection.get_all().await.unwrap();
@@ -151,6 +154,7 @@ async fn test_database_data() {
     let _actions: Vec<Action> = action_collection.get_all().await.unwrap();
     let _classes: Vec<Class> = class_collection.get_all().await.unwrap();
     let _backgrounds: Vec<Background> = background_collection.get_all().await.unwrap();
+    let _equipment: Vec<Equipment> = equipment_collection.get_all().await.unwrap();
 }
 
 #[tokio::test]
@@ -163,6 +167,7 @@ async fn export_bindings() {
 
     // Export types to Typescript file
     TypeCollection::default()
+        .register::<Equipment>()
         .register::<Heritage>()
         .register::<Ancestry>()
         .register::<Feat>()
