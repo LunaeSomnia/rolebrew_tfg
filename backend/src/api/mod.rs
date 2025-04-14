@@ -29,6 +29,9 @@ pub use background_api::*;
 pub mod characters_api;
 pub use characters_api::*;
 
+pub mod equipment_api;
+pub use equipment_api::*;
+
 type Collection<'a, T> = DatabaseCollection<T>;
 type CollectionData<'a, T> = Data<RwLock<Collection<'a, T>>>;
 

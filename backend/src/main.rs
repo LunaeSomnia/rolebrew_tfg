@@ -84,6 +84,10 @@ async fn main() -> std::io::Result<()> {
             // users
             .service(create_user)
             // action
+            .service(get_equipment_summaries)
+            .service(get_equipment_preview)
+            .service(get_equipment)
+            // action
             .service(get_action_summaries)
             .service(get_action_preview)
             .service(get_action)
