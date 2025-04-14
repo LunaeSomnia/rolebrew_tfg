@@ -105,7 +105,7 @@
     </div>
 {/snippet}
 
-<div class="column skills">
+<div class="column saving-throws">
     {@render savingThrow("fortitude", savingThrows["fortitude"])}
     {@render savingThrow("reflex", savingThrows["reflex"])}
     {@render savingThrow("will", savingThrows["will"])}
@@ -118,7 +118,7 @@
     .row {
         height: 100%;
     }
-    .skills {
+    .saving-throws {
         position: relative;
         width: 100%;
         background-color: var(--dark-2);
