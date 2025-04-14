@@ -12,10 +12,17 @@
     import { capitalize } from "$lib/utils.js";
     import SavingThrows from "$lib/components/character-simulator/SavingThrows.svelte";
     import Chat from "$lib/components/character-simulator/Chat.svelte";
+    import Button from "$lib/components/Button.svelte";
+    import EquipmentPage from "$lib/components/character-simulator/pages/EquipmentPage.svelte";
+    import ActionsPage from "$lib/components/character-simulator/pages/ActionsPage.svelte";
+    import SpellsPage from "$lib/components/character-simulator/pages/SpellsPage.svelte";
+    import ConditionsPage from "$lib/components/character-simulator/pages/ConditionsPage.svelte";
+    import InfoPage from "$lib/components/character-simulator/pages/InfoPage.svelte";
 
     let { data } = $props();
 
     let isChatOpen = $state(true);
+    let mainPage = $state(0);
 
     //
 
@@ -73,7 +80,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" style="width: 100%;">
         <div class="column">
             <ArmorClass
                 bind:value={simulationState.armorClass}
@@ -102,7 +109,40 @@
                 level={character.level}
             />
         </div>
-        <div class="main">
+        <div class="main-wrapper column">
+            <div class="pages-wrapper row">
+                <Button
+                    cta={mainPage === 0 ? "primary" : "secondary"}
+                    onclick={() => (mainPage = 0)}>Actions</Button
+                >
+                <Button
+                    cta={mainPage === 1 ? "primary" : "secondary"}
+                    onclick={() => (mainPage = 1)}>Equipment</Button
+                >
+                <Button
+                    cta={mainPage === 2 ? "primary" : "secondary"}
+                    onclick={() => (mainPage = 2)}>Spells</Button
+                >
+                <Button
+                    cta={mainPage === 3 ? "primary" : "secondary"}
+                    onclick={() => (mainPage = 3)}>Conditions</Button
+                >
+                <Button
+                    cta={mainPage === 4 ? "primary" : "secondary"}
+                    onclick={() => (mainPage = 4)}>Info</Button
+                >
+            </div>
+            {#if mainPage === 0}
+                <ActionsPage />
+            {:else if mainPage === 1}
+                <EquipmentPage />
+            {:else if mainPage === 2}
+                <SpellsPage />
+            {:else if mainPage === 3}
+                <ConditionsPage />
+            {:else if mainPage === 4}
+                <InfoPage />
+            {/if}
             <!-- ACTIONS, EQUIPMENT, SPELLS, CONDITIONS -->
         </div>
     </div>
@@ -146,5 +186,16 @@
 
     .hero-points {
         align-items: center;
+    }
+
+    .main-wrapper {
+        width: 100%;
+        height: 100%;
+        flex: 1;
+    }
+
+    .main-content {
+        width: 100%;
+        height: 100%;
     }
 </style>
