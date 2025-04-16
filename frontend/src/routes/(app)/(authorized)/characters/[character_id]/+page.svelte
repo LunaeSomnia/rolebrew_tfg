@@ -13,25 +13,58 @@
     import SavingThrows from "$lib/components/character-simulator/SavingThrows.svelte";
     import Chat from "$lib/components/character-simulator/Chat.svelte";
     import Button from "$lib/components/Button.svelte";
-    import EquipmentPage from "$lib/components/character-simulator/pages/EquipmentPage.svelte";
-    import ActionsPage from "$lib/components/character-simulator/pages/ActionsPage.svelte";
+    import EquipmentPage from "$lib/components/character-simulator/pages/equipment/EquipmentPage.svelte";
+    import ActionsPage from "$lib/components/character-simulator/pages/actions/ActionsPage.svelte";
     import SpellsPage from "$lib/components/character-simulator/pages/SpellsPage.svelte";
-    import ConditionsPage from "$lib/components/character-simulator/pages/ConditionsPage.svelte";
+    import ConditionsPage from "$lib/components/character-simulator/pages/conditions/ConditionsPage.svelte";
     import InfoPage from "$lib/components/character-simulator/pages/InfoPage.svelte";
+    import type { PageProps } from "./$types";
+    import Tag from "$lib/components/Tag.svelte";
+    import FeaturesPage from "$lib/components/character-simulator/pages/FeaturesPage.svelte";
 
-    let { data } = $props();
+    let { data }: PageProps = $props();
 
     let isChatOpen = $state(true);
     let mainPage = $state(0);
 
     //
 
-    let character = $derived(data.character);
-    let simulationState = new CharacterSimulationState(data.character);
+    let simulationState: CharacterSimulationState = $state(
+        data.simulationState,
+    );
+    let character = $derived(simulationState.character);
 
     let headerSubtitle = $derived(
         `${capitalize(character.ancestry)} ${capitalize(character.class)}, ${character.level}`,
     );
+
+    let activeConditions = $derived(
+        simulationState.conditions.filter((v) => v.isActive),
+    );
+
+    async function saveCharacterState() {
+        // @ts-ignore
+        const characterId = character._id.$oid;
+        const body = JSON.stringify(simulationState.toJSON());
+        console.log(simulationState.toJSON());
+        const request = await fetch(
+            `/api/user/${data.user.username}/character/${characterId}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body,
+            },
+        );
+
+        console.log(request);
+    }
+
+    $effect(() => {
+        //     simulationState.conditions =
+        console.log(simulationState);
+    });
 </script>
 
 <div class="column character" class:chat-open={isChatOpen}>
@@ -39,6 +72,11 @@
         <div class="row info">
             <h4 class="name">{character.name}</h4>
             <span class="name">{headerSubtitle}</span>
+            {#if activeConditions.length > 0}
+                <Tag>
+                    {activeConditions.length} conditions active
+                </Tag>
+            {/if}
         </div>
         <div class="row" style="align-items: center;">
             <div class="row hero-points">
@@ -46,6 +84,7 @@
                 <HeroPoints bind:value={simulationState.heroPoints} />
             </div>
             <ToggleButton iconLeft={Icon.Chat} bind:value={isChatOpen} />
+            <Button cta="secondary" onclick={saveCharacterState}>Save</Button>
         </div>
     </div>
 
@@ -83,8 +122,8 @@
     <div class="row" style="width: 100%;">
         <div class="column">
             <ArmorClass
+                state={simulationState}
                 bind:value={simulationState.armorClass}
-                armorChoices={[{ label: "Unarmored", value: "Unarmored" }]}
                 bind:armorChosen={simulationState.currentArmor}
                 bind:hasShieldUp={simulationState.hasShieldUp}
                 shieldChoices={[]}
@@ -129,21 +168,29 @@
                 >
                 <Button
                     cta={mainPage === 4 ? "primary" : "secondary"}
-                    onclick={() => (mainPage = 4)}>Info</Button
+                    onclick={() => (mainPage = 4)}>Features</Button
+                >
+                <Button
+                    cta={mainPage === 5 ? "primary" : "secondary"}
+                    onclick={() => (mainPage = 5)}>Info</Button
                 >
             </div>
             {#if mainPage === 0}
-                <ActionsPage />
+                <ActionsPage actions={data.actions} {simulationState} />
             {:else if mainPage === 1}
-                <EquipmentPage />
+                <EquipmentPage
+                    equipmentSummaries={data.equipmentSummaries}
+                    {simulationState}
+                />
             {:else if mainPage === 2}
                 <SpellsPage />
             {:else if mainPage === 3}
-                <ConditionsPage />
-            {:else if mainPage === 4}
+                <ConditionsPage bind:simulationState />
+            {:else if mainPage === 5}
                 <InfoPage />
+            {:else if mainPage === 4}
+                <FeaturesPage />
             {/if}
-            <!-- ACTIONS, EQUIPMENT, SPELLS, CONDITIONS -->
         </div>
     </div>
 </div>
@@ -192,10 +239,5 @@
         width: 100%;
         height: 100%;
         flex: 1;
-    }
-
-    .main-content {
-        width: 100%;
-        height: 100%;
     }
 </style>

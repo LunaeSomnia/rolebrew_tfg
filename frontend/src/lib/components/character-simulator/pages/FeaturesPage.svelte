@@ -1,5 +1,5 @@
 <div class="main-content card">
-    <h6>Actions</h6>
+    <h6>Features</h6>
 </div>
 
 <style lang="scss">

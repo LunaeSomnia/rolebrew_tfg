@@ -474,6 +474,11 @@ pub enum Rule {
         value: Either<u8, String>,
         priority: Option<i16>,
     },
+    #[serde(rename_all = "camelCase")]
+    LoseHitPoints {
+        reevaluate_on_update: Option<bool>,
+        value: String,
+    },
 }
 
 #[derive(Serialize, Deserialize, Debug, Type)]

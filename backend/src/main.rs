@@ -5,7 +5,7 @@ use actix_web::{App, HttpServer, http::header, middleware::Logger, web::Data};
 use db::storeable::Storeable;
 use dotenv::dotenv;
 use models::{
-    Background, Class, Equipment, Heritage,
+    Background, Class, Condition, Equipment, Heritage,
     primary::{action::Action, ancestry::Ancestry, feat::Feat},
 };
 use tokio::sync::RwLock;
@@ -64,6 +64,7 @@ async fn main() -> std::io::Result<()> {
         let class_data = create_collection_and_data::<Class>(db_ref.clone());
         let background_data = create_collection_and_data::<Background>(db_ref.clone());
         let equipment_data = create_collection_and_data::<Equipment>(db_ref.clone());
+        let condition_data = create_collection_and_data::<Condition>(db_ref.clone());
 
         App::new()
             .app_data(users_data)
@@ -74,22 +75,30 @@ async fn main() -> std::io::Result<()> {
             .app_data(class_data)
             .app_data(background_data)
             .app_data(equipment_data)
+            .app_data(condition_data)
             // auth
             .service(login)
             .service(hash)
             // characters
             .service(get_character)
             .service(get_characters)
+            .service(save_character_state)
             .service(create_new_character)
             // users
             .service(create_user)
-            // action
+            // condition
+            .service(get_condition_summaries)
+            .service(get_condition_preview)
+            .service(get_conditions)
+            .service(get_condition)
+            // equipment
             .service(get_equipment_summaries)
             .service(get_equipment_preview)
             .service(get_equipment)
             // action
             .service(get_action_summaries)
             .service(get_action_preview)
+            .service(get_actions)
             .service(get_action)
             // class
             .service(get_class_summaries)
@@ -151,6 +160,7 @@ async fn test_database_data() {
     let class_collection = DatabaseCollection::<Class>::new(db_ref.clone());
     let background_collection = DatabaseCollection::<Background>::new(db_ref.clone());
     let equipment_collection = DatabaseCollection::<Equipment>::new(db_ref.clone());
+    let condition_collection = DatabaseCollection::<Condition>::new(db_ref.clone());
 
     let _feats: Vec<Feat> = feat_collection.get_all().await.unwrap();
     let _heritages: Vec<Ancestry> = heritage_collection.get_all().await.unwrap();
@@ -159,6 +169,7 @@ async fn test_database_data() {
     let _classes: Vec<Class> = class_collection.get_all().await.unwrap();
     let _backgrounds: Vec<Background> = background_collection.get_all().await.unwrap();
     let _equipment: Vec<Equipment> = equipment_collection.get_all().await.unwrap();
+    let _conditions: Vec<Condition> = condition_collection.get_all().await.unwrap();
 }
 
 #[tokio::test]
@@ -171,6 +182,7 @@ async fn export_bindings() {
 
     // Export types to Typescript file
     TypeCollection::default()
+        .register::<Condition>()
         .register::<Equipment>()
         .register::<Heritage>()
         .register::<Ancestry>()

@@ -5,6 +5,7 @@ use futures::TryStreamExt;
 use mongodb::Client;
 use storeable::Storeable;
 
+pub mod characters_db_impl;
 pub mod storeable;
 pub mod users_db_impl;
 

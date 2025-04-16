@@ -24,7 +24,7 @@
                 placeholder="Search in characters"
                 bind:value={charactersSearch}
             />
-            <Button onclick={onNewCharacter} iconLeft={Icon.Add}>
+            <Button onclick={onNewCharacter} iconLeft={Icon.Plus}>
                 Create Character
             </Button>
         </div>
@@ -37,15 +37,17 @@
                 <Button
                     cta="secondary"
                     onclick={onNewCharacter}
-                    iconLeft={Icon.Add}
+                    iconLeft={Icon.Plus}
                 >
                     <span>Create Character</span>
                 </Button>
             </div>
         {:else}
-            {#each characters as character}
-                <CharacterCard {character} />
-            {/each}
+            <div class="row characters-wrapper">
+                {#each characters as character}
+                    <CharacterCard {character} />
+                {/each}
+            </div>
         {/if}
     {/await}
 </div>
@@ -74,6 +76,10 @@
 
             align-items: center;
             justify-content: center;
+        }
+
+        .characters-wrapper {
+            flex-wrap: wrap;
         }
     }
 </style>

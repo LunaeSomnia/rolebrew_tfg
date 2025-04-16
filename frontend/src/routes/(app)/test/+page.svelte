@@ -12,6 +12,7 @@
     import Dialog from "$lib/components/dialog/Dialog.svelte";
     import Button from "$lib/components/Button.svelte";
     import Slider from "$lib/components/Slider.svelte";
+    import IconSvg from "$lib/icons/IconSVG.svelte";
 
     let { data } = $props();
 
@@ -65,6 +66,12 @@
     />
 </section>
 
+<section style="--icon-color: var(--orange);">
+    <IconSvg icon={Icon.FreeAction}/>
+    <IconSvg icon={Icon.Action}/>
+    <IconSvg icon={Icon.DoubleAction}/>
+    <IconSvg icon={Icon.TripleAction}/>
+</section>
 <section>
     {#snippet headerSnippet()}
         <div>

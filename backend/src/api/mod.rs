@@ -32,8 +32,19 @@ pub use characters_api::*;
 pub mod equipment_api;
 pub use equipment_api::*;
 
+pub mod condition_api;
+pub use condition_api::*;
+
 type Collection<'a, T> = DatabaseCollection<T>;
 type CollectionData<'a, T> = Data<RwLock<Collection<'a, T>>>;
+
+pub async fn generic_get_all<T>(db: CollectionData<'_, T>) -> Vec<T>
+where
+    T: Storeable,
+{
+    let db = db.read().await;
+    return db.get_all().await.unwrap();
+}
 
 pub async fn generic_get_summaries<T>(db: CollectionData<'_, T>) -> Vec<Summary>
 where

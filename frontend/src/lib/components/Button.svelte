@@ -76,6 +76,7 @@
         border: 0;
         margin: 0;
         line-height: inherit;
+        height: 2.5rem;
 
         font-family: inherit;
         font-weight: bold;

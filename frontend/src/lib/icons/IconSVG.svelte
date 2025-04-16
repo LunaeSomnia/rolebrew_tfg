@@ -10,22 +10,26 @@
         type Icon,
     } from "./icons";
 
-    type Props = {
+    let {
+        icon,
+        size,
+        fill,
+    }: {
         icon: Icon;
         fill?: string;
-        size?: number | string;
-    };
-
-    let { icon, size = DEFAULT_ICON_SIZE, fill }: Props = $props();
+        size?: string;
+    } = $props();
 
     const iconDefinition = ICON_VALUES.get(icon);
 </script>
 
 <svg
-    width={size ?? DEFAULT_ICON_SIZE}
+    width={size ?? iconDefinition?.width ?? DEFAULT_ICON_SIZE}
     height={size ?? DEFAULT_ICON_SIZE}
     viewBox={`0 0 ${
-        iconDefinition?.iconViewportSize ?? DEFAULT_ICON_VIEWPORT_WIDTH
+        iconDefinition?.width ??
+        iconDefinition?.iconViewportSize ??
+        DEFAULT_ICON_VIEWPORT_WIDTH
     } ${iconDefinition?.iconViewportSize ?? DEFAULT_ICON_VIEWPORT_HEIGHT}`}
     xmlns="http://www.w3.org/2000/svg"
     style={!iconDefinition?.isStroke
@@ -56,4 +60,7 @@
 </svg>
 
 <style lang="scss">
+    path {
+        transition: all var(--transition-normal);
+    }
 </style>

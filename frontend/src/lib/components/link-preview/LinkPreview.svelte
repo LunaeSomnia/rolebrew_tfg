@@ -14,6 +14,7 @@
         children,
         textDecorations = "underline",
         cursor = "auto",
+        canBeClicked = true
     } = $props();
 
     const initialState = false;
@@ -41,15 +42,27 @@
     }
 </script>
 
-<a
-    {href}
-    onmouseenter={openPreview}
-    onmouseleave={closePreview}
-    style="text-decoration: {textDecorations}; cursor: {cursor};"
-    use:floatingRef
->
-    {@render children()}
-</a>
+{#if canBeClicked}
+    <a
+        {href}
+        onmouseenter={openPreview}
+        onmouseleave={closePreview}
+        style="text-decoration: {textDecorations}; cursor: {cursor};"
+        use:floatingRef
+    >
+        {@render children()}
+    </a>
+{:else}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <span
+        onmouseenter={openPreview}
+        onmouseleave={closePreview}
+        style="text-decoration: {textDecorations}; cursor: {cursor};"
+        use:floatingRef
+    >
+        {@render children()}
+    </span>
+{/if}
 
 {#if isOpen}
     {#await fetch(summaryHref) then fetchResult}

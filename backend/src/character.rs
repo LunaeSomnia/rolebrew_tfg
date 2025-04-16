@@ -36,7 +36,11 @@ pub struct Character {
     pub ancestry: String,
     pub class: String,
     pub background: String,
+
+    pub state: Option<CharacterState>,
 }
+
+pub type CharacterState = serde_json::Value;
 
 type CollectionData<'a, T> = Data<RwLock<DatabaseCollection<T>>>;
 
@@ -108,6 +112,7 @@ impl Character {
             key_ability,
             armor_proficiencies,
             weapon_proficiencies,
+            state: None,
         }
     }
 }

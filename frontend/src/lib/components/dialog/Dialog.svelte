@@ -8,10 +8,12 @@
     import Button from "../Button.svelte";
 
     let {
+        size = 'small',
         headerSnippet,
         children,
         title,
     }: {
+        size?: 'small' | 'medium' | 'fill';
         title: string;
         headerSnippet: Snippet;
         children: Snippet;
@@ -26,7 +28,7 @@
     </Dialog.Trigger>
     <Dialog.Portal>
         <Dialog.Overlay class="dialog-overlay" />
-        <Dialog.Content class="dialog-content dialog column">
+        <Dialog.Content class="dialog-content dialog column {size}">
             <DialogTitle>
                 <h4 class="dialog-title">{title}</h4>
                 <Button cta="ghost" onclick={() => (open = false)}>
@@ -71,6 +73,8 @@
         width: 100%;
         left: 50%;
         top: 50%;
+        max-height: calc(100% - 8rem);
+        overflow-y: auto;
         transform: translate(-50%, -50%);
         border-radius: 0.5rem;
         max-width: calc(100% - 2rem);
@@ -78,11 +82,16 @@
         background-color: var(--dark-2);
         border-color: var(--dark-3);
 
-        @media (min-width: 640px) {
-            max-width: 490px;
-        }
-        @media (min-width: 768px) {
-            width: 100%;
-        }
+
+    }
+
+    :global(.dialog-content.small) {
+        max-height: 50rem;
+        max-width: 40rem;
+    }
+
+    :global(.dialog-content.medium) {
+        max-height: 50rem;
+        max-width: 60rem;
     }
 </style>

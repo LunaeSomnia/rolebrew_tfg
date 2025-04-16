@@ -14,7 +14,9 @@
 <style lang="scss">
     .proficiency {
         width: 1.25rem;
+        min-width: 1.25rem;
         height: 1.25rem;
+        min-height: 1.25rem;
         text-align: center;
         align-content: center;
         font-size: 0.75rem;

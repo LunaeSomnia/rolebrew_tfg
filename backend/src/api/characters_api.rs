@@ -1,5 +1,6 @@
 use crate::{
     Character, Choice, DatabaseCollection,
+    characters_db_impl::CharacterDBImpl,
     models::{Ancestry, Attribute, Background, Class, Proficiency, Skill},
     user::User,
     users_db_impl::UserDBImpl,
@@ -58,6 +59,39 @@ pub async fn get_character(
     }
 
     actix_web::HttpResponse::Ok().json(character_option.unwrap())
+}
+
+#[derive(Serialize, Deserialize, Type, Clone, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct SaveCharacterForm {
+    pub(crate) hp: Option<serde_json::Value>,
+    pub(crate) temp_hp: Option<serde_json::Value>,
+    pub(crate) hero_points: Option<serde_json::Value>,
+    pub(crate) current_armor: Option<serde_json::Value>,
+    pub(crate) current_shield: Option<serde_json::Value>,
+    pub(crate) initiative: Option<serde_json::Value>,
+    pub(crate) chat: Option<serde_json::Value>,
+    pub(crate) money: Option<serde_json::Value>,
+    pub(crate) equipment: Option<serde_json::Value>,
+    pub(crate) conditions: Option<serde_json::Value>,
+}
+
+#[post("/api/user/{user_id}/character/{character_id}")]
+pub async fn save_character_state(
+    db: CollectionData<'_, User>,
+    query_parameters: Path<(String, String)>,
+    form: actix_web::web::Json<SaveCharacterForm>,
+) -> impl Responder {
+    let (user_id, character_id) = query_parameters.into_inner();
+    let db = db.read().await;
+    let result = db
+        .save_character_state(&user_id, &character_id, form.into_inner())
+        .await;
+    if result.is_err() {
+        return actix_web::HttpResponse::BadRequest().body("State not updated correctly");
+    }
+
+    actix_web::HttpResponse::Ok().finish()
 }
 
 #[derive(Serialize, Deserialize, Type, Clone, Debug)]

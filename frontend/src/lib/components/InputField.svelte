@@ -3,16 +3,18 @@
         value = $bindable(""),
         placeholder = "Input here",
         onkeydown,
+        onchange,
         ...props
     }: {
         value: string;
         placeholder: string;
         onkeydown?: (e: KeyboardEvent) => void;
+        onchange?: () => void;
     } & any = $props();
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="input-field" class:has-input={value !== ""} {onkeydown}>
+<div class="input-field" class:has-input={value !== ""} {onkeydown} {onchange}>
     <input class="row" bind:value {placeholder} {...props} />
 </div>
 
