@@ -33,7 +33,7 @@
     }
 
     .value {
-        font-weight: bold;
+        font-weight: 600;
         color: var(--light-1);
         font-size: 1.25rem;
     }

@@ -1,8 +1,6 @@
 use serde::{Deserialize, Serialize};
 use specta::Type;
 
-use super::{Action, primary::feat::Feat};
-
 #[derive(Serialize, Deserialize, Debug, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct LinkPreview {

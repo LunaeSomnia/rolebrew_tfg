@@ -33,7 +33,7 @@
 
     :global(.stat > span) {
         color: var(--light-1);
-        font-weight: bold;
+        font-weight: 600;
         text-wrap: nowrap;
     }
 </style>

@@ -1,9 +1,7 @@
-use crate::{DatabaseCollection, models::summary::Summary, storeable::Storeable};
-use actix_web::web::Data;
-use tokio::sync::RwLock;
+use crate::{CollectionData, models::summary::Summary, storeable::Storeable};
 
 pub mod user;
-pub use user::*;
+// pub use user::*;
 
 pub mod auth;
 pub use auth::*;
@@ -35,32 +33,29 @@ pub use equipment_api::*;
 pub mod condition_api;
 pub use condition_api::*;
 
-type Collection<'a, T> = DatabaseCollection<T>;
-type CollectionData<'a, T> = Data<RwLock<Collection<'a, T>>>;
-
-pub async fn generic_get_all<T>(db: CollectionData<'_, T>) -> Vec<T>
+pub async fn generic_get_all<T>(coll: CollectionData<T>) -> Vec<T>
 where
     T: Storeable,
 {
-    let db = db.read().await;
+    let db = coll.read().await;
     return db.get_all().await.unwrap();
 }
 
-pub async fn generic_get_summaries<T>(db: CollectionData<'_, T>) -> Vec<Summary>
+pub async fn generic_get_summaries<T>(coll: CollectionData<T>) -> Vec<Summary>
 where
     T: Storeable + Into<Summary>,
 {
-    let db = db.read().await;
+    let db = coll.read().await;
     let data: Vec<T> = db.get_all().await.unwrap();
 
     data.into_iter().map(|v| v.into()).collect()
 }
 
-pub async fn generic_get_single<T>(db: CollectionData<'_, T>, slug: String) -> Option<T>
+pub async fn generic_get_single<T>(coll: CollectionData<T>, slug: String) -> Option<T>
 where
     T: Storeable + Into<Summary>,
 {
-    let db = db.read().await;
+    let db = coll.read().await;
     let found_data = db.get_secondary(&slug, "slug").await;
     if found_data.is_err() {
         return None;

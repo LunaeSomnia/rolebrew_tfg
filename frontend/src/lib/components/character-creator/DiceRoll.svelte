@@ -34,6 +34,6 @@
         left: 50%;
         transform: translate(-50%, -50%);
         color: var(--dark-1);
-        font-weight: bold;
+        font-weight: 600;
     }
 </style>

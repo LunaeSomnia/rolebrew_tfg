@@ -4,7 +4,7 @@
     import Button from "../Button.svelte";
     import Dialog from "../dialog/Dialog.svelte";
     import DialogHeader from "../dialog/DialogHeader.svelte";
-    import InputField from "../InputField.svelte";
+    import Input from "../Input.svelte";
     import Popover from "../Popover.svelte";
     import Slider from "../Slider.svelte";
 
@@ -72,7 +72,7 @@
                 <div class="column" style="width: 100%; gap: 0.5rem;">
                     <h6>Damage</h6>
                     <div class="row">
-                        <InputField
+                        <Input
                             type="number"
                             bind:value={damageValue}
                             min={0}
@@ -84,7 +84,7 @@
                     </div>
                     <h6>Heal</h6>
                     <div class="row">
-                        <InputField
+                        <Input
                             type="number"
                             bind:value={healValue}
                             min={0}
@@ -102,7 +102,7 @@
                     <h6>HP</h6>
                     <div class="row" style="width: 100%; align-items: center;">
                         <Slider bind:value={currentHp} min={0} max={totalHp} />
-                        <InputField bind:value={currentHp} type="number" />
+                        <Input bind:value={currentHp} type="number" />
                     </div>
                 </div>
                 <div class="column" style="width: 100%; gap: 0.5rem;">
@@ -111,7 +111,7 @@
                         class="row"
                         style="width: 100%; align-items: center;  gap: 0.5rem;"
                     >
-                        <InputField bind:value={tempHp} type="number" />
+                        <Input bind:value={tempHp} type="number" />
                     </div>
                 </div>
             </div>
@@ -165,7 +165,7 @@
 
         .value {
             color: var(--light-1);
-            font-weight: bold;
+            font-weight: 600;
         }
     }
 </style>

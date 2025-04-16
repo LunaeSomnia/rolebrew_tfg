@@ -1,16 +1,15 @@
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, sync::Arc};
 
-use actix_web::web::Data;
 use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 use specta::Type;
-use tokio::sync::RwLock;
 
 use crate::{
-    DatabaseCollection, NewCharacterForm,
+    NewCharacterForm,
+    dbref::DbRef,
     models::{
-        Ancestry, Attribute, Background, Class, ClassAttacks, ClassAttacksOther, ClassDefenses,
-        Proficiency, SavingThrows, Size, Skill, Speed, Vision,
+        Attribute, ClassAttacks, ClassDefenses, Feat, GrantItemResult, Proficiency, Rule,
+        SavingThrows, Size, Skill, Speed, Vision,
     },
 };
 
@@ -37,23 +36,19 @@ pub struct Character {
     pub class: String,
     pub background: String,
 
+    pub features: Vec<Feat>,
+    pub rules: Vec<Rule>,
+
     pub state: Option<CharacterState>,
 }
 
 pub type CharacterState = serde_json::Value;
 
-type CollectionData<'a, T> = Data<RwLock<DatabaseCollection<T>>>;
-
 impl Character {
-    pub async fn construct(
-        form: NewCharacterForm,
-        ancestry_col: CollectionData<'_, Ancestry>,
-        background_col: CollectionData<'_, Background>,
-        class_col: CollectionData<'_, Class>,
-    ) -> Self {
-        let ancestry_col = ancestry_col.read().await;
-        let background_col = background_col.read().await;
-        let class_col = class_col.read().await;
+    pub async fn construct(form: NewCharacterForm, db: Arc<DbRef>) -> Self {
+        let ancestry_col = db.ancestry_coll.read().await;
+        let background_col = db.background_coll.read().await;
+        let class_col = db.class_coll.read().await;
 
         let ancestry = ancestry_col
             .get_secondary(&form.ancestry, "slug")
@@ -94,6 +89,57 @@ impl Character {
         let armor_proficiencies = class.defenses;
         let weapon_proficiencies = class.attacks;
 
+        let ancestry_features: Vec<Feat> = ancestry
+            .features
+            .into_iter()
+            .filter(|v| v.level <= lvl)
+            .collect();
+
+        let background_features: Vec<Feat> = background
+            .features
+            .into_iter()
+            .filter(|v| v.level <= lvl)
+            .collect();
+
+        let class_features: Vec<Feat> = class
+            .features
+            .into_iter()
+            .filter(|v| v.level <= lvl)
+            .collect();
+
+        let features: Vec<Feat> = ancestry_features
+            .into_iter()
+            .chain(background_features.into_iter())
+            .chain(class_features.into_iter())
+            .collect();
+
+        let rules: Vec<Rule> = features
+            .iter()
+            .cloned()
+            .map(|v| v.rules)
+            .flatten()
+            .collect();
+
+        let grant_rules = futures::future::join_all(
+            rules
+                .iter()
+                .filter_map(|v| {
+                    if let Rule::ChoiceSet(_r) = v {
+                        return None;
+                    }
+
+                    if let Rule::GrantItem(r) = v {
+                        return Some(r);
+                    }
+                    None
+                })
+                .map(|v| v.execute(db.clone())),
+        )
+        .await;
+        let grant_rules: Vec<GrantItemResult> = grant_rules.into_iter().filter_map(|v| v).collect();
+
+        println!("{:?}", grant_rules);
+
         Self {
             id: ObjectId::new(),
             name: form.name,
@@ -112,6 +158,8 @@ impl Character {
             key_ability,
             armor_proficiencies,
             weapon_proficiencies,
+            features,
+            rules,
             state: None,
         }
     }

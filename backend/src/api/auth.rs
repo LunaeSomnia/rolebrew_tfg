@@ -6,18 +6,14 @@ use actix_web::{
 };
 use serde::{Deserialize, Serialize};
 use specta::Type;
-use tokio::sync::RwLock;
 
 use crate::{
-    DatabaseCollection,
     auth::generate_tokens,
+    dbref::DbRef,
     hash::{hash_password, verify_hash},
     user::{User, UserClaims},
     users_db_impl::UserDBImpl,
 };
-
-type Collection<'a> = DatabaseCollection<User>;
-type CollectionData<'a> = Data<RwLock<Collection<'a>>>;
 
 #[derive(Serialize, Deserialize, Type)]
 pub struct LoginForm {
@@ -26,11 +22,9 @@ pub struct LoginForm {
 }
 
 #[post("/api/auth/login")]
-pub async fn login(
-    db: CollectionData<'_>,
-    form: actix_web::web::Json<LoginForm>,
-) -> impl Responder {
-    let db = db.read().await;
+pub async fn login(db: Data<DbRef>, form: actix_web::web::Json<LoginForm>) -> impl Responder {
+    let coll = db.user_coll.clone();
+    let db = coll.read().await;
     match db.get_from_username(&form.username).await {
         Ok(user_option) => {
             if user_option.is_none() {
@@ -68,11 +62,11 @@ pub struct SignupForm {
 
 #[post("/api/auth/signup")]
 pub async fn create_user(
-    db: CollectionData<'_>,
+    db: Data<DbRef>,
     form: actix_web::web::Json<SignupForm>,
 ) -> impl Responder {
-    println!("{:?}", &form.0);
-    let db = db.read().await;
+    let coll = db.user_coll.clone();
+    let db = coll.read().await;
     if let Ok(db_user_result) = db.get_from_username(&form.username).await {
         if db_user_result.is_some() {
             return actix_web::HttpResponse::BadRequest().body("User already exists");

@@ -1,7 +1,7 @@
 import { plainToInstance, type ClassConstructor } from "class-transformer";
 import { Ancestry } from "./ancestry";
 import { Heritage } from "./heritage";
-import { nameToSlug } from "../utils/testTransform";
+import { nameToSlug } from "../utils/textTransform";
 import { Journal, type JournalPage } from "./journals";
 import { Feat } from "./feat";
 import { Action } from "./action";

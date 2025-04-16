@@ -20,7 +20,7 @@
     import InfoPage from "$lib/components/character-simulator/pages/InfoPage.svelte";
     import type { PageProps } from "./$types";
     import Tag from "$lib/components/Tag.svelte";
-    import FeaturesPage from "$lib/components/character-simulator/pages/FeaturesPage.svelte";
+    import FeaturesPage from "$lib/components/character-simulator/pages/features/FeaturesPage.svelte";
 
     let { data }: PageProps = $props();
 
@@ -187,9 +187,9 @@
             {:else if mainPage === 3}
                 <ConditionsPage bind:simulationState />
             {:else if mainPage === 5}
-                <InfoPage />
+                <InfoPage {simulationState} />
             {:else if mainPage === 4}
-                <FeaturesPage />
+                <FeaturesPage {simulationState} />
             {/if}
         </div>
     </div>

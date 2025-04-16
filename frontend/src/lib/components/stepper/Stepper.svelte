@@ -97,7 +97,7 @@
             border-radius: 1rem;
             text-align: center;
             align-content: center;
-            font-weight: bold;
+            font-weight: 600;
         }
     }
 </style>

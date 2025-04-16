@@ -10,22 +10,24 @@ import {
 import { exit } from "process";
 import type { Damage } from "./damage";
 import { possiblyTranslate } from "../../utils/lang";
+import { transform_source } from "../../utils/textTransform";
 
 export function mapToRule(obj: any): RuleType {
     switch (obj.key) {
         case CHOICE_SET_NAME:
             return plainToInstance(ChoiceSetRule, obj);
 
+        case GRANT_ITEM_NAME:
+            return plainToInstance(GrantItemRule, obj);
+
         default:
-            return obj
+            return obj;
     }
 }
 
-export class RulePredicate { }
+export class RulePredicate {}
 
-export type RuleType =
-    | ChoiceSetRule
-    | any;
+export type RuleType = ChoiceSetRule | GrantItemRule | any;
 
 export class Rule {
     key!: string;
@@ -72,6 +74,15 @@ export class BaseSpeedRule extends Rule {
 
 const GRANT_ITEM_NAME = "GrantItem";
 export class GrantItemRule extends Rule {
+    @Transform(({ obj }) => {
+        let transformed_source = transform_source(obj.uuid);
+        if (transformed_source) {
+            return transformed_source;
+        } else {
+            console.error(obj.uuid);
+            return obj.uuid;
+        }
+    })
     uuid!: string;
 }
 
@@ -114,7 +125,7 @@ export class ChoiceSetRule extends Rule {
     @Transform(({ obj }) => {
         if (obj.prompt) {
             const translated = possiblyTranslate(obj.prompt);
-            return translated
+            return translated;
         }
     })
     prompt!: string;
@@ -122,7 +133,7 @@ export class ChoiceSetRule extends Rule {
     @Transform(({ obj }) => {
         if (obj.label) {
             const translated = possiblyTranslate(obj.label);
-            return translated
+            return translated;
         }
     })
     label!: string;
@@ -130,14 +141,12 @@ export class ChoiceSetRule extends Rule {
 
 export class RuleChoice {
     @Transform(({ obj }) => {
-        if (obj.label)
-            return possiblyTranslate(obj.label)
+        if (obj.label) return possiblyTranslate(obj.label);
     })
     label!: string;
 
     @Transform(({ obj }) => {
-        if (obj.prompt)
-            return possiblyTranslate(obj.prompt)
+        if (obj.prompt) return possiblyTranslate(obj.prompt);
     })
     prompt!: any;
     value!: any;

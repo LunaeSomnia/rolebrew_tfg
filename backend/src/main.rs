@@ -1,15 +1,7 @@
-use std::sync::Arc;
-
 use actix_cors::Cors;
 use actix_web::{App, HttpServer, http::header, middleware::Logger, web::Data};
-use db::storeable::Storeable;
+use db::dbref::DbRef;
 use dotenv::dotenv;
-use models::{
-    Background, Class, Condition, Equipment, Heritage,
-    primary::{action::Action, ancestry::Ancestry, feat::Feat},
-};
-use tokio::sync::RwLock;
-use user::User;
 
 pub mod api;
 pub use api::*;
@@ -31,15 +23,6 @@ pub use character_creator::*;
 pub mod character;
 pub use character::*;
 
-fn create_collection_and_data<T>(db_ref: Arc<Database>) -> Data<RwLock<DatabaseCollection<T>>>
-where
-    T: Storeable,
-{
-    let collection = DatabaseCollection::<T>::new(db_ref.clone());
-    let data = Data::new(RwLock::new(collection));
-    data
-}
-
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -51,31 +34,13 @@ async fn main() -> std::io::Result<()> {
     let db = Database::connect()
         .await
         .expect("error while creating mongodb connection");
-    let db_ref = Arc::new(db);
+    let db_ref = Data::new(DbRef::new(db));
 
     println!("Running rolebrew backend...");
 
     HttpServer::new(move || {
-        let users_data = create_collection_and_data::<User>(db_ref.clone());
-        let feat_data = create_collection_and_data::<Feat>(db_ref.clone());
-        let heritage_data = create_collection_and_data::<Heritage>(db_ref.clone());
-        let ancestry_data = create_collection_and_data::<Ancestry>(db_ref.clone());
-        let action_data = create_collection_and_data::<Action>(db_ref.clone());
-        let class_data = create_collection_and_data::<Class>(db_ref.clone());
-        let background_data = create_collection_and_data::<Background>(db_ref.clone());
-        let equipment_data = create_collection_and_data::<Equipment>(db_ref.clone());
-        let condition_data = create_collection_and_data::<Condition>(db_ref.clone());
-
         App::new()
-            .app_data(users_data)
-            .app_data(feat_data)
-            .app_data(heritage_data)
-            .app_data(ancestry_data)
-            .app_data(action_data)
-            .app_data(class_data)
-            .app_data(background_data)
-            .app_data(equipment_data)
-            .app_data(condition_data)
+            .app_data(db_ref.clone())
             // auth
             .service(login)
             .service(hash)
@@ -142,6 +107,9 @@ async fn main() -> std::io::Result<()> {
 
 #[tokio::test]
 async fn test_database_data() {
+    use models::{Action, Ancestry, Background, Class, Condition, Equipment, Feat, Heritage};
+    use std::sync::Arc;
+
     dotenv().ok();
     unsafe {
         std::env::set_var("RUST_LOG", "debug");
@@ -154,7 +122,7 @@ async fn test_database_data() {
     let db_ref = Arc::new(db);
 
     let feat_collection = DatabaseCollection::<Feat>::new(db_ref.clone());
-    let heritage_collection = DatabaseCollection::<Ancestry>::new(db_ref.clone());
+    let heritage_collection = DatabaseCollection::<Heritage>::new(db_ref.clone());
     let ancestry_collection = DatabaseCollection::<Ancestry>::new(db_ref.clone());
     let action_collection = DatabaseCollection::<Action>::new(db_ref.clone());
     let class_collection = DatabaseCollection::<Class>::new(db_ref.clone());
@@ -163,7 +131,7 @@ async fn test_database_data() {
     let condition_collection = DatabaseCollection::<Condition>::new(db_ref.clone());
 
     let _feats: Vec<Feat> = feat_collection.get_all().await.unwrap();
-    let _heritages: Vec<Ancestry> = heritage_collection.get_all().await.unwrap();
+    let _heritages: Vec<Heritage> = heritage_collection.get_all().await.unwrap();
     let _ancestries: Vec<Ancestry> = ancestry_collection.get_all().await.unwrap();
     let _actions: Vec<Action> = action_collection.get_all().await.unwrap();
     let _classes: Vec<Class> = class_collection.get_all().await.unwrap();

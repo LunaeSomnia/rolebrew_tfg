@@ -2,7 +2,7 @@
     import { goto } from "$app/navigation";
     import { AlertType } from "$lib/components/alert/alert.js";
     import Button from "$lib/components/Button.svelte";
-    import InputField from "$lib/components/InputField.svelte";
+    import Input from "$lib/components/Input.svelte";
     import { Icon } from "$lib/icons/icons.js";
     import { appState } from "$lib/store.svelte";
     import type { PageProps } from "./$types";
@@ -54,7 +54,7 @@
     <div class="column card">
         <div class="column input-group">
             <span class="tag small">Username</span>
-            <InputField
+            <Input
                 bind:value={username}
                 placeholder="Username"
                 type="text"
@@ -62,7 +62,7 @@
         </div>
         <div class="column input-group">
             <span class="tag small">Password</span>
-            <InputField
+            <Input
                 bind:value={password}
                 placeholder="Password"
                 type="password"

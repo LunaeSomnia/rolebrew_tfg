@@ -4,13 +4,13 @@ use strum::{Display, EnumString};
 
 use crate::helpers::Either;
 
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Damage {
     base: DamageRoll,
 }
 
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DamageRoll {
     category: Option<DamageCategory>,
@@ -27,7 +27,7 @@ pub struct DamageRoll {
     value: Option<serde_json::Value>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PersistentDamage {
     faces: Option<u8>,

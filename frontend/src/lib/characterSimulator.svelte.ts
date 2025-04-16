@@ -76,6 +76,33 @@ export class CharacterSimulationState {
 
     conditions: ConditionState[] = $state([]);
 
+    info = $state({
+        // origin and appareance
+        ethnicity: "",
+        nationality: "",
+        birthplace: "",
+        age: "",
+        genderAndPronouns: "",
+        height: "",
+        weight: "",
+        appareance: "",
+
+        // personality
+        attitude: "",
+        deityOrPhilosophy: "",
+        edicts: "",
+        anathema: "",
+        likes: "",
+        dislikes: "",
+        catchphrases: "",
+
+        // campaign notes
+        allies: "",
+        enemies: "",
+        organizations: "",
+        notes: "",
+    });
+
     static fromPreviousState(character: Character, foundState: any) {
         let state = new this(character, []);
 
@@ -91,6 +118,7 @@ export class CharacterSimulationState {
         state.conditions = foundState.conditions.map((v: any) =>
             ConditionState.fromState(v),
         );
+        state.info = foundState.info;
 
         return state;
     }
@@ -134,6 +162,7 @@ export class CharacterSimulationState {
             money: this.money,
             equipment: this.equipment.toJSON(),
             conditions: this.conditions.map((v) => v.toJSON()),
+            info: this.info,
         };
     }
 }

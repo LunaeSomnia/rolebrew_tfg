@@ -10,7 +10,7 @@
         type DecisionTree,
     } from "$lib/components/character-creator/characterCreator.svelte.js";
     import Button from "$lib/components/Button.svelte";
-    import InputField from "$lib/components/InputField.svelte";
+    import Input from "$lib/components/Input.svelte";
     import Select from "$lib/components/Select.svelte";
     import Stepper from "$lib/components/stepper/Stepper.svelte";
     import type { Step } from "$lib/components/stepper/stepper";
@@ -296,7 +296,7 @@
                 <div class="row">
                     <div class="column input-group character-name">
                         <span class="tag small">Name</span>
-                        <InputField
+                        <Input
                             bind:value={characterState.name}
                             placeholder="Character Name"
                             type="text"

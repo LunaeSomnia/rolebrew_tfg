@@ -25,7 +25,7 @@
         }
 
         .name {
-            font-weight: bold;
+            font-weight: 600;
             color: var(--light-1);
             width: 20rem;
             min-height: 20rem;

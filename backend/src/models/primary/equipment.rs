@@ -1,17 +1,11 @@
-use std::collections::{BTreeMap, HashMap};
-
 use crate::helpers::{Either, null_to_default};
-use crate::models::{
-    Attribute, BoostOrFlaw, DamageRoll, LinkPreview, Publication, Rule, Skill, Summary, SummaryData,
-};
+use crate::models::{Attribute, DamageRoll, LinkPreview, Publication, Rule, Summary, SummaryData};
 use crate::storeable::Storeable;
 use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 use specta::Type;
 
-use super::Feat;
-
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Equipment {
     #[serde(rename = "_id")]
@@ -55,7 +49,7 @@ pub struct Equipment {
     pub data_type: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct EquipmentUses {
     auto_destroy: Option<bool>,
@@ -63,14 +57,14 @@ pub struct EquipmentUses {
     value: u32,
 }
 
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct EquipmentUsage {
     can_be_ammo: Option<bool>,
     value: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct EquipmentRunes {
     potency: Option<u8>,
@@ -81,7 +75,7 @@ pub struct EquipmentRunes {
     striking: Option<u8>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct EquipmentPrice {
     per: Option<u8>,
@@ -91,7 +85,7 @@ pub struct EquipmentPrice {
     pp: Option<u32>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct EquipmentBulk {
     held_or_stowed: Option<Either<bool, f32>>,

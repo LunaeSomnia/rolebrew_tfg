@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize, Serializer, ser::SerializeSeq};
 use specta::Type;
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Deserialize, Debug, Clone, Default)]
 #[serde(untagged)]
 pub enum MVec<T> {
     #[default]
@@ -10,6 +10,7 @@ pub enum MVec<T> {
     Vec(Vec<T>),
 }
 
+#[allow(dead_code)]
 #[derive(Type)]
 #[serde(remote = MVec)]
 pub struct MVecType<T>(Vec<T>);

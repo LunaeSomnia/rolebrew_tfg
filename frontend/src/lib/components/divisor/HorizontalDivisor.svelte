@@ -1,8 +1,8 @@
 <!-- svelte-ignore element_invalid_self_closing_tag -->
-<div />
+<div class="divisor" />
 
 <style lang="scss">
-    div {
+    .divisor {
         width: 100%;
         height: 0.125rem;
         min-height: 0.125rem;

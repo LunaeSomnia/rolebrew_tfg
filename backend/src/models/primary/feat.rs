@@ -7,7 +7,7 @@ use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
 use specta::Type;
 
-#[derive(Serialize, Deserialize, Debug, Type)]
+#[derive(Serialize, Deserialize, Debug, Type, Clone)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Feat {
     // CompendiuancestrymFile

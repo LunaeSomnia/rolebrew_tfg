@@ -355,7 +355,8 @@ tr .link-preview {
   width: 100%;
 }
 
-input {
+input,
+textarea {
   width: 100%;
   height: 2.5rem;
   padding: 1rem;
@@ -365,14 +366,27 @@ input {
   border: 0;
   border-radius: 0.5rem;
   transition: all var(--transition-normal);
+  font-family: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
   outline-color: transparent;
   outline-style: solid;
   outline-width: 0.125rem;
 }
-input:focus-visible {
+input:focus-visible,
+textarea:focus-visible {
   background-color: var(--dark-1);
   outline-color: var(--orange-darker);
   box-shadow: 0rem 0rem 1rem rgba(0, 0, 0, 0.2666666667);
+}
+
+button {
+  background-color: unset;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  color: var(--light-2);
 }
 
 .dialog {

@@ -84,13 +84,13 @@
             .filter((v) => EXPLORATION_ACTIONS.includes(v.slug))
             .sort((a, b) => a.name.localeCompare(b.name)),
     );
-    let otherActions = $derived(
-        actions
-            .filter((v) => !BASIC_ACTIONS.includes(v.slug))
-            .filter((v) => !SPECIALTY_BASICS.includes(v.slug))
-            .filter((v) => !EXPLORATION_ACTIONS.includes(v.slug))
-            .sort((a, b) => a.name.localeCompare(b.name)),
-    );
+    // let otherActions = $derived(
+    //     actions
+    //         .filter((v) => !BASIC_ACTIONS.includes(v.slug))
+    //         .filter((v) => !SPECIALTY_BASICS.includes(v.slug))
+    //         .filter((v) => !EXPLORATION_ACTIONS.includes(v.slug))
+    //         .sort((a, b) => a.name.localeCompare(b.name)),
+    // );
 
     let actionsData: Action[] = $state([]);
 </script>
@@ -132,13 +132,13 @@
         </div>
     </SectionAccordion>
 
-    <SectionAccordion title="Other Actions" defaultOpen={false}>
+    <!-- <SectionAccordion title="Other Actions" defaultOpen={false}>
         <div class="row actions">
             {#each otherActions as action}
                 <ActionCard {action} />
             {/each}
         </div>
-    </SectionAccordion>
+    </SectionAccordion> -->
 </div>
 
 <style lang="scss">

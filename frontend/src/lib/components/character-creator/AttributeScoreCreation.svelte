@@ -134,7 +134,7 @@
             .roll-total {
                 text-wrap: nowrap;
                 color: var(--light-1);
-                font-weight: bold;
+                font-weight: 600;
                 width: 2rem;
                 min-width: 2rem;
             }

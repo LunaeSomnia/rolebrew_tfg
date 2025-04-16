@@ -79,7 +79,7 @@
         height: 2.5rem;
 
         font-family: inherit;
-        font-weight: bold;
+        font-weight: 600;
         letter-spacing: inherit;
         color: var(--dark-1);
         cursor: pointer;

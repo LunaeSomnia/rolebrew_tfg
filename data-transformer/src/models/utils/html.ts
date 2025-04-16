@@ -1,5 +1,5 @@
 import { HTMLElement, parseHTML } from "linkedom";
-import { nameToSlug } from "../../utils/testTransform";
+import { nameToSlug } from "../../utils/textTransform";
 import * as parse5 from "parse5";
 import { defaultTreeAdapter } from "parse5";
 

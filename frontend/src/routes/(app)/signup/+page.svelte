@@ -2,7 +2,7 @@
     import type { SignupForm } from "$lib/bindings";
     import { AlertData, AlertType } from "$lib/components/alert/alert";
     import Button from "$lib/components/Button.svelte";
-    import InputField from "$lib/components/InputField.svelte";
+    import Input from "$lib/components/Input.svelte";
     import { Icon } from "$lib/icons/icons";
     import { appState } from "$lib/store.svelte";
 
@@ -43,11 +43,11 @@
     <div class="column card">
         <div class="column input-group">
             <span class="tag small">Email</span>
-            <InputField bind:value={email} placeholder="Email" type="email" />
+            <Input bind:value={email} placeholder="Email" type="email" />
         </div>
         <div class="column input-group">
             <span class="tag small">Username</span>
-            <InputField
+            <Input
                 bind:value={username}
                 placeholder="Username"
                 type="text"
@@ -55,7 +55,7 @@
         </div>
         <div class="column input-group">
             <span class="tag small">Password</span>
-            <InputField
+            <Input
                 bind:value={password}
                 placeholder="Password"
                 type="password"

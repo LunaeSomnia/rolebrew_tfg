@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Action, Condition } from "$lib/bindings";
     import type { ConditionState } from "$lib/characterSimulator.svelte";
-    import InputField from "$lib/components/InputField.svelte";
+    import Input from "$lib/components/Input.svelte";
     import LinkPreview from "$lib/components/link-preview/LinkPreview.svelte";
     import { hrefToSummaryHref } from "$lib/textProcessing";
 
@@ -35,7 +35,7 @@
     >
         {condition.definition.name}
         {#if isValued}
-            <InputField
+            <Input
                 type="number"
                 placeholder={0}
                 min={0}

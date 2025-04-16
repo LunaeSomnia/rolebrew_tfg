@@ -1,15 +1,21 @@
 use std::{marker::PhantomData, process::exit, sync::Arc};
 
+use actix_web::web::Data;
 use bson::{Document, doc};
 use futures::TryStreamExt;
 use mongodb::Client;
 use storeable::Storeable;
+use tokio::sync::RwLock;
 
 pub mod characters_db_impl;
+pub mod dbref;
 pub mod storeable;
 pub mod users_db_impl;
 
 pub const DATABASE_NAME: &str = "rolebrew";
+
+pub type Collection<T> = DatabaseCollection<T>;
+pub type CollectionData<T> = Data<RwLock<Collection<T>>>;
 
 #[derive(Clone, Debug)]
 pub struct Database {

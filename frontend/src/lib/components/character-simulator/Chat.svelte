@@ -3,7 +3,7 @@
     import { roll } from "$lib/roll";
     import Button from "../Button.svelte";
     import Dice from "../Dice.svelte";
-    import InputField from "../InputField.svelte";
+    import Input from "../Input.svelte";
 
     let {
         state: characterState,
@@ -31,7 +31,7 @@
             {/each}
         </div>
         <div class="column chat-controls">
-            <InputField
+            <Input
                 bind:value={chatInput}
                 placeholder="Chat"
                 onkeydown={onKeyDownChatInput}

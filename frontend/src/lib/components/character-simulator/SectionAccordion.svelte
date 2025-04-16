@@ -20,7 +20,7 @@
 
 <button class="column accordion-header" class:open onclick={() => (open = !open)}>
     <div class="row spaced-between">
-        <span class="tag">{title}</span>
+        <span class="small tag">{title}</span>
         <div class="icon-wrapper">
             <IconSvg icon={Icon.ChevronUp} />
         </div>

@@ -1,8 +1,8 @@
 use crate::{
-    Character, Choice, DatabaseCollection,
+    Character, Choice,
     characters_db_impl::CharacterDBImpl,
-    models::{Ancestry, Attribute, Background, Class, Proficiency, Skill},
-    user::User,
+    dbref::DbRef,
+    models::{Attribute, Proficiency, Skill},
     users_db_impl::UserDBImpl,
 };
 use actix_web::{
@@ -12,13 +12,11 @@ use actix_web::{
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use std::collections::BTreeMap;
-use tokio::sync::RwLock;
-
-type CollectionData<'a, T> = Data<RwLock<DatabaseCollection<T>>>;
 
 #[get("/api/user/{user_id}/character")]
-pub async fn get_characters(db: CollectionData<'_, User>, user_id: Path<String>) -> impl Responder {
-    let db = db.read().await;
+pub async fn get_characters(db: Data<DbRef>, user_id: Path<String>) -> impl Responder {
+    let coll = db.user_coll.clone();
+    let db = coll.read().await;
     match db.get_from_username(user_id.as_str()).await {
         Ok(Some(user)) => actix_web::HttpResponse::Ok().json(user.characters),
         Ok(None) => actix_web::HttpResponse::BadRequest().body("Username not found"),
@@ -32,11 +30,12 @@ pub async fn get_characters(db: CollectionData<'_, User>, user_id: Path<String>)
 
 #[get("/api/user/{user_id}/character/{character_id}")]
 pub async fn get_character(
-    db: CollectionData<'_, User>,
+    db: Data<DbRef>,
     query_parameters: Path<(String, String)>,
 ) -> impl Responder {
     let (user_id, character_id) = query_parameters.into_inner();
-    let db = db.read().await;
+    let coll = db.user_coll.clone();
+    let db = coll.read().await;
     let user_result = db.get_from_username(user_id.as_str()).await;
     if let Err(e) = user_result {
         eprintln!("{}", e);
@@ -74,16 +73,18 @@ pub struct SaveCharacterForm {
     pub(crate) money: Option<serde_json::Value>,
     pub(crate) equipment: Option<serde_json::Value>,
     pub(crate) conditions: Option<serde_json::Value>,
+    pub(crate) info: Option<serde_json::Value>,
 }
 
 #[post("/api/user/{user_id}/character/{character_id}")]
 pub async fn save_character_state(
-    db: CollectionData<'_, User>,
+    db: Data<DbRef>,
     query_parameters: Path<(String, String)>,
     form: actix_web::web::Json<SaveCharacterForm>,
 ) -> impl Responder {
     let (user_id, character_id) = query_parameters.into_inner();
-    let db = db.read().await;
+    let coll = db.user_coll.clone();
+    let db = coll.read().await;
     let result = db
         .save_character_state(&user_id, &character_id, form.into_inner())
         .await;
@@ -115,16 +116,13 @@ pub struct NewCharacterForm {
 
 #[post("/api/user/{user_id}/new_character")]
 pub async fn create_new_character(
-    db: CollectionData<'_, User>,
-    ancestry_col: CollectionData<'_, Ancestry>,
-    background_col: CollectionData<'_, Background>,
-    class_col: CollectionData<'_, Class>,
+    db: Data<DbRef>,
     form: actix_web::web::Json<NewCharacterForm>,
     user_id: Path<String>,
 ) -> impl Responder {
-    println!("{:?}", serde_json::to_string(&form.clone()));
-    let db = db.read().await;
-    match db.get_from_username(user_id.as_str()).await {
+    let coll = db.user_coll.clone();
+    let user_coll = coll.read().await;
+    match user_coll.get_from_username(user_id.as_str()).await {
         Ok(Some(mut user)) => {
             if user
                 .characters
@@ -135,11 +133,9 @@ pub async fn create_new_character(
                 return actix_web::HttpResponse::BadRequest()
                     .body("User already has character with said name");
             }
-            let character =
-                Character::construct(form.into_inner(), ancestry_col, background_col, class_col)
-                    .await;
+            let character = Character::construct(form.into_inner(), db.into_inner().clone()).await;
             user.characters.push(character);
-            db.replace_user(user).await.unwrap();
+            user_coll.replace_user(user).await.unwrap();
             actix_web::HttpResponse::Ok().finish()
         }
         _ => actix_web::HttpResponse::BadRequest().body("Username not found"),

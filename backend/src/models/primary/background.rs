@@ -1,9 +1,5 @@
-use std::collections::{BTreeMap, HashMap};
-
 use crate::helpers::null_to_default;
-use crate::models::{
-    Attribute, BoostOrFlaw, LinkPreview, Publication, Rule, Skill, Summary, SummaryData,
-};
+use crate::models::{BoostOrFlaw, LinkPreview, Publication, Rule, Skill, Summary, SummaryData};
 use crate::storeable::Storeable;
 use bson::oid::ObjectId;
 use serde::{Deserialize, Serialize};
