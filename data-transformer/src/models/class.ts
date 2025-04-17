@@ -4,7 +4,6 @@ import type { Publication } from "./secondary/publication";
 import { Feat } from "./feat";
 import { CLASS_FEATURES } from ".";
 import { extractLastUuid } from "./utils/uuid";
-import { nameToSlug } from "../utils/testTransform";
 import type { Item } from "./secondary/item";
 import { mapToRule } from "./secondary/rule";
 

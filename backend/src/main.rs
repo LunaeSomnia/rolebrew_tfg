@@ -70,6 +70,11 @@ async fn main() -> std::io::Result<()> {
             .service(get_class_preview)
             .service(get_class)
             // background
+            .service(get_spell_filtered)
+            .service(get_spell_summaries)
+            .service(get_spell_preview)
+            .service(get_spell)
+            // background
             .service(get_background_summaries)
             .service(get_background_preview)
             .service(get_background)
@@ -107,7 +112,9 @@ async fn main() -> std::io::Result<()> {
 
 #[tokio::test]
 async fn test_database_data() {
-    use models::{Action, Ancestry, Background, Class, Condition, Equipment, Feat, Heritage};
+    use models::{
+        Action, Ancestry, Background, Class, Condition, Equipment, Feat, Heritage, Spell,
+    };
     use std::sync::Arc;
 
     dotenv().ok();
@@ -129,6 +136,7 @@ async fn test_database_data() {
     let background_collection = DatabaseCollection::<Background>::new(db_ref.clone());
     let equipment_collection = DatabaseCollection::<Equipment>::new(db_ref.clone());
     let condition_collection = DatabaseCollection::<Condition>::new(db_ref.clone());
+    let spell_collection = DatabaseCollection::<Spell>::new(db_ref.clone());
 
     let _feats: Vec<Feat> = feat_collection.get_all().await.unwrap();
     let _heritages: Vec<Heritage> = heritage_collection.get_all().await.unwrap();
@@ -138,6 +146,7 @@ async fn test_database_data() {
     let _backgrounds: Vec<Background> = background_collection.get_all().await.unwrap();
     let _equipment: Vec<Equipment> = equipment_collection.get_all().await.unwrap();
     let _conditions: Vec<Condition> = condition_collection.get_all().await.unwrap();
+    let _spells: Vec<Spell> = spell_collection.get_all().await.unwrap();
 }
 
 #[tokio::test]
@@ -158,6 +167,7 @@ async fn export_bindings() {
         .register::<Action>()
         .register::<Class>()
         .register::<Background>()
+        .register::<Spell>()
         .register::<SavingThrow>()
         //
         .register::<Character>()

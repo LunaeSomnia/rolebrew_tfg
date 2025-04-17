@@ -32,7 +32,7 @@
     let summaryHref = hrefToSummaryHref(href);
 </script>
 
-<LinkPreview {href} {summaryHref}>
+<LinkPreview {href} {summaryHref} canBeClicked={false}>
     <span class="row action-card">{action.name} <IconSvg {icon} /></span>
 </LinkPreview>
 

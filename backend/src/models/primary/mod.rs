@@ -21,3 +21,6 @@ pub use equipment::*;
 
 pub mod condition;
 pub use condition::*;
+
+pub mod spell;
+pub use spell::*;

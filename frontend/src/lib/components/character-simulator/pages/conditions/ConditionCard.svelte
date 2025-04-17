@@ -77,7 +77,7 @@
 
         &:hover {
             --icon-color: var(--light-2);
-            background-color: var(--dark-4);
+            background-color: var(--dark-3);
         }
     }
 

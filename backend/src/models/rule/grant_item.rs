@@ -89,10 +89,13 @@ impl GrantItemRule {
                     None
                 }
             }
-            _ => panic!(
-                "cannot execute: Grant Item with source {} not found",
-                source
-            ),
+            _ => {
+                println!(
+                    "cannot execute: Grant Item with source {} not found",
+                    source
+                );
+                None
+            }
         };
 
         item

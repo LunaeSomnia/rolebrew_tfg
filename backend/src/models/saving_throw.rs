@@ -18,11 +18,17 @@ use super::Proficiency;
     PartialOrd,
     Ord,
 )]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "kebab-case")]
 pub enum SavingThrow {
     Fortitude,
     Reflex,
     Will,
+
+    // Other
+    Ac,
+    FortitudeDc,
+    ReflexDc,
+    WillDc,
 }
 
 #[derive(Serialize, Deserialize, Debug, Type)]

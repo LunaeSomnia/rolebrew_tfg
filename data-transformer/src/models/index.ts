@@ -9,6 +9,7 @@ import { Class } from "./class";
 import { Background } from "./background";
 import { Equipment } from "./equipment";
 import { Condition } from "./condition";
+import { Spell } from "./spell";
 
 export const FEATS: Map<string, Feat> = new Map();
 export const FEATS_LOCATION = "./data/feats.json";
@@ -42,6 +43,9 @@ export const EQUIPMENT_LOCATION = "./data/equipment.json";
 
 export const CONDITIONS: Map<string, Condition> = new Map();
 export const CONDITIONS_LOCATION = "./data/conditions.json";
+
+export const SPELLS: Map<string, Spell> = new Map();
+export const SPELLS_LOCATION = "./data/spells.json";
 
 async function transformToMap<T>(
     map: Map<string, T>,
@@ -128,3 +132,5 @@ await transformToMap(
     (v) => nameToSlug(v.slug),
     CONDITIONS_LOCATION,
 );
+
+await transformToMap(SPELLS, Spell, (v) => nameToSlug(v.slug), SPELLS_LOCATION);

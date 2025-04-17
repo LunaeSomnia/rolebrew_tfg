@@ -4,7 +4,7 @@ use actix_web::web::Data;
 use tokio::sync::RwLock;
 
 use crate::{
-    models::{Action, Ancestry, Background, Class, Condition, Equipment, Feat, Heritage},
+    models::{Action, Ancestry, Background, Class, Condition, Equipment, Feat, Heritage, Spell},
     user::User,
 };
 
@@ -21,6 +21,7 @@ pub struct DbRef {
     pub background_coll: CollectionData<Background>,
     pub equipment_coll: CollectionData<Equipment>,
     pub condition_coll: CollectionData<Condition>,
+    pub spell_coll: CollectionData<Spell>,
 }
 
 fn create_collection_and_data<T>(db_ref: Arc<Database>) -> Data<RwLock<DatabaseCollection<T>>>
@@ -44,6 +45,7 @@ impl DbRef {
         let background_coll = create_collection_and_data::<Background>(db_ref.clone());
         let equipment_coll = create_collection_and_data::<Equipment>(db_ref.clone());
         let condition_coll = create_collection_and_data::<Condition>(db_ref.clone());
+        let spell_coll = create_collection_and_data::<Spell>(db_ref.clone());
 
         Self {
             user_coll,
@@ -55,6 +57,7 @@ impl DbRef {
             background_coll,
             equipment_coll,
             condition_coll,
+            spell_coll,
         }
     }
 }

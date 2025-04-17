@@ -1,8 +1,8 @@
+use crate::helpers::Either;
+use crate::helpers::null_to_default;
 use serde::{Deserialize, Serialize};
 use specta::Type;
 use strum::{Display, EnumString};
-
-use crate::helpers::Either;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -13,6 +13,7 @@ pub struct Damage {
 #[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DamageRoll {
+    apply_mod: Option<bool>,
     category: Option<DamageCategory>,
     damage_type: Option<Either<DamageType, String>>,
     #[serde(alias = "number")]
@@ -21,6 +22,10 @@ pub struct DamageRoll {
     die: Option<Either<Die, u8>>,
     formula: Option<String>,
     kind: Option<DamageKind>,
+    #[serde(default, deserialize_with = "null_to_default")]
+    kinds: Vec<DamageKind>,
+    #[serde(default, deserialize_with = "null_to_default")]
+    materials: Vec<String>,
     #[serde(rename = "type")]
     roll_type: Option<String>,
     persistent: Option<PersistentDamage>,
@@ -93,8 +98,8 @@ pub enum Die {
 }
 
 #[derive(Serialize, Deserialize, Debug, Type, Clone, Copy, EnumString, Display)]
-#[serde(deny_unknown_fields)]
+#[serde(rename_all = "camelCase")]
 pub enum DamageCategory {
-    #[serde(alias = "persistent")]
+    Splash,
     Persistent,
 }

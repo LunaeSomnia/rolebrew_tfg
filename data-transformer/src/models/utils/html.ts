@@ -140,6 +140,7 @@ const IGNORED_SECTIONS = [
     "campaign-effects",
     "pathfinder-bestiary-3",
     "vehicles",
+    "hazards",
 ];
 
 const COMPENDIUM_SECTION_MATCHER: Map<string, string> = new Map([
@@ -158,6 +159,7 @@ const COMPENDIUM_SECTION_MATCHER: Map<string, string> = new Map([
     ["pathfinder-bestiary-2", "bestiary"],
     ["pathfinder-bestiary", "bestiary"],
     ["book-of-the-dead-bestiary", "bestiary"],
+    ["howl-of-the-wild-bestiary", "bestiary"],
     ["backgrounds", "background"],
 ]);
 

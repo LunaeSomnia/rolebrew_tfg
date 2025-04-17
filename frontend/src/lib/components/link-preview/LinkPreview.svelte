@@ -57,7 +57,7 @@
     <span
         onmouseenter={openPreview}
         onmouseleave={closePreview}
-        style="text-decoration: {textDecorations}; cursor: {cursor};"
+        style="cursor: {cursor};"
         use:floatingRef
     >
         {@render children()}

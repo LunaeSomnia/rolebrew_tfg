@@ -1,7 +1,7 @@
 use crate::dbref::DbRef;
 use crate::generic_get_single;
 use crate::helpers::none_single_or_vec;
-use crate::models::{link_preview::LinkPreview, primary::feat::Feat, summary::Summary};
+use crate::models::{link_preview::LinkPreview, primary::spell::Spell, summary::Summary};
 use actix_web::post;
 use actix_web::{
     Responder, get,
@@ -12,20 +12,20 @@ use serde::{Deserialize, Serialize};
 use specta::Type;
 
 #[derive(Serialize, Deserialize, Type)]
-pub struct GetFeatsFilterForm {
+pub struct GetSpellsFilterForm {
     #[serde(default, deserialize_with = "none_single_or_vec")]
     has_traits: Vec<String>,
 }
 
-#[get("/api/feat/summary")]
-pub async fn get_feat_summaries(
+#[get("/api/spell/summary")]
+pub async fn get_spell_summaries(
     db: Data<DbRef>,
-    filters: Query<GetFeatsFilterForm>,
+    filters: Query<GetSpellsFilterForm>,
 ) -> impl Responder {
-    let coll = db.feat_coll.clone();
+    let coll = db.spell_coll.clone();
     let db = coll.read().await;
-    let feats: Vec<Feat> = db.get_all().await.unwrap();
-    let feats_iter = feats.into_iter().filter(|v| {
+    let spells: Vec<Spell> = db.get_all().await.unwrap();
+    let spells_iter = spells.into_iter().filter(|v| {
         let mut contains = true;
         for trait_v in filters.has_traits.iter() {
             contains &= v.traits.contains(trait_v)
@@ -33,21 +33,21 @@ pub async fn get_feat_summaries(
         contains
     });
 
-    let summaries: Vec<Summary> = feats_iter.map(|v| v.into()).collect();
+    let summaries: Vec<Summary> = spells_iter.map(|v| v.into()).collect();
 
     actix_web::HttpResponse::Ok().json(summaries)
 }
 
-#[get("/api/feat/{slug}")]
-pub async fn get_feat(db: Data<DbRef>, slug: Path<String>) -> impl Responder {
-    let coll = db.feat_coll.clone();
+#[get("/api/spell/{slug}")]
+pub async fn get_spell(db: Data<DbRef>, slug: Path<String>) -> impl Responder {
+    let coll = db.spell_coll.clone();
     let data = generic_get_single(coll, slug.to_string()).await;
     actix_web::HttpResponse::Ok().json(data)
 }
 
-#[get("/api/feat/{slug}/preview")]
-pub async fn get_feat_preview(db: Data<DbRef>, slug: Path<String>) -> impl Responder {
-    let coll = db.feat_coll.clone();
+#[get("/api/spell/{slug}/preview")]
+pub async fn get_spell_preview(db: Data<DbRef>, slug: Path<String>) -> impl Responder {
+    let coll = db.spell_coll.clone();
     match generic_get_single(coll, slug.to_string()).await {
         Some(data) => {
             let preview: LinkPreview = data.into();
@@ -57,14 +57,14 @@ pub async fn get_feat_preview(db: Data<DbRef>, slug: Path<String>) -> impl Respo
     }
 }
 
-#[post("/api/feat/filtered")]
-pub async fn get_feat_filtered(
+#[post("/api/spell/filtered")]
+pub async fn get_spell_filtered(
     db: Data<DbRef>,
     filters: actix_web::web::Json<Document>,
 ) -> impl Responder {
-    let coll = db.feat_coll.clone();
+    let coll = db.spell_coll.clone();
     let db = coll.read().await;
-    let data: Vec<Feat> = db.get_all_filtered(filters.0).await.unwrap();
+    let data: Vec<Spell> = db.get_all_filtered(filters.0).await.unwrap();
 
     actix_web::HttpResponse::Ok().json(data)
 }

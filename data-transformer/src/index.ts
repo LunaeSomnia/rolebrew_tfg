@@ -2,7 +2,6 @@ import { exit } from "node:process";
 import "reflect-metadata";
 import "es6-shim";
 import * as mongoDB from "mongodb";
-import * as dotenv from "dotenv";
 import {
     ACTIONS,
     ANCESTRIES,
@@ -14,6 +13,7 @@ import {
     EQUIPMENT,
     FEATS,
     HERITAGES,
+    SPELLS,
 } from "./models/index.ts";
 
 const dbConnectionString = process.env.MONGO_URL ?? "";
@@ -38,6 +38,7 @@ await collectionDropAndInsertAll(db, "class", CLASSES);
 await collectionDropAndInsertAll(db, "background", BACKGROUNDS);
 await collectionDropAndInsertAll(db, "equipment", EQUIPMENT);
 await collectionDropAndInsertAll(db, "condition", CONDITIONS);
+await collectionDropAndInsertAll(db, "spell", SPELLS);
 
 await db.createIndex("user", "email", { unique: true });
 await db.createIndex("user", "username", { unique: true });
@@ -48,6 +49,7 @@ await db.createIndex("class", "slug", { unique: true });
 await db.createIndex("background", "slug", { unique: true });
 await db.createIndex("equipment", "slug", { unique: true });
 await db.createIndex("condition", "slug", { unique: true });
+await db.createIndex("spell", "slug", { unique: true });
 
 console.log(`Documents inserted successfully`);
 await mongoDBClient.close();

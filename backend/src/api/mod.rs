@@ -33,6 +33,9 @@ pub use equipment_api::*;
 pub mod condition_api;
 pub use condition_api::*;
 
+pub mod spell_api;
+pub use spell_api::*;
+
 pub async fn generic_get_all<T>(coll: CollectionData<T>) -> Vec<T>
 where
     T: Storeable,

@@ -5,7 +5,6 @@ import type { Publication } from "./secondary/publication";
 export class Action {
     @Expose({ name: "_id" })
     fvttId!: string;
-
     name!: string;
 
     @Transform(({ obj }) => obj.system.actionType.value)

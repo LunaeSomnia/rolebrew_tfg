@@ -5,7 +5,6 @@ import { extractLastUuid, extractTypeLinkFromText } from "./utils/uuid";
 import type { Publication } from "./secondary/publication";
 import { mapToRule, type RuleType } from "./secondary/rule";
 import { ANCESTRY_FEATURES, ANCESTRY_JOURNAL, HERITAGES } from ".";
-import { nameToSlug } from "../utils/testTransform";
 import { exit } from "node:process";
 import {
     assignHeaderIds,
@@ -38,9 +37,7 @@ export class Ancestry {
             result.push({ key: value[0], value: value[1] } as KeyValue);
         });
 
-        return result
-            .map((v) => parseBoost(v))
-            .filter((v) => v !== undefined);
+        return result.map((v) => parseBoost(v)).filter((v) => v !== undefined);
     })
     @Expose()
     boosts!: Record<string, Boost>;
@@ -170,14 +167,14 @@ export class Ancestry {
     publication!: Publication;
 
     @Transform(({ obj }) => {
-        const heritages = Array.from(HERITAGES.values()).filter(
-            (v) => v.ancestrySlug === obj.system.slug,
-        ).map(v => {
-            return {
-                uuid: v.slug,
-                name: v.name,
-            } as Item
-        });
+        const heritages = Array.from(HERITAGES.values())
+            .filter((v) => v.ancestrySlug === obj.system.slug)
+            .map((v) => {
+                return {
+                    uuid: v.slug,
+                    name: v.name,
+                } as Item;
+            });
 
         return heritages;
     })
