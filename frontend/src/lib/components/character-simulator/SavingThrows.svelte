@@ -45,7 +45,13 @@
         ? attribute
         : SAVING_THROW_TO_ATTRIBUTE[savingThrow as SavingThrow | "perception"]}
     {@const pb = proficiencyBonus(proficiency, level)}
-    {@const modifier = attributeModifiers[att] + pb}
+    {@const rules = simulationState.rulesAppliedToSelector(savingThrow)}
+    {@const modifier =
+        attributeModifiers[att] +
+        pb +
+        rules
+            .map((v) => v.rule.getModifier(simulationState, [savingThrow]))
+            .reduce((v, n) => v + n, 0)}
     {@const dc = modifier + 10}
     {@const attributeText = att.substring(0, 3)}
 

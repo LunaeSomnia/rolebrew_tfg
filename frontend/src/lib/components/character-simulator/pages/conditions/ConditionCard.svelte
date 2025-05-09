@@ -1,14 +1,14 @@
 <script lang="ts">
     import type { Action, Condition } from "$lib/bindings";
-    import type { ConditionState } from "$lib/characterSimulator.svelte";
     import Input from "$lib/components/Input.svelte";
     import LinkPreview from "$lib/components/link-preview/LinkPreview.svelte";
+    import type { ConditionItem } from "$lib/simulationItem.svelte";
     import { hrefToSummaryHref } from "$lib/textProcessing";
 
     let {
         condition = $bindable(),
     }: {
-        condition: ConditionState;
+        condition: ConditionItem;
     } = $props();
 
     let href = `/compendium/condition/${condition.definition.slug}`;
@@ -16,14 +16,17 @@
 
     let isValued = $derived(condition.definition.value !== null);
     let active = $derived(condition.isActive);
+    let value = $state(0);
 
     function onClick() {
         if (!isValued) condition.active = !condition.active;
+        else condition.value = value;
     }
 
-    $effect(() => {
-        console.log(isValued, active);
-    });
+    function onInputChange(e: any) {
+        condition.value = value;
+        condition.active = value > 0;
+    }
 </script>
 
 <LinkPreview {href} {summaryHref} canBeClicked={false}>
@@ -40,7 +43,8 @@
                 placeholder={0}
                 min={0}
                 max={4}
-                bind:value={condition.value}
+                oninput={onInputChange}
+                bind:value
             />
         {/if}
     </button>

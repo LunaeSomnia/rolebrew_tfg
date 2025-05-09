@@ -39,14 +39,13 @@
     );
 
     let activeConditions = $derived(
-        simulationState.conditions.filter((v) => v.isActive),
+        simulationState.items.conditions.filter((v) => v.isActive),
     );
 
     async function saveCharacterState() {
         // @ts-ignore
         const characterId = character._id.$oid;
         const body = JSON.stringify(simulationState.toJSON());
-        console.log(simulationState.toJSON());
         const request = await fetch(
             `/api/user/${data.user.username}/character/${characterId}`,
             {
@@ -57,13 +56,10 @@
                 body,
             },
         );
-
-        console.log(request);
     }
 
     $effect(() => {
-        //     simulationState.conditions =
-        console.log(simulationState);
+        $inspect(simulationState.activeRules);
     });
 </script>
 
@@ -81,7 +77,9 @@
         <div class="row" style="align-items: center;">
             <div class="row hero-points">
                 <span>Hero Points</span>
-                <HeroPoints bind:value={simulationState.heroPoints} />
+                <HeroPoints
+                    bind:value={simulationState.items.heroPoints.value}
+                />
             </div>
             <ToggleButton iconLeft={Icon.Chat} bind:value={isChatOpen} />
             <Button cta="secondary" onclick={saveCharacterState}>Save</Button>
@@ -90,8 +88,9 @@
 
     <div class="row wrapper">
         <HpCard
-            bind:currentHp={simulationState.hp}
-            bind:tempHp={simulationState.tempHp}
+            {simulationState}
+            bind:currentHp={simulationState.items.hp.value}
+            bind:tempHp={simulationState.items.tempHp.value}
             totalHp={character.hp}
         />
 
@@ -136,7 +135,7 @@
             <Skills
                 {simulationState}
                 level={character.level}
-                skills={character.skills}
+                skills={simulationState.items.skills}
                 additionalSkills={character.additionalSkills}
                 attributeModifiers={character.attributeModifiers}
             />

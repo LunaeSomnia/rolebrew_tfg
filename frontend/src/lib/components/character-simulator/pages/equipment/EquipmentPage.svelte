@@ -1,6 +1,9 @@
 <script lang="ts">
     import type { Equipment, Summary } from "$lib/bindings";
-    import { EquipmentItemState, type CharacterSimulationState } from "$lib/characterSimulator.svelte";
+    import {
+        EquipmentItemState,
+        type CharacterSimulationState,
+    } from "$lib/characterSimulator.svelte";
     import Button from "$lib/components/Button.svelte";
     import ListItem from "$lib/components/character-creator/ListItem.svelte";
     import Dialog from "$lib/components/dialog/Dialog.svelte";
@@ -13,9 +16,9 @@
         simulationState,
         equipmentSummaries,
     }: {
-        equipmentSummaries: Summary[],
+        equipmentSummaries: Summary[];
         simulationState: CharacterSimulationState;
-    } = $props()
+    } = $props();
 
     let searchbox = $state("");
 
@@ -48,32 +51,39 @@
     }
 
     async function onFinish() {
-        const toAdd = [...added, ...bought]
-        const requests = toAdd.map(v => fetch("/api/equipment/"+v.slug).then(v => v.json() as unknown as Equipment))
+        const toAdd = [...added, ...bought];
+        const requests = toAdd.map((v) =>
+            fetch("/api/equipment/" + v.slug).then(
+                (v) => v.json() as unknown as Equipment,
+            ),
+        );
 
-        const results = await Promise.all(requests)
-        const equipmentItems: EquipmentItemState[] = results.map(v => {
-            return new EquipmentItemState(v)
-        })
+        const results = await Promise.all(requests);
+        const equipmentItems: EquipmentItemState[] = results.map((v) => {
+            return new EquipmentItemState(v);
+        });
 
-        simulationState.equipment.equipment = simulationState.equipment.equipment.concat(equipmentItems)
-
-        console.log(simulationState)
+        simulationState.equipment.equipment =
+            simulationState.equipment.equipment.concat(equipmentItems);
     }
 
     $effect(() => {
-        $inspect(simulationState.equipment)
-    })
+        $inspect(simulationState.equipment);
+    });
 </script>
 
 <div class="main-content card column">
     <div class="row">
         <Searchbox bind:value={searchbox} placeholder="Search in Equipment" />
-        {#snippet addEquipmentHeader()}
-            <Button cta="secondary" onclick={() => {}}>Add Equipment</Button>
+        {#snippet addEquipmentHeader(onclick: () => void)}
+            <Button cta="secondary" {onclick}>Add Equipment</Button>
         {/snippet}
 
-        <Dialog title="Add Equipment" headerSnippet={addEquipmentHeader} size="medium">
+        <Dialog
+            title="Add Equipment"
+            headerSnippet={addEquipmentHeader}
+            size="medium"
+        >
             <div class="row" style="width: 100%; position: relative;">
                 <div class="column" style="width: 100%;">
                     <Searchbox
@@ -104,7 +114,10 @@
                         {/each}
                     </div>
                 </div>
-                <div class="column spaced-between" style="width: 100%; align-self: stretch; align-items: flex-end;">
+                <div
+                    class="column spaced-between"
+                    style="width: 100%; align-self: stretch; align-items: flex-end;"
+                >
                     <div class="column equipment-list">
                         <h6>Added</h6>
                         {#each added as summary}
@@ -142,19 +155,18 @@
     </div>
     <div class="row" style="justify-content: flex-end; gap: 0.5rem;">
         <div class="row coins" style="gap: 0.5rem;">
-            <Coin type="platinum" value={simulationState.money.platinum}/>
-            <Coin type="gold" value={simulationState.money.gold}/>
-            <Coin type="silver" value={simulationState.money.silver}/>
-            <Coin type="copper" value={simulationState.money.copper}/>
+            <Coin type="platinum" value={simulationState.money.platinum} />
+            <Coin type="gold" value={simulationState.money.gold} />
+            <Coin type="silver" value={simulationState.money.silver} />
+            <Coin type="copper" value={simulationState.money.copper} />
         </div>
     </div>
     {#each simulationState.equipment.equipment as equipment}
-        <EquipmentItem {equipment}/>
+        <EquipmentItem {equipment} />
     {/each}
 </div>
 
 <style lang="scss">
-
     .main-content {
         width: 100%;
         height: 100%;

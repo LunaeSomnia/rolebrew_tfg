@@ -1,8 +1,21 @@
 <script lang="ts">
+    import type { Publication } from "$lib/bindings";
     import Tag from "./Tag.svelte";
     import Traits from "./Traits.svelte";
 
-    let { id, name, publication, rarity, traits } = $props();
+    let {
+        id,
+        name,
+        publication,
+        rarity,
+        traits,
+    }: {
+        id: string;
+        name: string;
+        publication: Publication;
+        rarity?: string;
+        traits?: string[];
+    } = $props();
 </script>
 
 <div class="general-info">

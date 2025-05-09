@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type { Condition } from "$lib/bindings";
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
     import { capitalize } from "$lib/utils";
     import SectionAccordion from "../../SectionAccordion.svelte";
@@ -14,7 +13,7 @@
     const SECTIONS = ["senses", "abilities", "attitudes", "death", "detection"];
 
     let conditionsMap = $derived(
-        simulationState.conditions.map((v, i) => {
+        simulationState.items.conditions.map((v, i) => {
             return {
                 index: i,
                 value: v,
@@ -32,7 +31,7 @@
             <SectionAccordion title={capitalize(section)}>
                 {#each conditionsInSection as { value, index }}
                     <ConditionCard
-                        bind:condition={simulationState.conditions[index]}
+                        bind:condition={simulationState.items.conditions[index]}
                     />
                 {/each}
             </SectionAccordion>

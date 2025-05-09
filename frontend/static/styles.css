@@ -395,6 +395,9 @@ button {
   border-width: 0.0625;
   background-color: var(--dark-1);
 }
+.dialog::backdrop {
+  background-color: red;
+}
 
 .compendium {
   width: 100%;

@@ -67,15 +67,15 @@
 </section>
 
 <section style="--icon-color: var(--orange);">
-    <IconSvg icon={Icon.FreeAction}/>
-    <IconSvg icon={Icon.Action}/>
-    <IconSvg icon={Icon.DoubleAction}/>
-    <IconSvg icon={Icon.TripleAction}/>
+    <IconSvg icon={Icon.FreeAction} />
+    <IconSvg icon={Icon.Action} />
+    <IconSvg icon={Icon.DoubleAction} />
+    <IconSvg icon={Icon.TripleAction} />
 </section>
 <section>
-    {#snippet headerSnippet()}
+    {#snippet headerSnippet(onclick: () => void)}
         <div>
-            <Button onclick={() => {}} fake={false}>Open me</Button>
+            <Button {onclick} fake={false}>Open me</Button>
         </div>
     {/snippet}
     <Dialog title="Testing dialog" {headerSnippet}>

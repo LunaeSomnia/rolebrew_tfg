@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Dialog, Label } from "bits-ui";
     import type { Snippet } from "svelte";
     import DialogTitle from "./DialogTitle.svelte";
     import HorizontalDivisor from "../divisor/HorizontalDivisor.svelte";
@@ -8,50 +7,56 @@
     import Button from "../Button.svelte";
 
     let {
-        size = 'small',
+        size = "small",
         headerSnippet,
         children,
         title,
     }: {
-        size?: 'small' | 'medium' | 'fill';
+        size?: "small" | "medium" | "fill";
         title: string;
-        headerSnippet: Snippet;
+        headerSnippet: Snippet<[() => void]>;
         children: Snippet;
     } = $props();
 
-    let open = $state(false);
-</script>
+    let isOpen = $state(false);
+    let dialog: HTMLElement;
 
-<Dialog.Root bind:open>
-    <Dialog.Trigger class="row dialog-trigger">
-        {@render headerSnippet()}
-    </Dialog.Trigger>
-    <Dialog.Portal>
-        <Dialog.Overlay class="dialog-overlay" />
-        <Dialog.Content class="dialog-content dialog column {size}">
-            <DialogTitle>
-                <h4 class="dialog-title">{title}</h4>
-                <Button cta="ghost" onclick={() => (open = false)}>
-                    <IconSvg icon={Icon.Close} />
-                </Button>
-            </DialogTitle>
-            <HorizontalDivisor />
-            {@render children()}
-        </Dialog.Content>
-    </Dialog.Portal>
-</Dialog.Root>
-
-<style lang="scss">
-    :global(.dialog-trigger) {
-        display: inline-flex;
-        padding: 0;
-        margin: 0;
-        outline: 0;
-        border: 0;
-        background-color: unset;
+    function open() {
+        isOpen = true;
     }
 
-    :global(.dialog-overlay) {
+    function close() {
+        isOpen = false;
+    }
+</script>
+
+<div>
+    {#if headerSnippet}
+        {@render headerSnippet(open)}
+    {/if}
+</div>
+
+{#if isOpen}
+    <div class="dialog-underlay">
+        <div
+            role="dialog"
+            class="dialog dialog-content column {size}"
+            bind:this={dialog}
+        >
+            <DialogTitle>
+                <h4 class="dialog-title">{title}</h4>
+                <Button cta="ghost" onclick={close} iconLeft={Icon.Close} />
+            </DialogTitle>
+            <HorizontalDivisor />
+            {#if children}
+                {@render children()}
+            {/if}
+        </div>
+    </div>
+{/if}
+
+<style lang="scss">
+    :global(.dialog-underlay) {
         position: fixed;
         top: 0;
         right: 0;
@@ -61,6 +66,7 @@
         background-color: #00000088;
         backdrop-filter: blur(0.0625rem);
     }
+
     :global(.dialog-title) {
         flex: 1;
     }
@@ -81,8 +87,6 @@
         gap: 2rem;
         background-color: var(--dark-2);
         border-color: var(--dark-3);
-
-
     }
 
     :global(.dialog-content.small) {

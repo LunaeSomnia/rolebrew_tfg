@@ -9,11 +9,7 @@
 
     --#{$color-name}: #{$color-value};
     --#{$color-name}-darker: #{color.mix($color-value, colors.$dark-3, $weight)};
-    --#{$color-name}-lighter: #{color.mix(
-            $color-value,
-            colors.$light-1,
-            $weight
-        )};
+    --#{$color-name}-lighter: #{color.mix($color-value, colors.$light-1, $weight)};
 }
 
 * {
@@ -357,6 +353,10 @@ button {
     border: solid 0.125rem var(--dark-2);
     border-width: 0.0625;
     background-color: var(--dark-1);
+
+    &::backdrop {
+        background-color: red;
+    }
 }
 
 //

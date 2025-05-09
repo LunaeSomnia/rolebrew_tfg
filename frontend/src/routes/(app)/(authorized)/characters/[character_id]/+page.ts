@@ -22,8 +22,7 @@ export const load: PageLoad = async ({ fetch, data, params }) => {
         .then((v) => v as Condition[]);
 
     let simulationState;
-    if (character.state !== null) {
-        console.log("found state", character.state);
+    if (character.state !== undefined && character.state !== null) {
         simulationState = CharacterSimulationState.fromPreviousState(
             character,
             character.state as any,

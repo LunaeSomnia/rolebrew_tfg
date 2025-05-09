@@ -2,7 +2,13 @@
     import { getColorByCategory } from "$lib/color_category";
     import Tag from "./Tag.svelte";
 
-    let { rarity, traits } = $props();
+    let {
+        rarity,
+        traits,
+    }: {
+        rarity?: string;
+        traits?: string[];
+    } = $props();
 </script>
 
 <div class="traits row">

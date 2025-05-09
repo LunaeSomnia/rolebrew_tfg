@@ -77,6 +77,8 @@
         margin: 0;
         line-height: inherit;
         height: 2.5rem;
+        min-width: 2.5rem;
+        justify-content: center;
 
         font-family: inherit;
         font-weight: 600;

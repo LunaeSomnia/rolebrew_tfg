@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Accordion, type WithoutChildrenOrChild } from "bits-ui";
     import type { Snippet } from "svelte";
     import HorizontalDivisor from "../divisor/HorizontalDivisor.svelte";
     import IconSvg from "$lib/icons/IconSVG.svelte";
@@ -12,13 +11,17 @@
     }: {
         title: string;
         children: Snippet;
-        defaultOpen?: boolean,
+        defaultOpen?: boolean;
     } = $props();
 
     let open = $state(defaultOpen);
 </script>
 
-<button class="column accordion-header" class:open onclick={() => (open = !open)}>
+<button
+    class="column accordion-header"
+    class:open
+    onclick={() => (open = !open)}
+>
     <div class="row spaced-between">
         <span class="small tag">{title}</span>
         <div class="icon-wrapper">
@@ -42,7 +45,6 @@
 
         .icon-wrapper {
             transition: all var(--transition-quick);
-
         }
 
         &.open .icon-wrapper {

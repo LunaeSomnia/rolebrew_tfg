@@ -31,6 +31,17 @@ export type TableHeaderDef = {
 
 export const TABLE_HEADERS: Map<CompendiumSection, TableHeaderDef[]> = new Map([
     [
+        CompendiumSection.Condition,
+        [
+            {
+                column: "Name",
+                data_type: {
+                    type: "String",
+                },
+            } as TableHeaderDef,
+        ],
+    ],
+    [
         CompendiumSection.Spell,
         [
             {

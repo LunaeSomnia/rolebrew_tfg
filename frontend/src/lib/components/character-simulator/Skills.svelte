@@ -2,6 +2,7 @@
     import type { Attribute, Proficiency, Skill } from "$lib/bindings";
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
     import { roll } from "$lib/roll";
+    import type { SkillItem } from "$lib/simulationItem.svelte";
     import { capitalize } from "$lib/utils";
     import {
         BASIC_SKILL_TO_ATTRIBUTE,
@@ -19,18 +20,28 @@
         level,
     }: {
         simulationState: CharacterSimulationState;
-        skills: Record<Skill, Proficiency>;
+        skills: Record<Skill, SkillItem>;
         additionalSkills: Record<string, [Attribute, Proficiency]>;
         attributeModifiers: Record<Attribute, number>;
         level: number;
     } = $props();
+
+    $effect(() => {
+        $inspect(simulationState.activeRules);
+    });
 </script>
 
 <div class="column skills">
-    {#each Object.entries(skills) as [skill, proficiency]}
+    {#each Object.entries(skills) as [skill, item]}
         {@const attribute = BASIC_SKILL_TO_ATTRIBUTE[skill as Skill]}
-        {@const pb = proficiencyBonus(proficiency, level)}
-        {@const modifier = attributeModifiers[attribute] + pb}
+        {@const pb = proficiencyBonus(item.proficiency, level)}
+        {@const rules = simulationState.rulesAppliedToSelectors(item.selectors)}
+        {@const modifier =
+            attributeModifiers[attribute] +
+            pb +
+            rules
+                .map((v) => v.rule.getModifier(simulationState, v.from))
+                .reduce((v, n) => v + n, 0)}
         {@const attributeText = attribute.substring(0, 3)}
 
         {#snippet valueTooltip()}
@@ -38,7 +49,7 @@
                 {attributeModifiers[attribute]}
                 (<span class="tag">{attributeText}</span>) +
                 {pb - level}
-                (<span class="tag">{proficiency[0]}</span>) +
+                (<span class="tag">{item.proficiency[0]}</span>) +
                 {level}
                 (<span class="tag">Lvl</span>) = {modifier}
             </span>
@@ -53,7 +64,7 @@
             }}
         >
             <div class="row skill">
-                <Profifiency {proficiency} />
+                <Profifiency proficiency={item.proficiency} />
                 <div class="row text">
                     <span class="skill-text">{capitalize(skill)}</span>
                     <span class="tag">{attributeText}</span>

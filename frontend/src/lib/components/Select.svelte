@@ -1,8 +1,6 @@
 <script lang="ts">
     import { Icon } from "$lib/icons/icons";
-    import IconSvg from "$lib/icons/IconSVG.svelte";
     import { capitalize } from "$lib/utils";
-    import { Select } from "bits-ui";
     import type { EventHandler } from "svelte/elements";
 
     type Choice = { label: string; value: string; disabled?: boolean };
