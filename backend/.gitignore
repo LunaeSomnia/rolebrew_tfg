@@ -1,4 +1,9 @@
 /target
 out.txt
-.env
 *.json
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test

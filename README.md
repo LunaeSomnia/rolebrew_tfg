@@ -38,7 +38,7 @@ To deploy the application, firstly create a directory next to the `docker-compos
     - `JWT_SECRET`
 - `data-transformer.env`:
     - `MONGO_URL`
-- `data-transformer.env`:
+- `mongo.env`:
     - `MONGO_INITDB_DATABASE` set to `rolebrew`
     - `MONGO_INITDB_ROOT_USERNAME` set to `rolebrew`
     - `MONGO_INITDB_ROOT_PASSWORD`
