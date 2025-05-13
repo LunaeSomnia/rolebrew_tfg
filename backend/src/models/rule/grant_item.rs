@@ -11,22 +11,22 @@ use std::{collections::BTreeMap, sync::Arc};
 #[derive(Serialize, Deserialize, Debug, Clone, Type)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
 pub struct GrantItemRule {
-    track: Option<bool>,
-    in_memory_only: Option<bool>,
-    reevaluate_on_update: Option<bool>,
-    allow_duplicate: Option<bool>,
-    nest_feat: Option<bool>,
+    pub track: Option<bool>,
+    pub in_memory_only: Option<bool>,
+    pub reevaluate_on_update: Option<bool>,
+    pub allow_duplicate: Option<bool>,
+    pub nest_feat: Option<bool>,
 
-    preselect_coices: Option<serde_json::Value>, // lmao typo
-    flag: Option<String>,
-    uuid: String,
+    pub preselect_coices: Option<serde_json::Value>, // lmao typo
+    pub flag: Option<String>,
+    pub uuid: String,
     #[serde(default, deserialize_with = "null_to_default")]
-    predicate: MVec<RulePredicateFilter>,
+    pub predicate: MVec<RulePredicateFilter>,
     #[serde(default, deserialize_with = "null_to_default")]
-    preselect_choices: BTreeMap<String, String>,
-    on_delete_actions: Option<serde_json::Value>, // Worth nothing
-    alterations: Option<serde_json::Value>,       // TODO: Check
-    priority: Option<i16>,
+    pub preselect_choices: BTreeMap<String, String>,
+    pub on_delete_actions: Option<serde_json::Value>, // Worth nothing
+    pub alterations: Option<serde_json::Value>,       // TODO: Check
+    pub priority: Option<i16>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Type)]

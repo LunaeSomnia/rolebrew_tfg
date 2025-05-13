@@ -14,7 +14,7 @@ export type BackgroundTrainedSkills = { custom: string | null; lore?: string[]; 
 
 export type BoostOrFlaw = { type: "free" } | { type: "grant"; att: Attribute } | { type: "choose"; atts: Attribute[] }
 
-export type Character = { _id: string; name: string; level: number; attributeModifiers: { [key in Attribute]: number }; hp: number; skills: { [key in Skill]: Proficiency }; additionalSkills: { [key in string]: [Attribute, Proficiency] }; vision: Vision; speed: Speed; size: Size; savingThrows: SavingThrows; keyAbility: Attribute[]; armorProficiencies: ClassDefenses; weaponProficiencies: ClassAttacks; ancestry: string; class: string; background: string; features: Feat[]; rules: Rule[]; state: JsonValue | null }
+export type Character = { _id: string; name: string; level: number; attributeModifiers: { [key in Attribute]: number }; hp: number; skills: { [key in Skill]: Proficiency }; additionalSkills: { [key in string]: [Attribute, Proficiency] }; vision: Vision; speed: Speed; size: Size; savingThrows: SavingThrows; keyAbility: Attribute[]; armorProficiencies: ClassDefenses; weaponProficiencies: ClassAttacks; spellcasting: boolean; ancestry: string; class: string; background: string; features: Feat[]; rules: Rule[]; state: JsonValue | null }
 
 export type Choice = { label: string; value: string }
 

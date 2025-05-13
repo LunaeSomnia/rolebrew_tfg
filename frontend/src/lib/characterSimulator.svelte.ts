@@ -5,16 +5,19 @@ import type {
     Equipment,
     Proficiency,
     Skill,
+    Spell,
 } from "./bindings";
 import {
     proficiencyBonus,
 } from "./components/character-creator/characterCreator.svelte";
+import SpellsPage from "./components/character-simulator/pages/spells/SpellsPage.svelte";
 import { roll } from "./roll";
 import { createRule } from "./rules/factory";
 import { Rule } from "./rules/rule";
 import type { RuleAttributeSelectors, RuleSkillCheckSelectors, RuleSkillSelectors } from "./rules/selectors";
 import { ConditionItem, GeneralItem, HPItem, SimulationItem, SkillItem } from "./simulationItem.svelte";
 import { skillToAttribute } from "./skills";
+import { getSpellSlotTableByClassName, type LevelSpellSlotRow } from "./spells";
 
 type Items = {
     hp: HPItem,
@@ -63,6 +66,22 @@ export class CharacterSimulationState {
         }, 0),
         conditions: []
     });
+
+    spellSlots: LevelSpellSlotRow = $state({
+        0: 0,
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+    })
+    spells: Record<number, Spell[]> = $state({})
+    focused = $state(false)
 
     armorClass: [number, Proficiency] = $derived.by(() => {
         let base = 10;
@@ -176,10 +195,15 @@ export class CharacterSimulationState {
                 return new ConditionItem(v);
             })
         }
+
+        this.spellSlots = getSpellSlotTableByClassName(this.character.class)[character.level]
     }
 
     static fromPreviousState(character: Character, foundState: any) {
         let state = new this(character, []);
+
+
+        console.log("foundState", foundState)
 
         state.items = {
 
@@ -199,6 +223,9 @@ export class CharacterSimulationState {
         state.money = foundState.money;
         state.equipment = EquipmentState.fromState(foundState.equipment as any);
         state.info = foundState.info;
+        state.spellSlots = foundState.spellSlots;
+        state.focused = foundState.focused;
+        state.spells = foundState.spells;
 
         return state;
     }
@@ -255,6 +282,7 @@ export class CharacterSimulationState {
         if (!this.items) {
             throw new Error("Can't save uninitialized character")
         }
+
         return {
             hp: this.items.hp,
             tempHp: this.items.tempHp,
@@ -262,11 +290,14 @@ export class CharacterSimulationState {
             currentArmor: this.currentArmor,
             currentShield: this.currentShield,
             initiative: this.initiative,
+            spellSlots: this.spellSlots,
+            focused: this.focused,
             chat: this.chat,
             money: this.money,
             equipment: this.equipment.toJSON(),
             conditions: this.items.conditions.map((v) => v.toJSON()),
             info: this.info,
+            spells: this.spells
         };
     }
 }

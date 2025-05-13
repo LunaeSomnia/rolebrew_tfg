@@ -20,33 +20,16 @@
 <div class="row hero-points">
     {#each Array(3) as _, i}
         <!-- svelte-ignore a11y_consider_explicit_label -->
-        <button onclick={() => onClick(i)} class:active={i < value}></button>
+        <button
+            class="circle-toggle-button"
+            onclick={() => onClick(i)}
+            class:active={i < value}
+        ></button>
     {/each}
 </div>
 
 <style lang="scss">
     .hero-points {
         gap: 0.5rem;
-    }
-
-    button {
-        width: 1.5rem;
-        height: 1.5rem;
-        border-radius: 1rem;
-        cursor: pointer;
-        background-color: unset;
-        border: 0.125rem solid var(--orange);
-
-        &:hover {
-            border-color: var(--orange-lighter);
-        }
-
-        &.active {
-            background-color: var(--orange);
-
-            &:hover {
-                background-color: var(--orange-lighter);
-            }
-        }
     }
 </style>

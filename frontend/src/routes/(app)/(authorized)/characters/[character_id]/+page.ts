@@ -1,4 +1,4 @@
-import type { Character, Summary, Condition, Action } from "$lib/bindings";
+import type { Character, Summary, Condition, Action, Class } from "$lib/bindings";
 import { CharacterSimulationState } from "$lib/characterSimulator.svelte";
 import type { PageLoad } from "./$types";
 
@@ -8,6 +8,10 @@ export const load: PageLoad = async ({ fetch, data, params }) => {
     )
         .then((v) => v.json())
         .then((v) => v as Character);
+
+    let classData = await fetch(`/api/class/${character.class}`)
+        .then((v) => v.json())
+        .then(v => v as Class)
 
     let equipmentSummaries = await fetch("/api/equipment/summary")
         .then((v) => v.json())
@@ -33,6 +37,7 @@ export const load: PageLoad = async ({ fetch, data, params }) => {
 
     return {
         character,
+        classData,
         equipmentSummaries,
         conditions,
         actions,

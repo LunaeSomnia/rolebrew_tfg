@@ -1,15 +1,16 @@
 use std::{collections::BTreeMap, sync::Arc};
 
 use bson::oid::ObjectId;
+use log::info;
 use serde::{Deserialize, Serialize};
 use specta::Type;
 
 use crate::{
-    NewCharacterForm,
+    Choice, NewCharacterForm,
     dbref::DbRef,
     models::{
-        Attribute, ClassAttacks, ClassDefenses, Feat, GrantItemResult, Proficiency, Rule,
-        SavingThrows, Size, Skill, Speed, Vision,
+        Attribute, ChoiceSetRule, ClassAttacks, ClassDefenses, Feat, GrantItemResult, Proficiency,
+        Rule, SavingThrows, Size, Skill, Speed, Vision,
     },
 };
 
@@ -31,6 +32,7 @@ pub struct Character {
     pub key_ability: Vec<Attribute>,
     pub armor_proficiencies: ClassDefenses,
     pub weapon_proficiencies: ClassAttacks,
+    pub spellcasting: bool,
 
     pub ancestry: String,
     pub class: String,
@@ -49,6 +51,7 @@ impl Character {
         let ancestry_col = db.ancestry_coll.read().await;
         let background_col = db.background_coll.read().await;
         let class_col = db.class_coll.read().await;
+        let feats_col = db.feat_coll.read().await;
 
         let ancestry = ancestry_col
             .get_secondary(&form.ancestry, "slug")
@@ -107,7 +110,7 @@ impl Character {
             .filter(|v| v.level <= lvl)
             .collect();
 
-        let features: Vec<Feat> = ancestry_features
+        let mut features: Vec<Feat> = ancestry_features
             .into_iter()
             .chain(background_features.into_iter())
             .chain(class_features.into_iter())
@@ -119,6 +122,69 @@ impl Character {
             .map(|v| v.rules)
             .flatten()
             .collect();
+
+        let class_decisions: Vec<BTreeMap<String, Vec<Choice>>> =
+            form.class_decisions.values().cloned().collect();
+        let mut background_decisions: BTreeMap<String, Vec<Choice>> =
+            form.background_decisions.clone();
+        let mut ancestry_decisions: BTreeMap<String, Vec<Choice>> = form.ancestry_decisions.clone();
+
+        let mut all_decisions: BTreeMap<String, Vec<Choice>> = BTreeMap::new();
+        for mut class_decision in class_decisions {
+            if !class_decision.is_empty() {
+                all_decisions.append(&mut class_decision);
+            }
+        }
+        all_decisions.append(&mut background_decisions);
+        all_decisions.append(&mut ancestry_decisions);
+
+        // remove choice sets
+        info!("{:?}", all_decisions);
+        for rule in rules.iter() {
+            if let Rule::GrantItem(r) = rule {
+                if r.uuid.contains("rulesSelections.") {
+                    let uuid = r.uuid.replace("}", "");
+                    let uuid_split = uuid.split("rulesSelections.");
+                    let choiceset_flag = uuid_split.last().unwrap(); // safe unwrap
+
+                    let choiceset_rules: Vec<ChoiceSetRule> = rules
+                        .iter()
+                        .map(|v| {
+                            if let Rule::ChoiceSet(r) = v {
+                                Some(r)
+                            } else {
+                                None
+                            }
+                        })
+                        .filter(|v| v.is_some())
+                        .map(|v| v.unwrap())
+                        .cloned()
+                        .collect();
+                    let choiceset_rule = choiceset_rules.iter().find(|v| {
+                        if let Some(flag) = &r.flag {
+                            if flag == choiceset_flag {
+                                return true;
+                            }
+                        }
+                        false
+                    });
+                    let decision = all_decisions.get(choiceset_flag);
+
+                    if let Some(rule) = choiceset_rule {
+                        if let Some(decision) = decision {
+                            for decision in decision {
+                                let feat = feats_col.get(&decision.value).await;
+                                if let Ok(feat) = feat {
+                                    if let Some(feat) = feat {
+                                        features.push(feat);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         let grant_rules = futures::future::join_all(
             rules
@@ -137,8 +203,7 @@ impl Character {
         )
         .await;
         let grant_rules: Vec<GrantItemResult> = grant_rules.into_iter().filter_map(|v| v).collect();
-
-        println!("{:?}", grant_rules);
+        info!("{:?}", grant_rules);
 
         Self {
             id: ObjectId::new(),
@@ -158,6 +223,7 @@ impl Character {
             key_ability,
             armor_proficiencies,
             weapon_proficiencies,
+            spellcasting: class.spellcasting,
             features,
             rules,
             state: None,

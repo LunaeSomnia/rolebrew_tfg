@@ -4,7 +4,6 @@
     import {
         BASIC_SKILL_TO_ATTRIBUTE,
         proficiencyBonus,
-        scoreToModifier,
     } from "./character-creator/characterCreator.svelte";
     import HorizontalDivisor from "./divisor/HorizontalDivisor.svelte";
     import Profifiency from "./Profifiency.svelte";
@@ -38,8 +37,9 @@
             <span class="skill-text">{capitalize(skill)}</span>
             <span class="tag">{finalAttribute.substring(0, 3)}</span>
         </div>
-        <span class="value">{skillModifier >= 0 ? "+" : ""}{skillModifier}</span
-        >
+        <span class="value">
+            {skillModifier >= 0 ? "+" : ""}{skillModifier}
+        </span>
     </div>
 {/snippet}
 

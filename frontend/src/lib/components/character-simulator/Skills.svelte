@@ -9,6 +9,8 @@
         proficiencyBonus,
         scoreToModifier,
     } from "../character-creator/characterCreator.svelte";
+    import ModTooltip from "../ModTooltip.svelte";
+    import { type ModAttribute } from "../ModTooltip.svelte";
     import Profifiency from "../Profifiency.svelte";
     import Tooltip from "../Tooltip.svelte";
     import Rollable from "./Rollable.svelte";
@@ -44,16 +46,24 @@
                 .reduce((v, n) => v + n, 0)}
         {@const attributeText = attribute.substring(0, 3)}
 
-        {#snippet valueTooltip()}
-            <span class="row skill-value-tooltip">
-                {attributeModifiers[attribute]}
-                (<span class="tag">{attributeText}</span>) +
-                {pb - level}
-                (<span class="tag">{item.proficiency[0]}</span>) +
-                {level}
-                (<span class="tag">Lvl</span>) = {modifier}
-            </span>
-        {/snippet}
+        {@const attributes: ModAttribute[] = [
+            {
+                value: attributeModifiers[attribute],
+                type: attributeText,
+                modifier: "+",
+            },
+            {
+                value: pb - level,
+                isProficiency: true,
+                type: item.proficiency,
+                modifier: "+",
+            },
+            {
+                value: level,
+                type: "Lvl",
+                modifier: "+",
+            },
+        ]}
 
         <Rollable
             expandOnHover={true}
@@ -69,23 +79,17 @@
                     <span class="skill-text">{capitalize(skill)}</span>
                     <span class="tag">{attributeText}</span>
                 </div>
-                <Tooltip textSnippet={valueTooltip}>
-                    <span class="value"
-                        >{modifier >= 0 ? "+" : ""}{modifier}</span
-                    >
-                </Tooltip>
+                <ModTooltip {attributes} finalValue={modifier}>
+                    <span class="value">
+                        {modifier >= 0 ? "+" : ""}{modifier}
+                    </span>
+                </ModTooltip>
             </div>
         </Rollable>
     {/each}
 </div>
 
 <style lang="scss">
-    :global(.skill-value-tooltip) {
-        align-items: baseline;
-        gap: 0.125rem;
-        color: var(--light-1);
-    }
-
     .skills {
         position: relative;
         width: 100%;

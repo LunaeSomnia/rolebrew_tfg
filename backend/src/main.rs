@@ -49,6 +49,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_characters)
             .service(save_character_state)
             .service(create_new_character)
+            .service(remove_character)
             // users
             .service(create_user)
             // condition

@@ -4,21 +4,19 @@
         Proficiency,
         SavingThrow,
         SavingThrows,
-        Skill,
     } from "$lib/bindings";
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
     import { roll } from "$lib/roll";
     import { capitalize } from "$lib/utils";
     import {
-        BASIC_SKILL_TO_ATTRIBUTE,
         proficiencyBonus,
         SAVING_THROW_TO_ATTRIBUTE,
-        scoreToModifier,
     } from "../character-creator/characterCreator.svelte";
     import HorizontalDivisor from "../divisor/HorizontalDivisor.svelte";
     import VerticalDivisor from "../divisor/VerticalDivisor.svelte";
+    import ModTooltip from "../ModTooltip.svelte";
+    import { type ModAttribute } from "../ModTooltip.svelte";
     import Profifiency from "../Profifiency.svelte";
-    import Tooltip from "../Tooltip.svelte";
     import Rollable from "./Rollable.svelte";
 
     let {
@@ -55,28 +53,31 @@
     {@const dc = modifier + 10}
     {@const attributeText = att.substring(0, 3)}
 
-    {#snippet valueTooltip()}
-        <span class="row skill-value-tooltip">
-            {attributeModifiers[att]}
-            (<span class="tag">{attributeText}</span>) +
-            {pb - level}
-            (<span class="tag">{proficiency[0]}</span>) +
-            {level}
-            (<span class="tag">Lvl</span>) = {modifier}
-        </span>
-    {/snippet}
-    {#snippet dcTooltip()}
-        <span class="row skill-value-tooltip">
-            {attributeModifiers[att]}
-            (<span class="tag">{attributeText}</span>) +
-            {pb - level}
-            (<span class="tag">{proficiency[0]}</span>) +
-            {level}
-            (<span class="tag">Lvl</span>) +
-            {10}
-            (<span class="tag">DC</span>) = {modifier}
-        </span>
-    {/snippet}
+    {@const valueAttributes: ModAttribute[] = [
+        {
+            value: attributeModifiers[att],
+            type: attributeText,
+            modifier: '+'
+        },
+        {
+            value: pb - level,
+            isProficiency: true,
+            type: proficiency[0],
+            modifier: '+'
+        },
+        {
+            value: level,
+            type: "Lvl",
+            modifier: '+'
+        }
+    ]}
+
+    {@const dcAttributes: ModAttribute[] = valueAttributes.concat([{
+        value: 10,
+        type: "DC",
+        modifier: '+'
+    }])}
+
     <div class="row saving-throw">
         <Rollable
             style="width: 100%;"
@@ -90,9 +91,9 @@
             <Profifiency {proficiency} />
             <span class="saving-throw-text">{capitalize(savingThrow)}</span>
             <span class="tag">{attributeText}</span>
-            <Tooltip textSnippet={valueTooltip}>
+            <ModTooltip attributes={valueAttributes} finalValue={modifier}>
                 <span class="value">{modifier >= 0 ? "+" : ""}{modifier}</span>
-            </Tooltip>
+            </ModTooltip>
         </Rollable>
         <VerticalDivisor />
         <Rollable
@@ -104,9 +105,9 @@
                 );
             }}
         >
-            <Tooltip textSnippet={dcTooltip}>
-                <span class="value">{dc >= 0 ? "+" : ""}{dc}</span>
-            </Tooltip>
+            <ModTooltip attributes={dcAttributes} finalValue={dc}>
+                <span class="value">{modifier >= 0 ? "+" : ""}{dc}</span>
+            </ModTooltip>
         </Rollable>
     </div>
 {/snippet}

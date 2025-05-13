@@ -15,7 +15,7 @@
     import Button from "$lib/components/Button.svelte";
     import EquipmentPage from "$lib/components/character-simulator/pages/equipment/EquipmentPage.svelte";
     import ActionsPage from "$lib/components/character-simulator/pages/actions/ActionsPage.svelte";
-    import SpellsPage from "$lib/components/character-simulator/pages/SpellsPage.svelte";
+    import SpellsPage from "$lib/components/character-simulator/pages/spells/SpellsPage.svelte";
     import ConditionsPage from "$lib/components/character-simulator/pages/conditions/ConditionsPage.svelte";
     import InfoPage from "$lib/components/character-simulator/pages/InfoPage.svelte";
     import type { PageProps } from "./$types";
@@ -42,10 +42,14 @@
         simulationState.items.conditions.filter((v) => v.isActive),
     );
 
+    // async function getCantrips()
+    console.log(simulationState);
+
     async function saveCharacterState() {
         // @ts-ignore
         const characterId = character._id.$oid;
         const body = JSON.stringify(simulationState.toJSON());
+        console.log("saving", simulationState.toJSON());
         const request = await fetch(
             `/api/user/${data.user.username}/character/${characterId}`,
             {
@@ -157,10 +161,12 @@
                     cta={mainPage === 1 ? "primary" : "secondary"}
                     onclick={() => (mainPage = 1)}>Equipment</Button
                 >
-                <Button
-                    cta={mainPage === 2 ? "primary" : "secondary"}
-                    onclick={() => (mainPage = 2)}>Spells</Button
-                >
+                {#if simulationState.character.spellcasting}
+                    <Button
+                        cta={mainPage === 2 ? "primary" : "secondary"}
+                        onclick={() => (mainPage = 2)}>Spells</Button
+                    >
+                {/if}
                 <Button
                     cta={mainPage === 3 ? "primary" : "secondary"}
                     onclick={() => (mainPage = 3)}>Conditions</Button
@@ -182,7 +188,7 @@
                     {simulationState}
                 />
             {:else if mainPage === 2}
-                <SpellsPage />
+                <SpellsPage {simulationState} classData={data.classData} />
             {:else if mainPage === 3}
                 <ConditionsPage bind:simulationState />
             {:else if mainPage === 5}

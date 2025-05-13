@@ -348,6 +348,27 @@ button {
     color: var(--light-2);
 }
 
+.circle-toggle-button {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    background-color: unset;
+    border: 0.125rem solid var(--orange);
+
+    &:hover {
+        border-color: var(--orange-lighter);
+    }
+
+    &.active {
+        background-color: var(--orange);
+
+        &:hover {
+            background-color: var(--orange-lighter);
+        }
+    }
+}
+
 .dialog {
     box-shadow: 0rem 0rem 1rem #00000088;
     border: solid 0.125rem var(--dark-2);

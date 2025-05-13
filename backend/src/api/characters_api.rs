@@ -60,27 +60,11 @@ pub async fn get_character(
     actix_web::HttpResponse::Ok().json(character_option.unwrap())
 }
 
-#[derive(Serialize, Deserialize, Type, Clone, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct SaveCharacterForm {
-    pub(crate) hp: Option<serde_json::Value>,
-    pub(crate) temp_hp: Option<serde_json::Value>,
-    pub(crate) hero_points: Option<serde_json::Value>,
-    pub(crate) current_armor: Option<serde_json::Value>,
-    pub(crate) current_shield: Option<serde_json::Value>,
-    pub(crate) initiative: Option<serde_json::Value>,
-    pub(crate) chat: Option<serde_json::Value>,
-    pub(crate) money: Option<serde_json::Value>,
-    pub(crate) equipment: Option<serde_json::Value>,
-    pub(crate) conditions: Option<serde_json::Value>,
-    pub(crate) info: Option<serde_json::Value>,
-}
-
 #[post("/api/user/{user_id}/character/{character_id}")]
 pub async fn save_character_state(
     db: Data<DbRef>,
     query_parameters: Path<(String, String)>,
-    form: actix_web::web::Json<SaveCharacterForm>,
+    form: actix_web::web::Json<serde_json::Value>,
 ) -> impl Responder {
     let (user_id, character_id) = query_parameters.into_inner();
     let coll = db.user_coll.clone();
@@ -137,6 +121,32 @@ pub async fn create_new_character(
             user.characters.push(character);
             user_coll.replace_user(user).await.unwrap();
             actix_web::HttpResponse::Ok().finish()
+        }
+        _ => actix_web::HttpResponse::BadRequest().body("Username not found"),
+    }
+}
+
+#[post("/api/user/{user_id}/remove_character/{character_id}")]
+pub async fn remove_character(db: Data<DbRef>, params: Path<(String, String)>) -> impl Responder {
+    let (user_id, character_id) = params.into_inner();
+    let coll = db.user_coll.clone();
+    let user_coll = coll.read().await;
+    match user_coll.get_from_username(user_id.as_str()).await {
+        Ok(Some(mut user)) => {
+            if let Some((i, _character)) = user
+                .characters
+                .iter()
+                .enumerate()
+                .find(|(_i, c)| c.id.to_string() == character_id)
+            {
+                user.characters.remove(i);
+                if let Ok(_) = user_coll.replace_user(user).await {
+                    return actix_web::HttpResponse::Ok().body("Character removed");
+                }
+                return actix_web::HttpResponse::InternalServerError()
+                    .body("Error while removing the character");
+            }
+            return actix_web::HttpResponse::BadRequest().body("Character not found");
         }
         _ => actix_web::HttpResponse::BadRequest().body("Username not found"),
     }

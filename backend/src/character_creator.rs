@@ -3,6 +3,6 @@ use specta::Type;
 
 #[derive(Serialize, Deserialize, Debug, Type, Clone)]
 pub struct Choice {
-    label: String,
-    value: String,
+    pub label: String,
+    pub value: String,
 }
