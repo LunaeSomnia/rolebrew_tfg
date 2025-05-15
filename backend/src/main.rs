@@ -74,6 +74,7 @@ async fn main() -> std::io::Result<()> {
             .service(get_spell_filtered)
             .service(get_spell_summaries)
             .service(get_spell_preview)
+            .service(get_spells)
             .service(get_spell)
             // background
             .service(get_background_summaries)

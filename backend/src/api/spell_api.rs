@@ -1,7 +1,7 @@
 use crate::dbref::DbRef;
-use crate::generic_get_single;
 use crate::helpers::none_single_or_vec;
 use crate::models::{link_preview::LinkPreview, primary::spell::Spell, summary::Summary};
+use crate::{generic_get_all, generic_get_single};
 use actix_web::post;
 use actix_web::{
     Responder, get,
@@ -36,6 +36,13 @@ pub async fn get_spell_summaries(
     let summaries: Vec<Summary> = spells_iter.map(|v| v.into()).collect();
 
     actix_web::HttpResponse::Ok().json(summaries)
+}
+
+#[get("/api/spell")]
+pub async fn get_spells(db: Data<DbRef>) -> impl Responder {
+    let coll = db.spell_coll.clone();
+    let data = generic_get_all(coll).await;
+    actix_web::HttpResponse::Ok().json(data)
 }
 
 #[get("/api/spell/{slug}")]

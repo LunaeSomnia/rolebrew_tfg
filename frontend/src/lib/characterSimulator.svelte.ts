@@ -80,7 +80,7 @@ export class CharacterSimulationState {
         9: 0,
         10: 0,
     })
-    spells: Record<number, Spell[]> = $state({})
+    spells: Spell[] = $state([])
     focused = $state(false)
 
     armorClass: [number, Proficiency] = $derived.by(() => {
@@ -196,14 +196,11 @@ export class CharacterSimulationState {
             })
         }
 
-        this.spellSlots = getSpellSlotTableByClassName(this.character.class)[character.level]
+        this.refillSpellslots()
     }
 
     static fromPreviousState(character: Character, foundState: any) {
         let state = new this(character, []);
-
-
-        console.log("foundState", foundState)
 
         state.items = {
 
@@ -242,6 +239,10 @@ export class CharacterSimulationState {
         return items
     })
 
+    refillSpellslots() {
+        this.spellSlots = getSpellSlotTableByClassName(this.character.class)[this.character.level]
+    }
+
     rulesAppliedToSelectors(selectors: string[]): ActiveRule[] {
         return this.activeRules.filter(v => {
             for (const selector of selectors) {
@@ -259,8 +260,6 @@ export class CharacterSimulationState {
     getFromSelector(selector: string): SimulationItem[] {
         return this.ableToSelectors.filter(v => v.selectors.includes(selector))
     }
-
-
 
     rollInitiative(skill: Skill) {
         this.initiative =

@@ -72,4 +72,10 @@
             pointer-events: all;
         }
     }
+
+    :global(.right-overlay .button) {
+        width: 1.5rem;
+        min-width: 1.5rem;
+        height: 1.5rem;
+    }
 </style>

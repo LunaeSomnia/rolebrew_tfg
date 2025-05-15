@@ -8,6 +8,7 @@
         cta = "primary",
         disabled = false,
         class: classData,
+        color = "orange",
         iconLeft,
         iconRight,
         onclick,
@@ -17,6 +18,14 @@
         cta?: "primary" | "secondary" | "ghost";
         disabled?: boolean;
         class?: string;
+        color?:
+            | "neutral"
+            | "orange"
+            | "blue"
+            | "red"
+            | "yellow"
+            | "purple"
+            | "green";
         iconLeft?: Icon;
         iconRight?: Icon;
         fake?: boolean;
@@ -31,6 +40,7 @@
         class:has-content={children !== undefined}
         class:has-icon-left={iconLeft !== undefined}
         class:has-icon-right={iconRight !== undefined}
+        style="--accent-color: {color};"
     >
         {#if iconLeft !== undefined}
             <IconSvg icon={iconLeft} />
@@ -50,6 +60,7 @@
         class:has-content={children !== undefined}
         class:has-icon-left={iconLeft !== undefined}
         class:has-icon-right={iconRight !== undefined}
+        style="--accent-color: var(--{color});"
     >
         {#if iconLeft !== undefined}
             <IconSvg icon={iconLeft} />
@@ -65,7 +76,6 @@
 
 <style lang="scss">
     @use "sass:color";
-    @use "/static/colors.scss";
 
     .button {
         position: relative;
@@ -88,13 +98,28 @@
         font-size: 1rem;
         gap: 0.5rem;
         text-wrap: nowrap;
+        transition: all var(--transition-normal);
 
-        $bg-color: colors.$orange;
-        background-color: $bg-color;
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 0.25rem;
+
+            background-color: var(--light-1);
+            opacity: 0;
+            transition: all var(--transition-normal);
+        }
+
+        background-color: var(--accent-color);
         --icon-color: var(--dark-1);
 
-        &:hover {
-            background-color: color.adjust($bg-color, $lightness: 15%);
+        &:hover::after {
+            opacity: 0.15;
+            // background-color: color.adjust($bg-color, $lightness: 15%);
         }
 
         &.has-content {
@@ -116,27 +141,33 @@
         }
 
         &.secondary {
-            $bg-color: colors.$dark-3;
             background-color: var(--dark-3);
             color: var(--light-1);
             --icon-color: var(--light-3);
 
             &:hover {
-                background-color: color.adjust($bg-color, $lightness: 15%);
                 --icon-color: var(--light-2);
+
+                &::after {
+                    opacity: 0.15;
+                    // background-color: color.adjust($bg-color, $lightness: 15%);
+                }
             }
         }
 
         &.ghost {
-            $bg-color: colors.$dark-2;
             background-color: initial;
             color: var(--light-1);
             --icon-color: var(--light-3);
             padding: 0;
 
             &:hover {
-                background-color: color.adjust($bg-color, $lightness: 15%);
+                // background-color: color.adjust($bg-color, $lightness: 15%);
                 --icon-color: var(--light-2);
+
+                &::after {
+                    opacity: 0.15;
+                }
             }
         }
     }

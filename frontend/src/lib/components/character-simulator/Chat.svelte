@@ -1,14 +1,13 @@
 <script lang="ts">
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
+    import { Icon } from "$lib/icons/icons";
     import { roll } from "$lib/roll";
     import Button from "../Button.svelte";
     import Dice from "../Dice.svelte";
     import Input from "../Input.svelte";
 
-    let {
-        state: characterState,
-        show = $bindable(),
-    }: { state: CharacterSimulationState; show: boolean } = $props();
+    let { state: characterState }: { state: CharacterSimulationState } =
+        $props();
 
     let chatInput = $state("");
 
@@ -21,68 +20,79 @@
             characterState.pushChatMessage(chatInput);
         }
     }
+
+    function clearMessages() {
+        characterState.chat = [];
+    }
 </script>
 
-{#if show}
-    <div class="column chat">
-        <div class="column messages">
-            {#each characterState.chat.toReversed() as message}
-                <span>{message}</span>
-            {/each}
-        </div>
-        <div class="column chat-controls">
-            <Input
-                bind:value={chatInput}
-                placeholder="Chat"
-                onkeydown={onKeyDownChatInput}
-            />
-            <div class="row dice">
-                <Button
-                    class="dice-button"
-                    cta="secondary"
-                    onclick={() => onClickDiceRoll(4)}
-                >
-                    <Dice dice={4} />
-                </Button>
-                <Button
-                    class="dice-button"
-                    cta="secondary"
-                    onclick={() => onClickDiceRoll(6)}
-                >
-                    <Dice dice={6} />
-                </Button>
-                <Button
-                    class="dice-button"
-                    cta="secondary"
-                    onclick={() => onClickDiceRoll(8)}
-                >
-                    <Dice dice={8} />
-                </Button>
-                <Button
-                    class="dice-button"
-                    cta="secondary"
-                    onclick={() => onClickDiceRoll(12)}
-                >
-                    <Dice dice={12} />
-                </Button>
-                <Button
-                    class="dice-button"
-                    cta="secondary"
-                    onclick={() => onClickDiceRoll(20)}
-                >
-                    <Dice dice={20} />
-                </Button>
-                <Button
-                    class="dice-button"
-                    cta="secondary"
-                    onclick={() => onClickDiceRoll(100)}
-                >
-                    <Dice dice={100} />
-                </Button>
-            </div>
+<div class="column chat">
+    <div class="column messages">
+        {#each characterState.chat.toReversed() as message}
+            <span>{message}</span>
+        {/each}
+    </div>
+
+    <Button
+        class="trash-button"
+        cta="ghost"
+        color="red"
+        onclick={clearMessages}
+        iconLeft={Icon.Trash}
+    />
+
+    <div class="column chat-controls">
+        <Input
+            bind:value={chatInput}
+            placeholder="Chat"
+            onkeydown={onKeyDownChatInput}
+        />
+        <div class="row dice">
+            <Button
+                class="dice-button"
+                cta="secondary"
+                onclick={() => onClickDiceRoll(4)}
+            >
+                <Dice dice={4} />
+            </Button>
+            <Button
+                class="dice-button"
+                cta="secondary"
+                onclick={() => onClickDiceRoll(6)}
+            >
+                <Dice dice={6} />
+            </Button>
+            <Button
+                class="dice-button"
+                cta="secondary"
+                onclick={() => onClickDiceRoll(8)}
+            >
+                <Dice dice={8} />
+            </Button>
+            <Button
+                class="dice-button"
+                cta="secondary"
+                onclick={() => onClickDiceRoll(12)}
+            >
+                <Dice dice={12} />
+            </Button>
+            <Button
+                class="dice-button"
+                cta="secondary"
+                onclick={() => onClickDiceRoll(20)}
+            >
+                <Dice dice={20} />
+            </Button>
+            <Button
+                class="dice-button"
+                cta="secondary"
+                onclick={() => onClickDiceRoll(100)}
+            >
+                <Dice dice={100} />
+            </Button>
         </div>
     </div>
-{/if}
+</div>
 
 <style>
     .chat {
@@ -117,6 +127,13 @@
             gap: 0;
             justify-content: space-between;
         }
+    }
+
+    :global(.chat .trash-button) {
+        position: absolute;
+        top: 0.5rem;
+        left: calc(100% - 0.5rem);
+        transform: translateX(-100%);
     }
 
     :global(.dice-button) {

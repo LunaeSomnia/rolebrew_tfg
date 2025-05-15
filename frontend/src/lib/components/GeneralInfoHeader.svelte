@@ -10,7 +10,7 @@
         rarity,
         traits,
     }: {
-        id: string;
+        id?: string;
         name: string;
         publication: Publication;
         rarity?: string;

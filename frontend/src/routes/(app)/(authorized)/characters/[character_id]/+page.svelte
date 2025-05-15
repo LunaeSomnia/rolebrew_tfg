@@ -42,14 +42,10 @@
         simulationState.items.conditions.filter((v) => v.isActive),
     );
 
-    // async function getCantrips()
-    console.log(simulationState);
-
     async function saveCharacterState() {
         // @ts-ignore
         const characterId = character._id.$oid;
         const body = JSON.stringify(simulationState.toJSON());
-        console.log("saving", simulationState.toJSON());
         const request = await fetch(
             `/api/user/${data.user.username}/character/${characterId}`,
             {
@@ -188,7 +184,11 @@
                     {simulationState}
                 />
             {:else if mainPage === 2}
-                <SpellsPage {simulationState} classData={data.classData} />
+                <SpellsPage
+                    {simulationState}
+                    spells={data.spells}
+                    classData={data.classData}
+                />
             {:else if mainPage === 3}
                 <ConditionsPage bind:simulationState />
             {:else if mainPage === 5}
@@ -200,7 +200,9 @@
     </div>
 </div>
 
-<Chat state={simulationState} bind:show={isChatOpen} />
+{#if isChatOpen}
+    <Chat state={simulationState} />
+{/if}
 
 <style lang="scss">
     :global(.character .card) {

@@ -4,31 +4,23 @@
     import Button from "../Button.svelte";
 
     let {
-        damage,
         onclick,
+        onclickX2,
     }: {
-        damage: DamageRoll;
-        onclick?: (damage: DamageRoll, times2: boolean) => void;
+        onclick: () => void;
+        onclickX2: () => void;
     } = $props();
-
-    function onClick(times2: boolean) {
-        if (onclick) {
-            onclick(damage, times2);
-        }
-    }
 </script>
 
 <div class="row damage-roll-group">
     <Button
         class="damage-roll-button main"
         cta="primary"
-        onclick={() => onClick(false)}
+        {onclick}
         iconLeft={Icon.Dice}
     ></Button>
-    <Button
-        class="damage-roll-button double"
-        cta="primary"
-        onclick={() => onClick(true)}>x2</Button
+    <Button class="damage-roll-button double" cta="primary" onclick={onclickX2}
+        >x2</Button
     >
 </div>
 
