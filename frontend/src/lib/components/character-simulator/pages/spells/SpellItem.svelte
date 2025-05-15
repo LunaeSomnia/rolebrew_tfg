@@ -26,18 +26,18 @@
     let damageRolls = $derived(spell.damage ?? []);
 
     function rollAttack(modifier: number) {
-        simulationState.pushChatMessage(
-            `rolled ${name} attack: ${roll(20) + modifier}`,
-        );
+        simulationState.pushChatMessage({
+            value: `rolled ${name} attack: ${roll(20) + modifier}`,
+        });
     }
 
     function rollDamages(damages: DamageRoll[], times2: boolean = false) {
         for (const damage of damages) {
             const roll = rollDamage(damage, times2);
 
-            simulationState.pushChatMessage(
-                `rolled damage: ${roll} ${damage.damageType} damage`,
-            );
+            simulationState.pushChatMessage({
+                value: `rolled damage: ${roll} ${damage.damageType} damage`,
+            });
         }
     }
 
@@ -61,7 +61,9 @@
     }
 
     function useSpell() {
-        simulationState.pushChatMessage(`used spell: ${spell.name}`);
+        simulationState.pushChatMessage({
+            value: `used spell: ${spell.name}`,
+        });
     }
 </script>
 

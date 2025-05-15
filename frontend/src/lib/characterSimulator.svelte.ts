@@ -2,16 +2,18 @@ import type {
     Attribute,
     Character,
     Condition,
+    DamageRoll,
     Equipment,
     Proficiency,
     Skill,
     Spell,
 } from "./bindings";
+import type { ChatMessage, DamageRollChatMessage } from "./chat";
 import {
     proficiencyBonus,
 } from "./components/character-creator/characterCreator.svelte";
 import SpellsPage from "./components/character-simulator/pages/spells/SpellsPage.svelte";
-import { roll } from "./roll";
+import { calculateDamageRoll, roll } from "./roll";
 import { createRule } from "./rules/factory";
 import { Rule } from "./rules/rule";
 import type { RuleAttributeSelectors, RuleSkillCheckSelectors, RuleSkillSelectors } from "./rules/selectors";
@@ -115,7 +117,7 @@ export class CharacterSimulationState {
 
     initiative: number | undefined = $state(undefined);
 
-    chat: string[] = $state([]);
+    chat: ChatMessage[] = $state([]);
 
     money: {
         copper: number;
@@ -268,10 +270,58 @@ export class CharacterSimulationState {
                 this.character.skills[skill],
                 this.character.level,
             );
-        this.pushChatMessage("rolled iniciative: " + this.initiative);
+        this.pushChatMessage({
+            value: "rolled iniciative: " + this.initiative
+        });
     }
 
-    pushChatMessage(msg: string) {
+    rollAttack(name: string, attribute: Attribute, modifier: number) {
+        const finalRoll = roll(20 + modifier)
+        this.pushChatMessage(
+            {
+                name,
+                modifiers: [
+                    {
+                        modifier: '+',
+                        value: modifier,
+                        type: ''
+                    }
+                ],
+                roll: finalRoll
+            }
+        );
+    }
+
+    rollDamage(name: string, damage: DamageRoll, times2: boolean) {
+        let rolled = calculateDamageRoll(damage)
+        if (times2)
+            rolled *= 2
+
+        this.pushChatMessage({
+            name,
+            damages: [damage],
+            rolls: [rolled]
+        } as DamageRollChatMessage)
+    }
+
+    rollDamages(name: string, damages: DamageRoll[], times2: boolean = false) {
+        let rolls: number[] = []
+        for (const damage of damages) {
+            let rolled = calculateDamageRoll(damage)
+            if (times2)
+                rolled *= 2
+
+            rolls.push(rolled);
+        }
+
+        this.pushChatMessage({
+            name,
+            damages: damages,
+            rolls
+        } as DamageRollChatMessage);
+    }
+
+    pushChatMessage(msg: ChatMessage) {
         this.chat.push(msg);
     }
 

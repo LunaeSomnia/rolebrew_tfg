@@ -1,9 +1,8 @@
 <script lang="ts">
-    import type { DamageRoll } from "$lib/bindings";
+    import type { Attribute, DamageRoll } from "$lib/bindings";
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
     import { Icon } from "$lib/icons/icons";
     import IconSvg from "$lib/icons/IconSVG.svelte";
-    import { roll } from "$lib/roll";
     import AttackRollButton from "../../AttackRollButton.svelte";
     import DamageRollButton from "../../DamageRollButton.svelte";
 
@@ -19,38 +18,10 @@
         damage: DamageRoll | null;
     } = $props();
 
+    let attribute: Attribute = $derived(ranged ? "Dexterity" : "Strength");
     let attackModifier = $derived(
-        ranged
-            ? simulationState.character.attributeModifiers.Dexterity
-            : simulationState.character.attributeModifiers.Strength,
+        simulationState.character.attributeModifiers[attribute],
     );
-
-    function rollAttack(modifier: number) {
-        simulationState.pushChatMessage(
-            `rolled ${name} attack: ${roll(20) + modifier}`,
-        );
-    }
-
-    function rollDamage(damage: DamageRoll, times2: boolean) {
-        let rolled = 0;
-        for (let i = 0; i < (damage.dice ?? 0); i++) {
-            let faces = 0;
-            if (typeof damage.die === "number") {
-                faces = damage.die;
-            } else if (damage.die) {
-                faces = Number.parseInt(damage.die[1]);
-            }
-            rolled += roll(faces);
-        }
-
-        if (times2) {
-            rolled *= 2;
-        }
-
-        simulationState.pushChatMessage(
-            `rolled ${name} damage: ${rolled} ${damage.damageType} damage`,
-        );
-    }
 </script>
 
 <div class="row action-item spaced-between">
@@ -61,10 +32,14 @@
 
     <div class="row spaced-group">
         {#if damage}
-            <AttackRollButton modifier={attackModifier} onclick={rollAttack} />
+            <AttackRollButton
+                modifier={attackModifier}
+                onclick={() =>
+                    simulationState.rollAttack(name, attribute, attackModifier)}
+            />
             <DamageRollButton
-                onclick={() => rollDamage(damage, false)}
-                onclickX2={() => rollDamage(damage, true)}
+                onclick={() => simulationState.rollDamage(name, damage, false)}
+                onclickX2={() => simulationState.rollDamage(name, damage, true)}
             />
         {/if}
     </div>

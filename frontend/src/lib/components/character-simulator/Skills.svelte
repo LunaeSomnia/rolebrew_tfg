@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { Attribute, Proficiency, Skill } from "$lib/bindings";
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
+    import { type ModAttribute } from "$lib/chat";
     import { roll } from "$lib/roll";
     import type { SkillItem } from "$lib/simulationItem.svelte";
     import { capitalize } from "$lib/utils";
@@ -10,7 +11,6 @@
         scoreToModifier,
     } from "../character-creator/characterCreator.svelte";
     import ModTooltip from "../ModTooltip.svelte";
-    import { type ModAttribute } from "../ModTooltip.svelte";
     import Profifiency from "../Profifiency.svelte";
     import Tooltip from "../Tooltip.svelte";
     import Rollable from "./Rollable.svelte";
@@ -68,9 +68,9 @@
         <Rollable
             expandOnHover={true}
             onclick={() => {
-                simulationState.pushChatMessage(
-                    `rolled ${skill}: ${roll(20) + modifier}`,
-                );
+                simulationState.pushChatMessage({
+                    value: `rolled ${skill}: ${roll(20) + modifier}`,
+                });
             }}
         >
             <div class="row skill">

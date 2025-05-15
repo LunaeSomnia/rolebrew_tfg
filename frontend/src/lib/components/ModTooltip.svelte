@@ -3,13 +3,7 @@
     import Tooltip from "./Tooltip.svelte";
     import Profifiency from "./Profifiency.svelte";
     import type { Proficiency as PType } from "$lib/bindings";
-
-    export type ModAttribute = {
-        value: number;
-        isProficiency?: boolean;
-        type: string;
-        modifier: "+" | "-" | "*" | "/";
-    };
+    import type { ModAttribute } from "$lib/chat";
 
     let {
         children,
