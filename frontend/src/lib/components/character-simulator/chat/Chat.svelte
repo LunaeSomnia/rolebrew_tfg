@@ -3,7 +3,7 @@
     import StringChatMessage from "./StringChatMessage.svelte";
     import SimpleRollChatMessage from "./SimpleRollChatMessage.svelte";
     import {
-        isAttackRollChatMessage,
+        isModifierRollChatMessage,
         isDamageRollChatMessage,
         isSimpleRollChatMessage,
         isSpellCastChatMessage,
@@ -16,7 +16,7 @@
     import Button from "../../Button.svelte";
     import Dice from "../../Dice.svelte";
     import Input from "../../Input.svelte";
-    import AttackRollChatMessage from "./AttackRollChatMessage.svelte";
+    import ModifierRollChatMessage from "./ModifierRollChatMessage.svelte";
     import DamageRollChatMessage from "./DamageRollChatMessage.svelte";
     import SpellCastChatMessage from "./SpellCastChatMessage.svelte";
 
@@ -58,8 +58,8 @@
                 <SimpleRollChatMessage {msg} />
             {:else if isStringChatMessage(msg)}
                 <StringChatMessage {msg} />
-            {:else if isAttackRollChatMessage(msg)}
-                <AttackRollChatMessage {msg} />
+            {:else if isModifierRollChatMessage(msg)}
+                <ModifierRollChatMessage {msg} />
             {:else if isDamageRollChatMessage(msg)}
                 <DamageRollChatMessage {msg} />
             {:else if isSpellCastChatMessage(msg)}

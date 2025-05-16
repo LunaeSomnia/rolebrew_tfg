@@ -74,9 +74,7 @@
     </button>
 {/if}
 
-<style lang="scss">
-    @use "sass:color";
-
+<style>
     .button {
         position: relative;
         align-items: center;
@@ -99,6 +97,8 @@
         gap: 0.5rem;
         text-wrap: nowrap;
         transition: all var(--transition-normal);
+        background-color: var(--accent-color);
+        --icon-color: var(--dark-1);
 
         &::after {
             content: "";
@@ -114,12 +114,8 @@
             transition: all var(--transition-normal);
         }
 
-        background-color: var(--accent-color);
-        --icon-color: var(--dark-1);
-
         &:hover::after {
             opacity: 0.15;
-            // background-color: color.adjust($bg-color, $lightness: 15%);
         }
 
         &.has-content {
@@ -150,7 +146,6 @@
 
                 &::after {
                     opacity: 0.15;
-                    // background-color: color.adjust($bg-color, $lightness: 15%);
                 }
             }
         }
@@ -162,7 +157,6 @@
             padding: 0;
 
             &:hover {
-                // background-color: color.adjust($bg-color, $lightness: 15%);
                 --icon-color: var(--light-2);
 
                 &::after {

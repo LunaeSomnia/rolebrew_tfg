@@ -1,7 +1,6 @@
 <script lang="ts">
     import { type Die } from "$lib/bindings";
     import type { DamageRollChatMessage } from "$lib/chat";
-    import { roll } from "$lib/roll";
     import { capitalize } from "$lib/utils";
     import ChatMessage from "./ChatMessage.svelte";
     import DiceRoll from "./DiceRoll.svelte";
@@ -19,12 +18,6 @@
 
         return final;
     });
-
-    // let modifierSum = $derived(
-    //     msg.modifiers.map((v) => v.value).reduce((t, v) => (t += v), 0),
-    // );
-
-    console.log(msg);
 </script>
 
 <ChatMessage>

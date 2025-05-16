@@ -7,5 +7,8 @@
 </script>
 
 <ChatMessage>
+    {#if msg.name}
+        <span>{msg.name}</span>
+    {/if}
     <DiceRoll die={msg.dice} roll={msg.roll} />
 </ChatMessage>

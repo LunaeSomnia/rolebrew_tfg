@@ -8,8 +8,9 @@ import type {
     Skill,
     Spell,
 } from "./bindings";
-import type { ChatMessage, DamageRollChatMessage } from "./chat";
+import type { ChatMessage, DamageRollChatMessage, ModifierRollChatMessage } from "./chat";
 import {
+    BASIC_SKILL_TO_ATTRIBUTE,
     proficiencyBonus,
 } from "./components/character-creator/characterCreator.svelte";
 import SpellsPage from "./components/character-simulator/pages/spells/SpellsPage.svelte";
@@ -20,6 +21,7 @@ import type { RuleAttributeSelectors, RuleSkillCheckSelectors, RuleSkillSelector
 import { ConditionItem, GeneralItem, HPItem, SimulationItem, SkillItem } from "./simulationItem.svelte";
 import { skillToAttribute } from "./skills";
 import { getSpellSlotTableByClassName, type LevelSpellSlotRow } from "./spells";
+import { capitalize } from "./utils";
 
 type Items = {
     hp: HPItem,
@@ -264,15 +266,35 @@ export class CharacterSimulationState {
     }
 
     rollInitiative(skill: Skill) {
-        this.initiative =
-            roll(20) +
-            proficiencyBonus(
-                this.character.skills[skill],
-                this.character.level,
-            );
+        const attribute = BASIC_SKILL_TO_ATTRIBUTE[skill as Skill]
+        const skillItem = this.items.skills[skill]
+        const pb = proficiencyBonus(this.character.skills[skill], this.character.level)
+        const rules = this.rulesAppliedToSelectors(skillItem.selectors)
+        const modifier =
+            this.character.attributeModifiers[attribute] +
+            pb +
+            rules
+                .map((v) => v.rule.getModifier(this, v.from))
+                .reduce((v, n) => v + n, 0)
+        const rollV = roll(20)
+        this.initiative = rollV + modifier;
+
         this.pushChatMessage({
-            value: "rolled iniciative: " + this.initiative
-        });
+            name: `Rolled Initiative with ${capitalize(skill)}`,
+            modifiers: [
+                {
+                    modifier: "+",
+                    type: "Roll",
+                    value: rollV,
+                },
+                {
+                    modifier: "+",
+                    type: attribute,
+                    value: modifier,
+                },
+            ],
+            roll: rollV,
+        } as ModifierRollChatMessage);
     }
 
     rollAttack(name: string, attribute: Attribute, modifier: number) {

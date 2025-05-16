@@ -19,7 +19,7 @@
     const navLinks = [
         ["compendium", "Compendium"],
         ["characters", "Characters"],
-        ["sessions", "Sessions"],
+        // ["sessions", "Sessions"],
         ["about", "About"],
     ];
 </script>
@@ -28,7 +28,7 @@
     <div class="max-width">
         <div class="left">
             <a href="/" data-sveltekit-preload-data={false}>
-                <IconSVG icon={Icon.Logo} size={32} />
+                <IconSVG icon={Icon.Logo} size="2rem" />
             </a>
             {#each navLinks as [link, header]}
                 <a

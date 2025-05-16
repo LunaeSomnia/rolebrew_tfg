@@ -5,7 +5,7 @@
 
     const forTheUsers = [
         ["ancestry", "Ancestries"],
-        ["archetype", "Archetypes"],
+        // ["archetype", "Archetypes"],
         ["background", "Backgrounds"],
         ["class", "Classes"],
         ["feat", "Feats"],
@@ -15,14 +15,14 @@
     const forEveryone = [
         ["action", "Actions"],
         ["condition", "Conditions"],
-        ["item", "Items"],
-        ["trait", "Traits"],
+        ["equipment", "Equipment"],
+        // ["trait", "Traits"],
     ];
 
-    const forDms = [
-        ["bestiary", "Bestiary"],
-        ["quick-reference", "Quick Reference"],
-    ];
+    // const forDms = [
+    //     ["bestiary", "Bestiary"],
+    //     ["quick-reference", "Quick Reference"],
+    // ];
 </script>
 
 {#snippet reference(link: string, header: string)}
@@ -53,14 +53,14 @@
             {/each}
         </div>
     </div>
-    <div class="aside-group column">
+    <!-- <div class="aside-group column">
         <span class="tag">For the DMs</span>
         <div class="column aside-group-inner">
             {#each forDms as [link, header]}
                 {@render reference(link, header)}
             {/each}
         </div>
-    </div>
+    </div> -->
 </aside>
 
 <style lang="scss">

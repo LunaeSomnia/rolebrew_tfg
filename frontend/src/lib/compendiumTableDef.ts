@@ -9,7 +9,7 @@ export enum CompendiumSection {
     Spell = "spell",
     Action = "action",
     Condition = "condition",
-    Item = "item",
+    Equipment = "equipment",
     Trait = "trait",
     Bestiary = "bestiary",
     QuickReference = "quick-reference",
@@ -24,12 +24,23 @@ export enum TableSorting {
 export type TableHeaderDef = {
     column: string;
     data_type:
-        | { type: "String" }
-        | { type: "Number" }
-        | { type: "Tag"; category: SummaryDataTagCategory };
+    | { type: "String" }
+    | { type: "Number" }
+    | { type: "Tag"; category: SummaryDataTagCategory };
 };
 
 export const TABLE_HEADERS: Map<CompendiumSection, TableHeaderDef[]> = new Map([
+    [
+        CompendiumSection.Equipment,
+        [
+            {
+                column: "Name",
+                data_type: {
+                    type: "String",
+                },
+            } as TableHeaderDef,
+        ],
+    ],
     [
         CompendiumSection.Condition,
         [

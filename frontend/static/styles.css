@@ -147,8 +147,10 @@ td {
   --green: #10e951;
   --green-darker: rgb(48.16, 117.09, 66.26);
   --green-lighter: rgb(176.13, 229.65, 167.43);
-  --max-width: 1372px; /* 85.75rem */
-  --min-height: 1120px; /* 70rem */
+  --max-width: 1372px;
+  /* 85.75rem */
+  --min-height: 1120px;
+  /* 70rem */
   --col-width: 5.3125rem;
   --col-spacing: 2rem;
   --icon-color: red;
@@ -279,8 +281,10 @@ a {
   text-decoration-line: underline;
   text-decoration-style: solid;
   text-decoration-skip-ink: auto;
-  text-decoration-thickness: 8%; /* 1.28px */
-  text-underline-offset: 12.5%; /* 2px */
+  text-decoration-thickness: 8%;
+  /* 1.28px */
+  text-underline-offset: 12.5%;
+  /* 2px */
   text-underline-position: from-font;
 }
 a.no-accent {
@@ -353,6 +357,26 @@ ol li p {
 
 tr .link-preview {
   width: 100%;
+}
+
+.link-preview {
+  width: 100%;
+  max-width: 40rem;
+  position: absolute;
+  display: flex;
+  border-width: 1px;
+  background-color: var(--dark-1);
+  border-radius: 0.5rem;
+  border: solid 0.125rem var(--dark-2);
+  transition: position 0ms;
+  box-shadow: 0rem 0rem 4rem rgba(0, 0, 0, 0.5333333333);
+  z-index: 999;
+}
+.link-preview > .wrapper {
+  position: relative;
+  overflow-y: auto;
+  max-height: 30rem;
+  padding: 1.5rem;
 }
 
 input,

@@ -256,4 +256,8 @@
         //     padding: 1rem;
         // }
     }
+
+    .features {
+        width: 100%;
+    }
 </style>

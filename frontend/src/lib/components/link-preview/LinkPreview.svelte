@@ -14,7 +14,7 @@
         children,
         textDecorations = "underline",
         cursor = "auto",
-        canBeClicked = true
+        canBeClicked = true,
     } = $props();
 
     const initialState = false;

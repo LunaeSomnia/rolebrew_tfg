@@ -6,6 +6,11 @@
         SavingThrows,
     } from "$lib/bindings";
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
+    import {
+        type ModAttribute,
+        type ModifierRollChatMessage,
+        type SimpleRollChatMessage,
+    } from "$lib/chat";
     import { roll } from "$lib/roll";
     import { capitalize } from "$lib/utils";
     import {
@@ -15,7 +20,6 @@
     import HorizontalDivisor from "../divisor/HorizontalDivisor.svelte";
     import VerticalDivisor from "../divisor/VerticalDivisor.svelte";
     import ModTooltip from "../ModTooltip.svelte";
-    import { type ModAttribute } from "../ModTooltip.svelte";
     import Profifiency from "../Profifiency.svelte";
     import Rollable from "./Rollable.svelte";
 
@@ -83,9 +87,23 @@
             style="width: 100%;"
             expandOnHover={true}
             onclick={() => {
-                simulationState.pushChatMessage(
-                    `rolled ${capitalize(savingThrow)}: ${roll(20) + modifier}`,
-                );
+                const rollV = roll(20);
+                simulationState.pushChatMessage({
+                    name: `Rolled ${capitalize(savingThrow)}`,
+                    modifiers: [
+                        {
+                            modifier: "+",
+                            type: "Roll",
+                            value: rollV,
+                        },
+                        {
+                            modifier: "+",
+                            type: attribute,
+                            value: modifier,
+                        },
+                    ],
+                    roll: rollV,
+                } as ModifierRollChatMessage);
             }}
         >
             <Profifiency {proficiency} />
@@ -100,9 +118,28 @@
             style="width: fit-content;"
             expandOnHover={true}
             onclick={() => {
-                simulationState.pushChatMessage(
-                    `rolled ${capitalize(savingThrow)} DC: ${roll(20) + modifier}`,
-                );
+                const rollV = roll(20);
+                simulationState.pushChatMessage({
+                    name: `Rolled ${capitalize(savingThrow)}`,
+                    modifiers: [
+                        {
+                            modifier: "+",
+                            type: "Roll",
+                            value: rollV,
+                        },
+                        {
+                            modifier: "+",
+                            type: attribute,
+                            value: modifier,
+                        },
+                        {
+                            modifier: "+",
+                            type: "DC",
+                            value: 10,
+                        },
+                    ],
+                    roll: rollV,
+                } as ModifierRollChatMessage);
             }}
         >
             <ModTooltip attributes={dcAttributes} finalValue={dc}>

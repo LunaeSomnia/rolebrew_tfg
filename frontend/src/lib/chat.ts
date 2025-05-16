@@ -1,17 +1,18 @@
 import type { DamageRoll, Die, Spell } from "./bindings";
 
-export type ChatMessage = StringChatMessage | SimpleRollChatMessage | DamageRollChatMessage | AttackRollChatMessage | SpellCastChatMessage
+export type ChatMessage = StringChatMessage | SimpleRollChatMessage | DamageRollChatMessage | ModifierRollChatMessage | SpellCastChatMessage
 
 export type StringChatMessage = {
     value: string,
 }
 
 export type SimpleRollChatMessage = {
+    name?: string,
     dice: Die,
     roll: number,
 }
 
-export type AttackRollChatMessage = {
+export type ModifierRollChatMessage = {
     name: string,
     modifiers: ModAttribute[],
     roll: number,
@@ -39,10 +40,10 @@ export function isSimpleRollChatMessage(msg: ChatMessage): msg is SimpleRollChat
     );
 }
 
-export function isAttackRollChatMessage(msg: ChatMessage): msg is AttackRollChatMessage {
+export function isModifierRollChatMessage(msg: ChatMessage): msg is ModifierRollChatMessage {
     return (
-        (msg as AttackRollChatMessage).modifiers !== undefined &&
-        (msg as AttackRollChatMessage).roll !== undefined
+        (msg as ModifierRollChatMessage).modifiers !== undefined &&
+        (msg as ModifierRollChatMessage).roll !== undefined
     );
 }
 

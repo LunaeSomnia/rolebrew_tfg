@@ -1,21 +1,19 @@
 <script lang="ts">
-    import type { AttackRollChatMessage } from "$lib/chat";
+    import type { ModifierRollChatMessage } from "$lib/chat";
     import ChatMessage from "./ChatMessage.svelte";
     import DiceRoll from "./DiceRoll.svelte";
 
-    let { msg }: { msg: AttackRollChatMessage } = $props();
+    let { msg }: { msg: ModifierRollChatMessage } = $props();
 
     let modifierSum = $derived.by(() => {
         let modifiers = Array.from(msg.modifiers);
         modifiers.shift();
         return modifiers.map((v) => v.value).reduce((t, v) => (t += v), 0);
     });
-
-    console.log(msg);
 </script>
 
 <ChatMessage>
-    <span>Attacked with "{msg.name}"</span>
+    <span>{msg.name}</span>
     <div class="roll row" style="gap: 0.25rem">
         <DiceRoll die={"D20"} roll={msg.roll} />
         <span>+</span>
