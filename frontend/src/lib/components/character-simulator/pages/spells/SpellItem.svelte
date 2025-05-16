@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { DamageRoll, Spell } from "$lib/bindings";
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
+    import type { SpellCastChatMessage } from "$lib/chat";
     import Button from "$lib/components/Button.svelte";
     import { Icon } from "$lib/icons/icons";
     import IconSvg from "$lib/icons/IconSVG.svelte";
@@ -62,8 +63,8 @@
 
     function useSpell() {
         simulationState.pushChatMessage({
-            value: `used spell: ${spell.name}`,
-        });
+            spell,
+        } as SpellCastChatMessage);
     }
 </script>
 

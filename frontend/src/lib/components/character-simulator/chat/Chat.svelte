@@ -6,6 +6,7 @@
         isAttackRollChatMessage,
         isDamageRollChatMessage,
         isSimpleRollChatMessage,
+        isSpellCastChatMessage,
         isStringChatMessage,
         type SimpleRollChatMessage as SimpleRollChatMessageType,
         type StringChatMessage as StringChatMessageType,
@@ -17,6 +18,7 @@
     import Input from "../../Input.svelte";
     import AttackRollChatMessage from "./AttackRollChatMessage.svelte";
     import DamageRollChatMessage from "./DamageRollChatMessage.svelte";
+    import SpellCastChatMessage from "./SpellCastChatMessage.svelte";
 
     let { simulationState }: { simulationState: CharacterSimulationState } =
         $props();
@@ -60,6 +62,8 @@
                 <AttackRollChatMessage {msg} />
             {:else if isDamageRollChatMessage(msg)}
                 <DamageRollChatMessage {msg} />
+            {:else if isSpellCastChatMessage(msg)}
+                <SpellCastChatMessage {msg} />
             {/if}
         {/each}
     </div>

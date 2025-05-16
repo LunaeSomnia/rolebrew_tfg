@@ -31,5 +31,8 @@
         "svelte-floating-ui": "^1.6.2",
         "typescript": "^5.8.3",
         "vite": "^6.3.3"
+    },
+    "dependencies": {
+        "svelte-portal": "^2.2.1"
     }
 }
