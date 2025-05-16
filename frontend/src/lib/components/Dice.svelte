@@ -82,12 +82,19 @@
                 <rect width="48" height="48" fill="white" />
             </clipPath>
         </defs>
+    {:else}
+        <div class="circle" style="background-color: {lighter};"></div>
     {/if}
 </svg>
 
 <style lang="scss">
-    svg {
+    svg,
+    .circle {
         width: 2.5rem;
         height: 2.5rem;
+    }
+
+    .circle {
+        border-radius: 2.5rem;
     }
 </style>

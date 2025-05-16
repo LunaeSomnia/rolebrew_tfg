@@ -1,7 +1,11 @@
 <script lang="ts">
     import type { Attribute, Proficiency, Skill } from "$lib/bindings";
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
-    import { type ModAttribute, type ModifierRollChatMessage } from "$lib/chat";
+    import {
+        ChatMessageType,
+        type ModAttribute,
+        type ModifierRollChatMessage,
+    } from "$lib/chat";
     import { roll } from "$lib/roll";
     import type { SkillItem } from "$lib/simulationItem.svelte";
     import { capitalize } from "$lib/utils";
@@ -69,7 +73,7 @@
             expandOnHover={true}
             onclick={() => {
                 const rollV = roll(20);
-                simulationState.pushChatMessage({
+                simulationState.pushChatMessage(ChatMessageType.ModifierRoll, {
                     name: `Rolled ${capitalize(skill)}`,
                     modifiers: [
                         {

@@ -3,13 +3,12 @@
     import StringChatMessage from "./StringChatMessage.svelte";
     import SimpleRollChatMessage from "./SimpleRollChatMessage.svelte";
     import {
-        isModifierRollChatMessage,
-        isDamageRollChatMessage,
-        isSimpleRollChatMessage,
-        isSpellCastChatMessage,
-        isStringChatMessage,
         type SimpleRollChatMessage as SimpleRollChatMessageType,
         type StringChatMessage as StringChatMessageType,
+        type DamageRollChatMessage as DamageRollChatMessageType,
+        type ModifierRollChatMessage as ModifierRollChatMessageType,
+        type SpellCastChatMessage as SpellCastChatMessageType,
+        ChatMessageType,
     } from "$lib/chat";
     import { Icon } from "$lib/icons/icons";
     import { roll } from "$lib/roll";
@@ -26,7 +25,7 @@
     let chatInput = $state("");
 
     function onClickDiceRoll(dice: number) {
-        simulationState.pushChatMessage({
+        simulationState.pushChatMessage(ChatMessageType.SimpleRoll, {
             dice: `D${dice}`,
             roll: roll(dice),
         } as SimpleRollChatMessageType);
@@ -34,7 +33,7 @@
 
     function onKeyDownChatInput(e: KeyboardEvent) {
         if (e.key === "Enter") {
-            simulationState.pushChatMessage({
+            simulationState.pushChatMessage(ChatMessageType.StringChat, {
                 value: chatInput,
             } as StringChatMessageType);
             chatInput = "";
@@ -44,25 +43,25 @@
     function clearMessages() {
         simulationState.chat = [];
     }
-
-    $effect(() => {
-        console.log(simulationState.chat);
-    });
 </script>
 
 <div class="column chat">
     <div class="column messages">
-        {#each simulationState.chat.toReversed() as msg}
-            {console.log(msg)}
-            {#if isSimpleRollChatMessage(msg)}
+        {#each simulationState.chat.toReversed() as [type, message]}
+            {#if type === ChatMessageType.SimpleRoll}
+                {@const msg = message as SimpleRollChatMessageType}
                 <SimpleRollChatMessage {msg} />
-            {:else if isStringChatMessage(msg)}
+            {:else if type === ChatMessageType.StringChat}
+                {@const msg = message as StringChatMessageType}
                 <StringChatMessage {msg} />
-            {:else if isModifierRollChatMessage(msg)}
+            {:else if type === ChatMessageType.ModifierRoll}
+                {@const msg = message as ModifierRollChatMessageType}
                 <ModifierRollChatMessage {msg} />
-            {:else if isDamageRollChatMessage(msg)}
+            {:else if type === ChatMessageType.DamageRoll}
+                {@const msg = message as DamageRollChatMessageType}
                 <DamageRollChatMessage {msg} />
-            {:else if isSpellCastChatMessage(msg)}
+            {:else if type === ChatMessageType.SpellCast}
+                {@const msg = message as SpellCastChatMessageType}
                 <SpellCastChatMessage {msg} />
             {/if}
         {/each}

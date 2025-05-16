@@ -1,8 +1,9 @@
 <script lang="ts">
     import type { Attribute } from "$lib/bindings";
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
+    import { ChatMessageType, type ModifierRollChatMessage } from "$lib/chat";
     import { roll } from "$lib/roll";
-    import { scoreToModifier } from "../character-creator/characterCreator.svelte";
+    import { capitalize } from "$lib/utils";
     import Rollable from "./Rollable.svelte";
 
     let {
@@ -18,9 +19,23 @@
     <Rollable
         style="width: 100%;"
         onclick={() => {
-            simulationState.pushChatMessage(
-                `rolled ${attribute}: ${roll(20) + value}`,
-            );
+            const rollV = roll(20);
+            simulationState.pushChatMessage(ChatMessageType.ModifierRoll, {
+                name: `Rolled ${capitalize(attribute)}`,
+                modifiers: [
+                    {
+                        modifier: "+",
+                        type: "Roll",
+                        value: rollV,
+                    },
+                    {
+                        modifier: "+",
+                        type: "Modifier",
+                        value: value,
+                    },
+                ],
+                roll: rollV,
+            } as ModifierRollChatMessage);
         }}
     >
         <div class="column attribute">

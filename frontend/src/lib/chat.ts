@@ -1,6 +1,14 @@
 import type { DamageRoll, Die, Spell } from "./bindings";
 
-export type ChatMessage = StringChatMessage | SimpleRollChatMessage | DamageRollChatMessage | ModifierRollChatMessage | SpellCastChatMessage
+export type ChatMessage =
+    StringChatMessage |
+    SimpleRollChatMessage |
+    DamageRollChatMessage |
+    ModifierRollChatMessage |
+    SpellCastChatMessage
+export enum ChatMessageType {
+    StringChat, SimpleRoll, DamageRoll, ModifierRoll, SpellCast
+}
 
 export type StringChatMessage = {
     value: string,
@@ -42,14 +50,17 @@ export function isSimpleRollChatMessage(msg: ChatMessage): msg is SimpleRollChat
 
 export function isModifierRollChatMessage(msg: ChatMessage): msg is ModifierRollChatMessage {
     return (
-        (msg as ModifierRollChatMessage).modifiers !== undefined &&
-        (msg as ModifierRollChatMessage).roll !== undefined
+        ((msg as ModifierRollChatMessage).name !== undefined) &&
+        ((msg as ModifierRollChatMessage).modifiers !== undefined) &&
+        ((msg as ModifierRollChatMessage).roll !== undefined)
     );
 }
 
 export function isDamageRollChatMessage(msg: ChatMessage): msg is DamageRollChatMessage {
     return (
         (msg as DamageRollChatMessage).damages !== undefined &&
+        (msg as DamageRollChatMessage).times2 !== undefined &&
+        (msg as DamageRollChatMessage).name !== undefined &&
         (msg as DamageRollChatMessage).rolls !== undefined
     );
 }

@@ -2,11 +2,15 @@
     import type { Die } from "$lib/bindings";
     import Dice from "$lib/components/Dice.svelte";
 
-    let { die, roll }: { die: Die; roll: number } = $props();
+    let { die, roll }: { die: Die | number; roll: number } = $props();
 </script>
 
 <div class="dice-roll">
-    <Dice dice={Number.parseInt(die.substring(1))} />
+    {#if typeof die === "number"}
+        <Dice dice={die} />
+    {:else}
+        <Dice dice={Number.parseInt(die.substring(1))} />
+    {/if}
     <span class="value">{roll}</span>
 </div>
 

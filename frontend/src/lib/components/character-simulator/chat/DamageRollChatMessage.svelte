@@ -1,42 +1,79 @@
 <script lang="ts">
     import { type Die } from "$lib/bindings";
-    import type { DamageRollChatMessage } from "$lib/chat";
+    import {
+        isDamageRollChatMessage,
+        type DamageRollChatMessage,
+    } from "$lib/chat";
+    import { rollFromFormula } from "$lib/roll";
     import { capitalize } from "$lib/utils";
     import ChatMessage from "./ChatMessage.svelte";
     import DiceRoll from "./DiceRoll.svelte";
 
     let { msg }: { msg: DamageRollChatMessage } = $props();
 
-    let sum = $derived.by(() => {
-        let final = 0;
+    type DamageInfo = {
+        damageType: string;
+        faces: number;
+        values: number[];
+        total: number;
+    };
 
-        for (const roll of msg.rolls) {
-            final += roll.reduce((t, v) => (t += v), 0);
+    let damagesInfo: DamageInfo[] = $derived.by(() => {
+        let infos: DamageInfo[] = [];
+        for (let i = 0; i < msg.damages.length; i++) {
+            const damage = msg.damages[i];
+            const damageType = damage.type ?? damage.damageType ?? "Undefined";
+
+            if (damage.formula) {
+                const { faces, total, values } = rollFromFormula(
+                    damage.formula,
+                );
+                infos.push({
+                    damageType,
+                    faces,
+                    values,
+                    total: msg.times2 ? total * 2 : total,
+                });
+            } else {
+                const faces = Number.parseFloat(
+                    (damage.die as Die).substring(1),
+                );
+                const values = msg.rolls[i];
+                const total = values.reduce((t, v) => (t += v), 0);
+                infos.push({
+                    damageType,
+                    faces,
+                    values,
+                    total: msg.times2 ? total * 2 : total,
+                });
+            }
         }
 
-        if (msg.times2) final *= 2;
-
-        return final;
+        return infos;
     });
+    let totalDamage = $derived(
+        damagesInfo.map((v) => v.total).reduce((t, v) => (t += v), 0),
+    );
 </script>
 
 <ChatMessage>
     <span>Attacked with "{msg.name}"</span>
-    {#each msg.damages as damage, i}
+    {#each damagesInfo as { damageType, faces, total, values }, i}
         <div class="roll row" style="gap: 0.25rem">
-            {console.log(damage)}
-            {#each msg.rolls[i] as roll, j}
-                {#if j !== 0}
-                    <span>+</span>
-                {/if}
-                {#if damage.die}
-                    <DiceRoll die={damage.die as Die} {roll} />
-                {/if}
-            {/each}
+            {#if values.length !== 0}
+                {#each values as roll, j}
+                    {#if j !== 0}
+                        <span>+</span>
+                    {/if}
+                    <DiceRoll die={faces} {roll} />
+                {/each}
+            {:else}
+                <span class="value">{total}</span>
+            {/if}
             <span>=</span>
-            <span class="value">{sum}</span>
-            {#if damage.damageType}
-                <span>{capitalize(damage.damageType)}</span>
+            <span class="value">{total}</span>
+            {#if damageType}
+                <span>{capitalize(damageType)}</span>
             {/if}
             {#if msg.times2}
                 <span class="times2">(x2)</span>
@@ -46,7 +83,7 @@
     {#if msg.damages.length > 1}
         <div class="roll row" style="gap: 0.25rem">
             <span>Total: </span>
-            <span class="value">{sum}</span>
+            <span class="value">{totalDamage}</span>
         </div>
     {/if}
 </ChatMessage>

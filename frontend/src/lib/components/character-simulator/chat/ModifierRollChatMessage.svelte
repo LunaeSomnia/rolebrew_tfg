@@ -5,21 +5,26 @@
 
     let { msg }: { msg: ModifierRollChatMessage } = $props();
 
-    let modifierSum = $derived.by(() => {
+    let validModifiers = $derived.by(() => {
         let modifiers = Array.from(msg.modifiers);
         modifiers.shift();
-        return modifiers.map((v) => v.value).reduce((t, v) => (t += v), 0);
+        return modifiers;
     });
+    let modifierSum = $derived(
+        validModifiers.map((v) => v.value).reduce((t, v) => (t += v), 0),
+    );
 </script>
 
 <ChatMessage>
     <span>{msg.name}</span>
     <div class="roll row" style="gap: 0.25rem">
         <DiceRoll die={"D20"} roll={msg.roll} />
-        <span>+</span>
-        <span class="modifier">{modifierSum}</span>
-        <span>=</span>
-        <span class="value">{msg.roll + modifierSum}</span>
+        {#if validModifiers.length > 0}
+            <span>+</span>
+            <span class="modifier">{modifierSum}</span>
+            <span>=</span>
+            <span class="value">{msg.roll + modifierSum}</span>
+        {/if}
     </div>
 </ChatMessage>
 

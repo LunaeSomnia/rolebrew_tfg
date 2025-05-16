@@ -8,7 +8,7 @@ import type {
     Skill,
     Spell,
 } from "./bindings";
-import type { ChatMessage, DamageRollChatMessage, ModifierRollChatMessage } from "./chat";
+import { ChatMessageType, type ChatMessage, type DamageRollChatMessage, type ModifierRollChatMessage } from "./chat";
 import {
     BASIC_SKILL_TO_ATTRIBUTE,
     proficiencyBonus,
@@ -119,7 +119,7 @@ export class CharacterSimulationState {
 
     initiative: number | undefined = $state(undefined);
 
-    chat: ChatMessage[] = $state([]);
+    chat: [ChatMessageType, ChatMessage][] = $state([]);
 
     money: {
         copper: number;
@@ -279,7 +279,7 @@ export class CharacterSimulationState {
         const rollV = roll(20)
         this.initiative = rollV + modifier;
 
-        this.pushChatMessage({
+        this.pushChatMessage(ChatMessageType.ModifierRoll, {
             name: `Rolled Initiative with ${capitalize(skill)}`,
             modifiers: [
                 {
@@ -299,7 +299,7 @@ export class CharacterSimulationState {
 
     rollAttack(name: string, attribute: Attribute, modifier: number) {
         const finalRoll = roll(20 + modifier)
-        this.pushChatMessage(
+        this.pushChatMessage(ChatMessageType.ModifierRoll,
             {
                 name,
                 modifiers: [
@@ -315,14 +315,14 @@ export class CharacterSimulationState {
                     }
                 ],
                 roll: finalRoll
-            }
+            } as ModifierRollChatMessage
         );
     }
 
     rollDamage(name: string, damage: DamageRoll, times2: boolean) {
         let rolled = calculateDamageRoll(damage)
 
-        this.pushChatMessage({
+        this.pushChatMessage(ChatMessageType.DamageRoll, {
             name,
             damages: [damage],
             rolls: [rolled],
@@ -338,7 +338,7 @@ export class CharacterSimulationState {
             rolls.push(rolled);
         }
 
-        this.pushChatMessage({
+        this.pushChatMessage(ChatMessageType.DamageRoll, {
             name,
             damages: damages,
             rolls,
@@ -346,8 +346,8 @@ export class CharacterSimulationState {
         } as DamageRollChatMessage);
     }
 
-    pushChatMessage(msg: ChatMessage) {
-        this.chat.push(msg);
+    pushChatMessage(msgType: ChatMessageType, msg: ChatMessage) {
+        this.chat.push([msgType, msg]);
     }
 
     //
