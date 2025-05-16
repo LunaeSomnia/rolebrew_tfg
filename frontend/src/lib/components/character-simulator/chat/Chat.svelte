@@ -1,35 +1,66 @@
 <script lang="ts">
     import type { CharacterSimulationState } from "$lib/characterSimulator.svelte";
+    import StringChatMessage from "./StringChatMessage.svelte";
+    import SimpleRollChatMessage from "./SimpleRollChatMessage.svelte";
+    import {
+        isAttackRollChatMessage,
+        isDamageRollChatMessage,
+        isSimpleRollChatMessage,
+        isStringChatMessage,
+        type SimpleRollChatMessage as SimpleRollChatMessageType,
+        type StringChatMessage as StringChatMessageType,
+    } from "$lib/chat";
     import { Icon } from "$lib/icons/icons";
     import { roll } from "$lib/roll";
-    import Button from "../Button.svelte";
-    import Dice from "../Dice.svelte";
-    import Input from "../Input.svelte";
+    import Button from "../../Button.svelte";
+    import Dice from "../../Dice.svelte";
+    import Input from "../../Input.svelte";
+    import AttackRollChatMessage from "./AttackRollChatMessage.svelte";
+    import DamageRollChatMessage from "./DamageRollChatMessage.svelte";
 
-    let { state: characterState }: { state: CharacterSimulationState } =
+    let { simulationState }: { simulationState: CharacterSimulationState } =
         $props();
 
     let chatInput = $state("");
 
     function onClickDiceRoll(dice: number) {
-        characterState.pushChatMessage(`Rolled a D${dice}: ${roll(dice)}`);
+        simulationState.pushChatMessage({
+            dice: `D${dice}`,
+            roll: roll(dice),
+        } as SimpleRollChatMessageType);
     }
 
     function onKeyDownChatInput(e: KeyboardEvent) {
         if (e.key === "Enter") {
-            characterState.pushChatMessage(chatInput);
+            simulationState.pushChatMessage({
+                value: chatInput,
+            } as StringChatMessageType);
+            chatInput = "";
         }
     }
 
     function clearMessages() {
-        characterState.chat = [];
+        simulationState.chat = [];
     }
+
+    $effect(() => {
+        console.log(simulationState.chat);
+    });
 </script>
 
 <div class="column chat">
     <div class="column messages">
-        {#each characterState.chat.toReversed() as message}
-            <span>{message}</span>
+        {#each simulationState.chat.toReversed() as msg}
+            {console.log(msg)}
+            {#if isSimpleRollChatMessage(msg)}
+                <SimpleRollChatMessage {msg} />
+            {:else if isStringChatMessage(msg)}
+                <StringChatMessage {msg} />
+            {:else if isAttackRollChatMessage(msg)}
+                <AttackRollChatMessage {msg} />
+            {:else if isDamageRollChatMessage(msg)}
+                <DamageRollChatMessage {msg} />
+            {/if}
         {/each}
     </div>
 

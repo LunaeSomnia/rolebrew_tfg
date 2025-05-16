@@ -5,8 +5,8 @@ export function roll(max: number) {
     return roll;
 }
 
-export function calculateDamageRoll(damage: DamageRoll) {
-    let rolled = 0;
+export function calculateDamageRoll(damage: DamageRoll): number[] {
+    let rolled = [];
     for (let i = 0; i < (damage.dice ?? 0); i++) {
         let faces = 0;
         if (typeof damage.die === "number") {
@@ -14,7 +14,7 @@ export function calculateDamageRoll(damage: DamageRoll) {
         } else if (damage.die) {
             faces = Number.parseInt(damage.die[1]);
         }
-        rolled += roll(faces);
+        rolled.push(roll(faces));
     }
 
     return rolled;

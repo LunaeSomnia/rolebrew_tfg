@@ -283,8 +283,13 @@ export class CharacterSimulationState {
                 modifiers: [
                     {
                         modifier: '+',
+                        value: finalRoll,
+                        type: 'Roll'
+                    },
+                    {
+                        modifier: '+',
                         value: modifier,
-                        type: ''
+                        type: attribute
                     }
                 ],
                 roll: finalRoll
@@ -294,22 +299,19 @@ export class CharacterSimulationState {
 
     rollDamage(name: string, damage: DamageRoll, times2: boolean) {
         let rolled = calculateDamageRoll(damage)
-        if (times2)
-            rolled *= 2
 
         this.pushChatMessage({
             name,
             damages: [damage],
-            rolls: [rolled]
+            rolls: [rolled],
+            times2
         } as DamageRollChatMessage)
     }
 
     rollDamages(name: string, damages: DamageRoll[], times2: boolean = false) {
-        let rolls: number[] = []
+        let rolls: number[][] = []
         for (const damage of damages) {
             let rolled = calculateDamageRoll(damage)
-            if (times2)
-                rolled *= 2
 
             rolls.push(rolled);
         }
@@ -317,7 +319,8 @@ export class CharacterSimulationState {
         this.pushChatMessage({
             name,
             damages: damages,
-            rolls
+            rolls,
+            times2
         } as DamageRollChatMessage);
     }
 

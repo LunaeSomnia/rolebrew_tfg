@@ -10,7 +10,7 @@ export const load: PageLoad = async ({ fetch, data, params }) => {
 
         fetch(`/api/spell`)
             .then((v) => v.json())
-            .then((v) => v as Rule[]),
+            .then((v) => v as Spell[]),
 
         fetch(`/api/equipment/summary`)
             .then((v) => v.json())

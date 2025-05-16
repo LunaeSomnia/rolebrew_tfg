@@ -34,8 +34,8 @@
         {#if damage}
             <AttackRollButton
                 modifier={attackModifier}
-                onclick={() =>
-                    simulationState.rollAttack(name, attribute, attackModifier)}
+                onclick={(modifier) =>
+                    simulationState.rollAttack(name, attribute, modifier)}
             />
             <DamageRollButton
                 onclick={() => simulationState.rollDamage(name, damage, false)}

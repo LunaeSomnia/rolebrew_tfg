@@ -1,8 +1,8 @@
 <!-- svelte-ignore element_invalid_self_closing_tag -->
-<div />
+<div class="divisor vertical" />
 
 <style lang="scss">
-    div {
+    .divisor {
         width: 0.125rem;
         min-width: 0.125rem;
         align-self: stretch;

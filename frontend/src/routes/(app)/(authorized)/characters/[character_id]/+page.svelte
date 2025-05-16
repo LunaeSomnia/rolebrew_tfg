@@ -11,7 +11,7 @@
     import { Icon } from "$lib/icons/icons.js";
     import { capitalize } from "$lib/utils.js";
     import SavingThrows from "$lib/components/character-simulator/SavingThrows.svelte";
-    import Chat from "$lib/components/character-simulator/Chat.svelte";
+    import Chat from "$lib/components/character-simulator/chat/Chat.svelte";
     import Button from "$lib/components/Button.svelte";
     import EquipmentPage from "$lib/components/character-simulator/pages/equipment/EquipmentPage.svelte";
     import ActionsPage from "$lib/components/character-simulator/pages/actions/ActionsPage.svelte";
@@ -201,7 +201,7 @@
 </div>
 
 {#if isChatOpen}
-    <Chat state={simulationState} />
+    <Chat {simulationState} />
 {/if}
 
 <style lang="scss">
