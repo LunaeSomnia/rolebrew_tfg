@@ -1,5 +1,7 @@
 import type { LayoutLoad } from "./$types";
 
+export let ssr = false;
+
 export const load: LayoutLoad = async ({ route, url }) => {
     const routeId = url.pathname.replace('/compendium/', "");
 
