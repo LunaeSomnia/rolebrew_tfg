@@ -1,6 +1,9 @@
 # Rolebrew
 
-**Rolebrew is a free Pathfinder 2e explorer, character creator & simulator tool**.
+> [!WARNING]
+> This project is for educational and demonstrative purposes only. It is not intended for actual use as a Pathfinder 2e tool and should not be relied upon for gameplay, character creation, or any related activities.
+
+Rolebrew is a Pathfinder 2e explorer, character creator & simulator tool born as a university project.
 
 ## Project structure
 
